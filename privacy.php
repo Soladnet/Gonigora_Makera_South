@@ -41,6 +41,8 @@
                     <p>We will provide you with the means to ensure that your personal information is correct and current. You may review and update this information at any time.</p>
                     <p><b>Security</b></p>
                     <p>Gossout has taken strong measures to protect the security of your personal information and to ensure that your choices for your intended use are honored. We take strong precautions to protect your data from loss, misuse, unauthorized access or disclosure, alteration or destruction. </p>
+                    <p><b>Cookies</b></p> 
+                    <p>A "cookie" is a small text file containing a unique identifier that our web server sends to a user's browser, and may be stored on a user's hard drive. Cookies are required to use ask.fm service. If you have your browser set to reject cookies, your use of the ask.fm service is likely to be interrupted. The cookies we use are not permanent.</p>
                     <p><b>Notes To Parents</b></p>
                     <p>Parents or guardians: we want to help you guard your children's privacy. We encourage you to talk to your chldren about safe and responsible use of their Personal Information while using the Internet. </p>
                     <p><b>Enforcement</b></p>
