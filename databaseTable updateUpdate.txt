@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS `community_pix` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `community_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `original` text NOT NULL,
+  `250x250` text NOT NULL,
+  `100x100` text NOT NULL,
+  `50x50` text NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`,`community_id`,`user_id`,`post_id`),
+  KEY `community_id` (`community_id`),
+  KEY `user_id` (`user_id`),
+  KEY `post_id` (`post_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `community_pix`
+--
+ALTER TABLE `community_pix`
+  ADD CONSTRAINT `community_pix_ibfk_1` FOREIGN KEY (`community_id`) REFERENCES `community` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `community_pix_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user_personal_info` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `community_pix_ibfk_3` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
