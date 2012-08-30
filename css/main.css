@@ -922,3 +922,8 @@ body:before {
 
           z-index: 100;
 }
+.footer_links a{    color:#333; padding-right: 5px;}
+.footer_links a:hover{    color:#A6CC8B;}
+.footer_links {    float: right ;
+ 				   font-size: 14px;
+		     } 

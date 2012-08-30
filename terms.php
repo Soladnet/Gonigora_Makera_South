@@ -37,11 +37,6 @@
                     </br>
                     [Our website uses cookies.  By using our website and agreeing to these terms of use, you consent to our use of cookies in accordance with the terms of our [privacy policy / cookies policy].]
 
-                    <p><b>	Licence to use website</b></p>
-
-
-                    <p><b>	Acceptable use</b></p>
-
 
 
                     <p><b>	Registered users</b></p>
@@ -71,66 +66,7 @@
 
                     <p>We may disable usernames and passwords, delete accounts, and delete any information associated with an account, in our sole discretion without notice or explanation.</p>
 
-                    <p><b>	User generated content</b></p>
-
-
-
-                    <p><b>	Limited warranties</b></p>
-
-
-
-                    <p><b>	Limitations and exclusions of liability</b></p>
-
-
-                    <p><b>	Indemnity</b></p>
-
-
-
-                    <p><b>	Breaches of these terms of use</b></p>
-
-
-
-                    <p><b>	Third party websites</b></p>
-
-
-
-                    <p><b>	Trade marks</b></p>
-
-
-
-                    <p><b>	Competitions</b></p>
-
-
-
-                    <p><b>	Variation</b></p>
-
-
-
-                    <p><b>	Assignment</b></p>
-
-
-
-                    <p><b> Severability</b></p>
-
-
-
-                    <p><b> Exclusion of third party rights</b></p>
-
-
-
-                    <p><b>	Entire agreement</b></p>
-
-
-
-                    <p><b> Law and jurisdiction</b></p>
-
-
-
-                    <p><b> Registrations and authorisations</b></p>
-
-
-
-                    <p><b> Our details</b></p>
+              
 
 
 
@@ -142,6 +78,12 @@
         <div id="nav2" class="footer nav2_gradient">
             <span id="logo">
                 &copy; <?php echo date("Y") ?> Gossout.com
+            </span>
+            <span class="footer_links">
+            <a href="page.php?view=about"> About</a>|
+            <a href="page.php?view=privacy"> Privacy</a>|
+            <a href="page.php?view=terms"> Terms</a>|
+            <a href=""> Contact Us</a>
             </span>
             <div class="clear"></div>
         </div>

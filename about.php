@@ -32,7 +32,7 @@
                       
                        <div id="about">
                            <h3>What is GOSSOUT? </h3><hr/>
-                           Gossout is a free Social Network that enables instant interaction and sharing of Gossip trends between your friends or within your subscribed communities.
+                           Gossout is a free Social Network that enables instant interaction and sharing of gossip trends between your friends or within your subscribed communities.
                            <div>
                                <div class="about_fnx"> <img src="images/community.png"/>
                               <p>Share With Communities<hr/></p>
@@ -47,7 +47,7 @@
                                </div>
                                <div class="about_fnx"> <img src="images/gossip.png"/>
                                <p>Get Hottest Gossip <hr/></p>
-                               <span><p>Get the hottest  Gossip instantly through the hottest Gossip feature. You can also group chat with members of any community you join</p></span>
+                               <span><p>Get the Hottest Gossip instantly through the Hottest Gossip feature. You can also group chat with members of any community you join</p></span>
                                </div>
                            </div>
                        </div>
@@ -58,9 +58,15 @@
                 </div>
             </div>
         </div>
-        <div id="nav2" class="footer nav2_gradient">
+        <div id="nav2" class="footer nav2_gradient" >
             <span id="logo">
-                &copy; <?php echo date("Y") ?> Gossout.com
+                &copy; <?php echo date("Y") ?> Gossout.com 
+            </span>
+             <span class="footer_links">
+            <a href="page.php?view=about"> About</a>|
+            <a href="page.php?view=privacy"> Privacy</a>|
+            <a href="page.php?view=terms"> Terms</a>|
+            <a href=""> Contact Us</a>
             </span>
             <div class="clear"></div>
         </div>
