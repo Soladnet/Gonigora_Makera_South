@@ -72,20 +72,11 @@
 
 
 
+            <div class="clear"></div>
+            <?php include_once("footer.php"); ?>
                 </div>
             </div>
         </div>
-        <div id="nav2" class="footer nav2_gradient">
-            <span id="logo">
-                &copy; <?php echo date("Y") ?> Gossout.com
-            </span>
-            <span class="footer_links">
-            <a href="page.php?view=about"> About</a>|
-            <a href="page.php?view=privacy"> Privacy</a>|
-            <a href="page.php?view=terms"> Terms</a>|
-            <a href=""> Contact Us</a>
-            </span>
-            <div class="clear"></div>
-        </div>
+        
     </body>
 </html>

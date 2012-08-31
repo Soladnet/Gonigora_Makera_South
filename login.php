@@ -19,17 +19,17 @@ if (isset($_POST['login'])) {
 <head>
     <meta charset="utf-8">
     <title>Gossout</title><title>
-        <?php
-        if (isset($_GET['view'])) {
-            echo toSentenceCase($_GET['view']);
-        } else {
-            echo "Gossout";
-        }
-        ?>
-    </title>
-    <link rel="shortcut icon" href="favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />  
-    <!--- http://bit.ly/NfpVMY -->
+    <?php
+    if (isset($_GET['view'])) {
+        echo toSentenceCase($_GET['view']);
+    } else {
+        echo "Gossout";
+    }
+    ?>
+</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />  
+<!--- http://bit.ly/NfpVMY -->
     <!--[if IE]>
     <link rel="stylesheet" href="css/main.css" />
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -63,8 +63,7 @@ if (isset($_POST['login'])) {
 
         <div class="center_div width800">
             <div class="inner_wrappper box_shadow8 center_div">
-                <div id="column1">
-                    <p  class="info">By clicking Sign Up, you agree to our Terms and that you have read and understand our Data Use Policy.</p>
+                <div id="column1" class="login-page-column">
                 </div>
 
                 <div id="column2">
@@ -100,19 +99,16 @@ if (isset($_POST['login'])) {
                         </ul>
                         <span><a href="#">Forgot your password?</a></span>
                     </form>
-
+                    <p  class="info">By clicking Sign Up, you agree to our Terms and that you have read and understand our Data Use Policy.</p>
+                    
                 </div>
 
             </div>
+            <?php include_once("footer.php"); ?>
         </div>
     </div>
 </div>
-<div id="nav2" class="footer nav2_gradient">
-    <span id="logo">
-        &copy; <?php echo date("Y") ?> Gossout.com
-    </span>
-    <div class="clear"></div>
-</div>
+
 </body>
 </html>
 <?php

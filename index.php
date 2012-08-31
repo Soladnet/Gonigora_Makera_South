@@ -141,23 +141,21 @@ if (isset($_POST['login'])) {
         <div class="inner_wrappper box_shadow8 center_div ">
             <div id="column1">
                 <div id="index_fnx" class="community_index" > 
-                	<span> <p class="fnx">Share With Communities <hr/> </p>
+                	<span> <h1 class="fnx">Share With Communities <hr> </h1>
                     <p class="fnx_detail">Subscribe to campus or locality communities relevant to you and start talking.</p>
                      </span>
                 </div>
                 <div id="index_fnx" class="friend_index"> 
-               	    <span> <p class="fnx">Interact With Friends <hr/></p> 
+               	    <span> <h1 class="fnx">Interact With Friends <hr></h1> 
                     <p class="fnx_detail">Have fun with friends: Send private messages, Tweaks and Winks.</p>
                     </span>
                 </div>
                 <div id="index_fnx" class="gossip_index"> 
-                    <span><p class="fnx">Get Hottest Gossip<hr/></p>
+                    <span><h1 class="fnx">Get Hottest Gossip<hr></h1>
                     <p class="fnx_detail">Get the hottest gossip instantly through the Hottest Gossip feature.</p>
                     </span>
                 </div>
-                <p  class="info">By clicking Sign Up, you agree to our Terms and that you have read and understand our Data Use Policy.</p>
-    <!--                        <p>About what Gossout is...</p>
-    <span>Or anything!...</span>-->
+                
 </div>
 
 <div id="column2">
@@ -302,22 +300,18 @@ if (isset($_POST['login'])) {
                             <input id="saveForm" name="saveForm" class="btTxt submit" type="submit" value="Sign-up" /><span id="loading"></span>
                         </div>
                     </li> <!-- ************************ -->
+                    <li>
+                        <p  class="info">By clicking Sign Up, you agree to our Terms and that you have read and understand our Data Use Policy.</p>
+                    </li>
                 </ul>
             </form> 
         </div>
     </div>
+<?php include_once("footer.php"); ?>
 </div>
 </div>
 </div>
-<div id="nav2" class="footer nav2_gradient">
-    <span id="logo">
-        &copy; <?php echo date("Y") ?> Gossout.com
-    </span>
-    <div class="clear"></div>
-</div>
-    <?php
-    include('googleanalytics.html');
-    ?>
+
 </body>
 </html>
 <?php

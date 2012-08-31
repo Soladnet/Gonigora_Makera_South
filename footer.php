@@ -3,12 +3,11 @@
     <table cellspacing="5px">
     <tr>        
         <td> <a href="page.php?view=about">About</a> </td>
-<!--        <td> <a href="#">Help</a> </td>-->
         <td> <a href="page.php?view=terms">Terms</a> </td>
         <td> <a href="#">Privacy</a> </td>
     </tr>
     <tr >
-        <td colspan="4"> &copy; <?php echo date("Y");?> <a href="http://www.gossout.com">GossOut</a></td>
+        <td colspan="3"> &copy; <?php echo date("Y");?> <a href="http://www.gossout.com">GossOut</a></td>
     </tr>
     </table>
     <div class="clear"></div>

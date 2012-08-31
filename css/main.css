@@ -161,7 +161,7 @@ textarea {
 }
 .inner_wrappper {
     display: inline-block;
-    padding: 1em 1em 2em 1em ;
+    padding: .5em;
     background: #fafafa;
     width: 100%;
 }
@@ -253,7 +253,7 @@ Class names for generic visual alerts.
 .info is used on the index.php for 
 the Terms & Conditions Ish
 ************************************************************************/
-.error, .alert, .notice, .success, .info {    padding: 0.8em;    margin: .2em 0;    border: none;}
+.error, .alert, .notice, .success, .info {    padding: 0.6em;    margin: .2em 0;    border: none; font-size: .8em; }
 .error, .alert{    background: #FBE3E4;    color: #8A1F11;}
 .notice{    background: #FFF6BF;    color: #514721;}
 .info{    background: #ddd;    color: #264409;}
@@ -377,6 +377,10 @@ input[type=password]:focus {
     text-align: center;
    /* background: url(../images/logo_image.png) no-repeat center top!important;*/
     
+}
+.login-page-column{
+    padding-top: 250px;
+     background: url(../images/logo_image_text.png) no-repeat center top!important;
 }
 .desc {
     font-family: inherit;
@@ -714,9 +718,9 @@ form#signup label.desc {
 
 
 .footer{    position: fixed;    bottom: 0;    width: 100%;    padding-left: 40%;    padding-right: 30%}
-#footer{    padding: 5px 10px 5px 10px;}
-#footer table{    width:100%;}
-#footer a{    color:#333;}
+#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; }
+/*  #footer table{    width:100%;} */
+#footer a{    color:#333; padding: 0 .2em;}
 #footer a:hover{    color:#A6CC8B;}
 #footer li {    float: left;}
 
@@ -881,6 +885,9 @@ form#signup label.desc {
 	text-align:justify;
 	font-size:14px;
 	}
+.fnx_detail{
+    font-size: .85em;
+}
 #index_fnx{
 	background-color:#FAFAFA;
 	height: 140px;
@@ -888,13 +895,13 @@ form#signup label.desc {
 	margin-top: 2px;
 	}
 .friend_index{
-	background: url(../images/friend.png) no-repeat left top!important;
+	background: url(../images/image-friend.png) no-repeat left top!important;
 	}
 .community_index{
-	background: url(../images/community.png) no-repeat left top!important;
+	background: url(../images/image-community.png) no-repeat left top!important;
 	}
 .gossip_index{
-	background: url(../images/gossip.png) no-repeat left top!important;
+	background: url(../images/image-gossip.png) no-repeat left top!important;
 	}	
 #index_fnx span{
 	padding-right:20px;
@@ -904,9 +911,8 @@ form#signup label.desc {
 	}
 #index_fnx .fnx{
 	text-align:center;
-	}
-#index_fnx .fnx_detail{
-	font-size:12px;
+    font-size: 1em;
+    font-weight: bold;
 	}
 body:before {
           content: "";

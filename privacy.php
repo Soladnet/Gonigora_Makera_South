@@ -69,5 +69,8 @@
             </span>
             <div class="clear"></div>
         </div>
+        <?php
+    include('googleanalytics.html');
+    ?>
     </body>
 </html>
