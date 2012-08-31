@@ -9,11 +9,11 @@ if (!isset($_SESSION['auth'])) {
     <head>
         <meta charset="utf-8">
         <?php include_once("head.php"); ?>
-        <style>
+     <!--   <style>
             .content,select,input{
                 font-size: .8em;
             }
-        </style>
+        </style> -->
         <script>
             function dfn(selected,id){
                 $("#"+id).val(selected);
@@ -142,7 +142,7 @@ if (!isset($_SESSION['auth'])) {
                                                         <option value='In a relationship'>In a relationship</option>
                                                         <option value='Married'>Married</option>
                                                         <option value='Divorced'>Divorced</option>
-                                                        <option value='Its Complicated'>Its Complicated</option>
+                                                        <option value='Its Complicated'>It's Complicated</option>
                                                     </select>
                                                 </span>
                                             </td>

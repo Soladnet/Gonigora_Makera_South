@@ -14,9 +14,9 @@
                     if (count($myCom) > 0)
                         foreach ($myCom['data'] as $value) {
                             if ($myCom['community_id'] == $value['id']) {
-                                echo '<h3 class="community my_community">' . toSentenceCase(shortenStr($value['name'])) . '<span class="addbutton ui-state-highlight home" id="hom' . $value['id'] . '"><img src="images/icon_home.png" /></span><div class="clear"></div></h3><div style="padding:2px;font-size:.6em;cursor:pointer;" id="pan' . $value['id'] . '" class="panel"><span>This is your current community</span></div>';
+                                echo '<h3 class="community my_community">' . toSentenceCase(shortenStr($value['name'])) . '<span class="addbutton ui-state-highlight home" id="hom' . $value['id'] . '"><img src="images/icon_home.png" /></span><div class="clear"></div></h3><div style="padding:.2px;font-size:.7em;cursor:pointer;" id="pan' . $value['id'] . '" class="panel"><span>This is your current community</span></div>';
                             } else {
-                                echo '<h3 class="community my_community">' . toSentenceCase(shortenStr($value['name'])) . '<span class="home" id="hom' . $value['id'] . '"></span></h3><div style="padding:2px;font-size:.6em;cursor:pointer;" id="pan' . $value['id'] . '" class="panel"><p><span onclick="unsubscribe(' . $value['id'] . ')">Unsubscribe</span> | <span onclick="join(' . $value['id'] . ')">Join</span></p></div>';
+                                echo '<h3 class="community my_community">' . toSentenceCase(shortenStr($value['name'])) . '<span class="home" id="hom' . $value['id'] . '"></span></h3><div style="padding:2px;font-size:.7em;cursor:pointer;" id="pan' . $value['id'] . '" class="panel"><p><span onclick="unsubscribe(' . $value['id'] . ')">Unsubscribe</span> | <span onclick="join(' . $value['id'] . ')">Join</span></p></div>';
                             }
                         }
                         ?>
@@ -31,7 +31,7 @@
                         $count = 0;
                         foreach ($sugComm['data'] as $value) {
                             $count++;
-                            echo '<h3 class="community">' . $value['name'] . '<span class="home" id="hom' . $value['id'] . '"></span></h3><div style="padding:2px;font-size:.6em;cursor:pointer;" id="pan' . $value['id'] . '" class="panel"><p><span onclick="subscribe(' . $value['id'] . ')">Subscribe</span> | <span onclick="join(' . $value['id'] . ')">Join</span></p></div>';
+                            echo '<h3 class="community">' . $value['name'] . '<span class="home" id="hom' . $value['id'] . '"></span></h3><div style="padding:2px;font-size:.7em;cursor:pointer;" id="pan' . $value['id'] . '" class="panel"><p><span onclick="subscribe(' . $value['id'] . ')">Subscribe</span> | <span onclick="join(' . $value['id'] . ')">Join</span></p></div>';
                             if($count>3){
                                 break;
                             }

@@ -982,7 +982,7 @@ function makeProfilePix(imgId){
     });
 }
 function positionMenu(imgId,menu){
-    $("#"+menu).html("<span onclick='makeProfilePix("+imgId+")'>Make profile pix</span>");
+    $("#"+menu).html("<span onclick='makeProfilePix("+imgId+")'>Make Profile Pix</span>");
     $( "#"+menu ).css("text-align","center").css("font-size",".9em").css("width","105").css("position", "absolute").css("display", "block").css("right", "0").css("bottom", "0").css("background-color", "whiteSmoke").css("cursor","pointer");
     $( "#"+menu ).position({
         of: $( "#img"+imgId ),

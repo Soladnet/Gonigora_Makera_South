@@ -8,7 +8,7 @@
     box-sizing                        : border-box;
     -ms-box-sizing                    : border-box;
 }
-body {    font-family: 'Segoe UI',sans-serif;    color: #333333;    background: url(../images/bg-tile.png) repeat;}
+body {    font-family: 'Segoe UI',sans-serif;    color: #333333;    background: url(../images/noise.png) repeat;}
 a {    text-decoration: none;}
 ol,ul {    list-style: none;}
 h1,h2,h3,h4,h5,h6 {        font-weight: normal;    color: #333;    font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;}
@@ -18,6 +18,7 @@ img {        border: none;    padding: .2em;    max-width: 100%;}
 input[type="checkbox"] { margin: 4px;}
 input[type=submit],
 input[type=button],
+input[type=file],
 input[type=reset],
 button {    
     cursor: pointer;
@@ -36,6 +37,7 @@ button {
 }
 input[type=submit]:hover,
 input[type=button]:hover,
+input[type=file]:hover,
 input[type=reset]:hover,
 button:hover {
     border: 1px solid #99c53d;
@@ -253,7 +255,7 @@ Class names for generic visual alerts.
 .info is used on the index.php for 
 the Terms & Conditions Ish
 ************************************************************************/
-.error, .alert, .notice, .success, .info {    padding: 0.6em;    margin: .2em 0;    border: none; font-size: .8em; }
+.error, .alert, .notice, .success, .info {    padding: .6em;    margin: .2em 0;    border: none; font-size: .8em; }
 .error, .alert{    background: #FBE3E4;    color: #8A1F11;}
 .notice{    background: #FFF6BF;    color: #514721;}
 .info{    background: #ddd;    color: #264409;}
@@ -436,10 +438,10 @@ form#signup label.desc {
 #friend_requests{    cursor: pointer;   background: url(../images/icon_frq.png) no-repeat 2% 50%; }
 #settings       {    cursor: pointer;   background: url(../images/icon_settings.png) no-repeat 2% 50%; }
 
-#gossbag:hover  {    color: white;  background: url(../images/icon_gossbag.png) no-repeat 2% 50% #A6CC8B; }
-#messages:hover {    color: white;  background: url(../images/icon_message.png) no-repeat 2% 50% #A6CC8B; }
-#friend_requests:hover{    color: white;   background: url(../images/icon_frq.png) no-repeat 2% 50% #A6CC8B; }
-#settings:hover {    color: white;  background: url(../images/icon_settings.png) no-repeat 2% 50% #A6CC8B; }
+#gossbag:hover  {    background: url(../images/icon_gossbag.png) no-repeat 2% 50% #def4b6; }
+#messages:hover {    background: url(../images/icon_message.png) no-repeat 2% 50% #def4b6; }
+#friend_requests:hover{    background: url(../images/icon_frq.png) no-repeat 2% 50% #def4b6; }
+#settings:hover {    background: url(../images/icon_settings.png) no-repeat 2% 50% #def4b6; }
 
 #gossbag:active,
 #messages:active,
@@ -491,7 +493,7 @@ form#signup label.desc {
     cursor: pointer;
 }
 #tooltip_menu1 a,#tooltip_menu2 a,#tooltip_menu3 a,#tooltip_menu4 a{
-    color: #999;
+    color: #717171;
 }
 #tooltip_menu1 div:hover,#tooltip_menu2 div:hover,#tooltip_menu3 div:hover,#tooltip_menu4 div:hover {/*important color stuff*/
     background: #A6CC8B;
@@ -565,7 +567,7 @@ form#signup label.desc {
 #gossforum table th{    padding-top: 5px;    padding-bottom: 5px;    font-size:12px;    font-weight:bold;    border:1px solid #CCC;    background-color:#f2f2f2;}
 #gossforum table .catg_name{    border-bottom: 2px solid #f2f2f2;    padding:5px;     background-color:#f2f2f2;}
 #gossforum table .catg_desc{    padding:5px; }
-#gossforum table a{color: #999; font-size: 0.8em;}
+#gossforum table a{color: #717171; font-size: 0.8em;}
 
 
 .right{ /***********************************************************************************************/
@@ -690,8 +692,8 @@ form#signup label.desc {
 .post img {     float: left; }
 .post .status {    padding: 4px;    font-size: .9em;    color: #333; }
 .post .time {    position: absolute;    top: 0;    right: 0;    margin-bottom: 5px;    margin-left  : 100px;    padding    : 4px;    padding-top: 15px;    font-size: 70%; }
-.post_activities{    font-size: .7em; }
-.post_activities span:hover{    text-decoration: underline;    cursor: pointer; }
+.post_activities span{    font-size: .8em; }
+.post_activities span:hover{   color: black; text-decoration: underline;    cursor: pointer; }
 .name {    font-size: .9em;    font-weight: bold;}
 .notBold{     font-weight: normal; }
 #comment {     position: relative;     margin-left: 5em;     padding-top: 2px;     border      : 1px solid #E8E8E8 ;     background-color: #f8f8f8;     -webkit-border-radius: 2px;     border-radius: 2px;     margin-top: .08em;    clear: both; }
@@ -741,6 +743,7 @@ form#signup label.desc {
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { /*border: 1px solid #999999; background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x; font-weight: normal; color: #212121; }
 .ui-state-hover a, .ui-state-hover a:hover { color: #212121; text-decoration: none;*/ }
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active { 
+    color: black;
     background-image: -webkit-linear-gradient(top,#cbe3ba,#a6cc8b);
     background-image:    -moz-linear-gradient(top, #cbe3ba, #a6cc8b); /* FF3.6+ */
     background-image:     -ms-linear-gradient(top, #cbe3ba, #a6cc8b); /* IE10 */
@@ -757,7 +760,7 @@ form#signup label.desc {
 .ui-widget-header {border:none; background: #A6CC8B url(images/ui-bg_gloss-wave_35_f6a828_500x100.png) 50% 50% repeat-x; color: #ffffff; font-weight: bold; }
 .ui-widget-header a { color: #ffffff; }
 
-.ui-tabs { position: relative; padding: .2em; zoom: 1; font-size: 1.1em} /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
+.ui-tabs { position: relative; padding: .2em; zoom: 1; font-size: 1em} /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
 .ui-tabs .ui-tabs-nav { margin-bottom: 2px; padding: .2em .2em 0; }
 .ui-tabs .ui-tabs-nav li { list-style: none; float: left; position: relative; top: 1px; margin: 0; border-bottom: 1px !important; padding: 0; white-space: nowrap; }
 .ui-tabs .ui-tabs-nav li a { float: left; padding: .5em 1em; text-decoration: none; }
@@ -930,6 +933,4 @@ body:before {
 }
 .footer_links a{    color:#333; padding-right: 5px;}
 .footer_links a:hover{    color:#A6CC8B;}
-.footer_links {    float: right ;
- 				   font-size: 14px;
-		     } 
+.footer_links {    float: right ;   font-size: 14px; }
