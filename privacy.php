@@ -27,7 +27,7 @@
 
             <div class="center_div width800" >
                 <div class="inner_wrappper box_shadow8 center_div" >
-                    <h2>Privacy</h2> <hr/>
+                    <h1>Privacy</h1> <hr/>
 
                     <p>Your privacy is important to you and to us. So we'll protect the information you share with us. To protect your privacy, Gossout follows different principles in accordance with worldwide practices for customer privacy and data protection.</p>
                     <p>We won't sell or give away your name, mail address, phone number, email address or any other information to anyone.</p>
@@ -54,23 +54,10 @@
                     <p>(b) protect and defend the rights or property of Gossout, and, </p>
                     <p>(c) act in urgent circumstances to protect the personal safety of users of Gossout website or the public.</p>
       
+      <?php include_once("footer.php"); ?>
                 </div>
             </div>
         </div>
-        <div id="nav2" class="footer nav2_gradient">
-            <span id="logo">
-                &copy; <?php echo date("Y") ?> Gossout.com
-            </span>
-            <span class="footer_links"> 
-            <a href="page.php?view=about"> About</a>|
-            <a href="page.php?view=privacy"> Privacy</a>|
-            <a href="page.php?view=terms"> Terms</a>|
-            <a href=""> Contact Us</a>
-            </span>
-            <div class="clear"></div>
-        </div>
-        <?php
-    include('googleanalytics.html');
-    ?>
+       
     </body>
 </html>

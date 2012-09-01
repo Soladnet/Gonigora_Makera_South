@@ -31,22 +31,22 @@
              <div >
               
                <div id="about">
-                 <h3>What is GOSSOUT? </h3><hr/>
+                 <h1>What is GOSSOUT? </h1><hr/>
                  Gossout is a free Social Network that enables instant interaction and sharing of gossip trends between your friends or within your subscribed communities.
                  <div>
                    <div class="about_fnx"> <img src="images/image-community.png"/>
-                    <p>Share With Communities<hr/></p>
+                    <h3>Share With Communities<hr/></h3>
                     <span>
                       <p> A GOSSOUT Community is a social unit based on either Campus or Locality. Subscribe to a community relevant to you and start talking. </p>
                     </span>
                   </div>
                   
                   <div class="about_fnx"> <img src="images/image-friend.png"/>
-                   <p>Interact With Friends<hr/></p>
+                   <h3>Interact With Friends<hr/></h3>
                    <span><p>Have fun with friends: Send private messages, Winks and Tweaks. Friends would be suggested to you automatically based on your subscribed communities.</p></span>
                  </div>
                  <div class="about_fnx"> <img src="images/image-gossip.png"/>
-                   <p>Get Hottest Gossip <hr/></p>
+                   <h3>Get Hottest Gossip <hr/></h3>
                    <span><p>Get the Hottest Gossip instantly through the Hottest Gossip feature. You can also group chat with members of any community you join</p></span>
                  </div>
                  <div class="clear"></div>

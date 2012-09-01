@@ -27,7 +27,7 @@
 
             <div class="center_div width800" >
                 <div class="inner_wrappper box_shadow8 center_div" >
-                    <h2>Terms of Use</h2> <hr/>
+                    <h1> Gossout Terms of Use</h1> <hr/>
 
                     <p><b>	Introduction</b></p>
 
@@ -136,14 +136,10 @@
 
 
 
+                <?php include_once("footer.php"); ?>
                 </div>
             </div>
         </div>
-        <div id="nav2" class="footer nav2_gradient">
-            <span id="logo">
-                &copy; <?php echo date("Y") ?> Gossout.com
-            </span>
-            <div class="clear"></div>
-        </div>
+        
     </body>
 </html>

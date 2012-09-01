@@ -5,6 +5,8 @@ if (isset($_GET['view'])) {
         include  'terms.php';
     } else if (strtolower($_GET['view']) == "about") {
         include 'about.php';
+    } else if (strtolower($_GET['view']) == "privacy") {
+        include 'privacy.php';
     } else {
         include 'server_header_auth.php';
         if (strtolower($_GET['view']) == "home") {
