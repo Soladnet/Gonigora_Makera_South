@@ -62,9 +62,10 @@ function getValue(id,type){
         if(conver==""){
             return;
         }
-        $("#m"+id).attr('disabled', 'disabled').addClass("sending");
+        $("#m"+id).attr('disabled', 'disabled');
+        $("#m"+id).addClass("sending");
         
-        $("#c_loading"+id).html("<img src='images/load.gif' />");
+        $("#conver_loading"+id).html("<img src='images/load.gif' />");
         sendComment(conver, type, "#message", "#m"+id, id);
         $("#m"+id).removeAttr('disabled');
     //        $( ".content" ).scrollTop( 3534543 );
@@ -264,49 +265,58 @@ function getUpdateFlicker(id,message){
         success: function(output) {
             $(id).addClass("clicked");
             var result = "";
-            
-            if (output){ // fix strange ie bug
+            if (output.status=="success"){ // fix strange ie bug
                 if(message=="GossBag"){
                     $("#gossbagloading").remove()
                     $.each(output.data, function(i,output){
-                        if(output.infoType=="gb"){
-                            result += "<div class='post' id='"+output.id+ "'><img class='profile_small' src='" +output.img+ "'/><p class='name'><a href='page.php?view=notification&open=" +output.post_id+ "'>" +output.fullname+ "</a></p><p class='status'>"+output.caption+"</p><div class='post_activities'>" +output.sTime+ "</div></div>";
-                        }else{
-                            result += "<div class='post' id='tw_f"+output.id+ "'><img class='profile_small' src='" +output.img+ "'/><p class='name'><a href='page.php?view=tweakwink&open=" +output.id+ "'>" +output.fullname+ "</a></p><p class='status'>"+output.caption+"</p><div class='post_activities'>" +output.sTime+ "</div></div>";
+                        if(output.id){
+                            if(output.infoType=="gb"){
+                                result += "<div class='post' id='"+output.id+ "'><img class='profile_small' src='" +output.img+ "'/><p class='name'><a href='page.php?view=notification&open=" +output.post_id+ "'>" +output.fullname+ "</a></p><p class='status'>"+output.caption+"</p><div class='post_activities'>" +output.sTime+ "</div></div><script>makeMeClickable("+output.id+")</script>";
+                            }else{
+                                result += "<div class='post' id='tw_f"+output.id+ "'><img class='profile_small' src='" +output.img+ "'/><p class='name'><a href='page.php?view=tweakwink&open=" +output.id+ "'>" +output.fullname+ "</a></p><p class='status'>"+output.caption+"</p><div class='post_activities'>" +output.sTime+ "</div></div>";
+                            } 
                         }
                         
                     });
                 }else if(message=="Messages"){
                     $("#messagesloading").remove();
                     $.each(output, function(i,output){
-                        var lastSent = "";
-                        if(output.isUser){
-                            lastSent = "<img class='profile_small' src='images/reply.png'/>";
-                        }else{
-                            lastSent = "";
+                        if(output.msgid){
+                            var lastSent = "";
+                            if(output.isUser){
+                                lastSent = "<img class='profile_small' src='images/reply.png'/>";
+                            }else{
+                                lastSent = "";
+                            }
+                            var shade = "";
+                            if(output.status=="N"){
+                                shade = " shade";
+                            }else{
+                                shade = "";
+                            }
+                            result += "<div class='post"+shade+"' id='"+output.msgid+ "'><img class='profile_small' src='" +output.img+ "'/>"+lastSent+"<p class='name'><a href='page.php?view="+message+"&open=" +output.id+ "'>" +output.name+ "</a></p><p class='status'>"+output.text+"</p><div class='post_activities'>" +output.time+ "</div></div>"+'<script>makeMeClickable("#'+output.msgid+'");</script>';    
                         }
-                        var shade = "";
-                        if(output.status=="N"){
-                            shade = " shade";
-                        }else{
-                            shade = "";
-                        }
-                        result += "<div class='post"+shade+"' id='"+output.msgid+ "'><img class='profile_small' src='" +output.img+ "'/>"+lastSent+"<p class='name'><a href='page.php?view="+message+"&open=" +output.id+ "'>" +output.name+ "</a></p><p class='status'>"+output.text+"</p><div class='post_activities'>" +output.time+ "</div></div>"+'<script>makeMeClickable("#'+output.msgid+'");</script>';
+                        
                     });
                 }else if(message=="Friend Requests"){
                     $("#friendreqloading").remove();
                     //                    alert("done");
                     $.each(output, function(i,output){
-                        result += "<div class='post' id='frq"+output.id+ "'><img class='profile_small' src='" +output.img+ "'/><p class='name'><a href='page.php?view="+message+"&open=" +output.id+ "'>" +output.fullname+ "</a></p><p class='status'>"+output.caption+"</p><p class='time'>" +output.time+ "</p>"+'<span id="requestoption'+output.id+'"><input type="submit" value="Accept" onclick="acceptOrDeclineFrq(\''+output.id+'\',\'acpt\',\''+output.rowId+'\')" class="ash_gradient" /><input type="submit" value="Decline" class="ash_gradient" onclick="acceptOrDeclineFrq(\''+output.id+'\',\'decl\',\''+output.rowId+'\')" /></span>'+"</div>";//+'<script>makeMeClickable("#'+output.id+'");</script>';
+                        if(output.id){
+                            result += "<div class='post' id='frq"+output.id+ "'><img class='profile_small' src='" +output.img+ "'/><p class='name'><a href='page.php?view="+message+"&open=" +output.id+ "'>" +output.fullname+ "</a></p><p class='status'>"+output.caption+"</p><p class='time'>" +output.time+ "</p>"+'<span id="requestoption'+output.id+'"><input type="submit" value="Accept" onclick="acceptOrDeclineFrq(\''+output.id+'\',\'acpt\',\''+output.rowId+'\')" class="ash_gradient" /><input type="submit" value="Decline" class="ash_gradient" onclick="acceptOrDeclineFrq(\''+output.id+'\',\'decl\',\''+output.rowId+'\')" /></span>'+"</div>";//+'<script>makeMeClickable("#'+output.id+'");</script>';
+                        }
                     });
+                }   
+            }else{
+                if(output.status=="failed"){
+                    result = "<div class='post'><p class='name'>Notification</p><p class='status'>Your bag is empty</p></div>";
                 }
-                    
-                    
             }
             
             //            result += '<div class="menu_bottom"><a href="'+baseLink+'"><span>Show all '+message+'</span></a></div>';
             $(id).html(result);
         }
+        
     });
 
 }
@@ -538,12 +548,13 @@ function editInfo(id){
             return;
         }
         
-        $("#editlocation").html('<input type="text" id="location" size=50 value="'+$("#editlocation").html()+'"/>');
+        $("#editlocation").html('<input type="text" id="location" size=50 value="'+$("#editlocation").html()+'"/><span id="location_loading"></span>');
         var cache = {},
         lastXhr;
         $( "#location" ).autocomplete({
             source: function( request, response ) {
                 var term = request.term;
+                $("#location_loading").html("<img src='images/load.gif' />");
                 if ( term in cache ) {
                     response( $.map( cache[ term ].geonames, function( item ) {
                         return {
@@ -565,6 +576,7 @@ function editInfo(id){
                     },
                     success: function( data ) {
                         cache[ term ] = data;
+                        $("#location_loading").html("");
                         response( $.map( data.geonames, function( item ) {
                             return {
                                 label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
@@ -1036,7 +1048,7 @@ function showMessageModelDialog(id,title,cid){
     });
 }
 function showGossoutModeldialog(dialodId,postId){
-    $("#"+dialodId).html('<input type="checkbox" id="gcheck" checked="checked" value="'+postId+'" /><label for="gcheck" class="width_95">Share with my Gossout Communities</label><!--<input type="checkbox" id="fbcheck"  /><label for="fbcheck" class="width_95">Share with Facebook friends</label>--><script>$(function() {$( "#fbcheck" ).button();$( "#gcheck" ).button();});</script>');
+    $("#"+dialodId).html('<input type="checkbox" id="gcheck" checked="checked" value="'+postId+'" /><label for="gcheck" class="width_95">Share with my Gossout Communities</label><input type="checkbox" id="fbcheck"  /><label for="fbcheck" class="width_95">Share with Facebook friends</label><script>$(function() {$( "#fbcheck" ).button();$( "#gcheck" ).button();});</script>');
     $("#"+dialodId).dialog({
         autoOpen: true,
         modal: true,
@@ -1094,6 +1106,7 @@ function sendFriendRequest(userid){
     var val = $("#status_"+userid).html();
     if(val=="Send Friend Request"){
         $("#status_"+userid).html("Sending Request");
+        $("#people_loading"+userid).html("<img src='images/load.gif' />");
         $.ajax({
             url: 'exec.php',  
             data: {
@@ -1108,6 +1121,7 @@ function sendFriendRequest(userid){
                     if(output.status=="success"){
                         showFlashMessageDialoge(output.message,"messenger","info");
                         $("#status_"+userid).html("Request Sent!");
+                        $("#people_loading"+userid).html("");
                         $( "#p_"+userid ).hide( "drop", {}, 1000);
                     }else{
                         $( "#p_"+userid ).hide( "drop", {}, 1000);
@@ -1213,10 +1227,80 @@ function ajaxFileUpload(str,source){
         }
     }
     );
-        $("#statusUpdate").reset();
+    $("#statusUpdate").reset();
 		
 //    return false;
 
+}
+function enlargePostPix(imageStr,title){
+    $("#dialog").html("<span id='loader' class='loading'><img src='images/load.gif'/></span>");
+    var img = new Image();
+    $(img)
+    .load(function () {
+        $(this).hide();
+        $('#loader')
+        .html("")
+        .append(this);
+        $(this).fadeIn();
+    })
+    .error(function () {
+        $("loader").html("Image cannot be loaded at this time");
+    })
+    .attr('src', imageStr);
+    $("#dialog").dialog({
+        autoOpen: true,
+        modal: true,
+        show: "",
+        title: title,
+        resizable: false,
+        draggable: true,
+        buttons: {
+            Close: function() {
+                $( this ).dialog( "close" );
+            }
+                        
+        },
+        open: function() {
+            $("#dialogtext").focus();
+        },
+        close: function() {
+        //            $form[ 0 ].reset();
+        }
+    });
+}
+var postState = 0;
+function showMorePost(start){
+    if(postState<0){
+        return;
+    }
+    $("#posts_loading").html("<img src='images/load.gif' />");
+    $.ajax({
+        url: 'exec.php',  
+        data: {
+            action: 'morePost',  
+            posts: start
+        }, 
+        cache: false, 
+        //        dataType: "json", 
+        type: "post",
+        success: function(output) {
+            if(output=="No post available at the moment"){
+                postState = -10;
+                return;
+            }else{
+                postState = start;
+            }
+            if(output){
+                $("#posts_loading").html("");
+                var oldC = $(".posts").html();
+                $(".posts").html(oldC+output);
+            }
+        },
+        complete:function(dataXml,status){
+            $("#posts_loading").html("");
+        //            alert(status);
+        }
+    });
 }
 function refreshCommunityChat(){
     

@@ -40,7 +40,7 @@ if (trim($str) != "") {
                     echo "<div class='clear'></div><span style='width:50%'>".$row['album']."<span><div class='clear'></div>";
                     $album = $row['album'];
                 }
-                echo '<li> <img id="img'.$row['id'].'" src = "'.$row['img'].'" alt="" title = "'.'Album: '.$row['album'].'-'.$row['comment'].'" onmouseover="positionMenu(\''.$row['id'].'\',\'hover'.$row['id'].'\')" onmouseout="hideMenu(\'hover'.$row['id'].'\')"/>';
+                echo '<li> <img id="img'.$row['id'].'" src = "'.$row['img'].'" alt="" title = "'.'Album: '.$row['album'].'-'.$row['comment'].'" onmouseover="positionMenu(\''.$row['id'].'\',\'hover'.$row['id'].'\')" onmouseout="hideMenu(\'hover'.$row['id'].'\')"/ onclick="enlargePostPix(\''.$row['img'].'\',\'In '.$row['album'].'\');">';
                 if($id==$_SESSION['auth']['id']){
                     echo '<div id="hover'.$row['id'].'" style="font-size:.9em;width:105px;text-align:center;position: absolute;display: block;right: 0;bottom: 0;background-color: whiteSmoke;" ></div>';
                 }

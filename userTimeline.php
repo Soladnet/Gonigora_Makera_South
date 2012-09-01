@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-include '../executecommand.php';
+include 'executecommand.php';
 connect();
 $str = $_SERVER['HTTP_REFERER'];
 $str = clean(strstr($str, "uid="));

@@ -465,17 +465,17 @@ function getUserPixSet($userId) {
 
         if (mysql_num_rows($result) > 0) {
             $row = mysql_fetch_array($result);
-            $arr['image50x50'] = $row['50x50'];
             $arr['image35x35'] = $row['35x35'];
+            $arr['image50x50'] = $row['50x50'];
             $arr['image100x100'] = $row['100x100'];
         } else {
             if ($_SESSION['auth']['gender'] == "M") {
-                $arr['image50x50'] = 'images/blankmal50x50.png';
                 $arr['image35x35'] = 'images/blankmal35x35.png';
+                $arr['image50x50'] = 'images/blankmal50x50.png';
                 $arr['image100x100'] = 'images/blankmal100x100.png';
             } else {
-                $arr['image50x50'] = 'images/blankfem50x50.png';
                 $arr['image35x35'] = 'images/blankfem35x35.png';
+                $arr['image50x50'] = 'images/blankfem50x50.png';
                 $arr['image100x100'] = 'images/blankfem100x100.png';
             }
         }
@@ -483,7 +483,7 @@ function getUserPixSet($userId) {
     return $arr;
 }
 
-function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0) {
+function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0, $lowlimit = 0) {
     $where = "";
     if ($all) {
         $where = "where p.sender_id = $userId";
@@ -502,8 +502,11 @@ function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0) {
             $where .="where p.id=$withPost_id";
         }
     }
+    
+    $limit = "Limit $lowlimit,5";
+    
     $postValue = "";
-    $postSql = "SELECT p.id,p.post,c.name,p.community_id,p.sender_id,p.time,s.`lastname`,s.`firstname`,cp.`250x250` FROM `post` as p JOIN user_personal_info as s on p.sender_id=s.id JOIN community_subscribers as cs on (cs.user=$userId and cs.`community_id`=p.`community_id`) JOIN community as c on cs.`community_id`=c.id LEFT JOIN community_pix AS cp ON p.id = cp.post_id $where order by p.id desc";
+    $postSql = "SELECT p.id,p.post,c.name,p.community_id,p.sender_id,p.time,s.`lastname`,s.`firstname`,cp.`250x250`,cp.`original` FROM `post` as p JOIN user_personal_info as s on p.sender_id=s.id JOIN community_subscribers as cs on (cs.user=$userId and cs.`community_id`=p.`community_id`) JOIN community as c on cs.`community_id`=c.id LEFT JOIN community_pix AS cp ON p.id = cp.post_id $where order by p.id desc $limit";
     $postResult = mysql_query($postSql); //or die(mysql_error());
     if (mysql_num_rows($postResult) > 0) {
         while ($postRow = mysql_fetch_array($postResult)) {
@@ -511,18 +514,18 @@ function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0) {
             if ($postRow['250x250'] == NULL) {
                 $postValue .= '<div class="post" id=' . $postRow['id'] . '>
                 <img class="profile_small"src="' . $image['image50x50'] . '"/>
-                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . $postRow['lastname'] . ' ' . $postRow['firstname'] . '</a></p><p class="status">' . $postRow['post'] . '</p><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span> . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . $postRow['lastname'] . ' ' . $postRow['firstname'] . '</a></p><p class="status">' . make_links_clickable($postRow['post']) . '</p><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span> . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
             } else {
                 $postValue .= '<div class="post" id=' . $postRow['id'] . '>
                 <img class="profile_small"src="' . $image['image50x50'] . '"/>
-                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . $postRow['lastname'] . ' ' . $postRow['firstname'] . '</a></p><p class="status">' . $postRow['post'] . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '" /></li></ul><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span> . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . $postRow['lastname'] . ' ' . $postRow['firstname'] . '</a></p><p class="status">' . make_links_clickable($postRow['post']) . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '" onclick="enlargePostPix(\'' . $postRow['250x250'] . '\',\'Shared with ' . $postRow['name'] . '\');"/></li></ul><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span> . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
             }
             $commentSql = "SELECT c.`id`,c.`comment`,c.`sender_id`,u.`lastname`,u.`firstname`,c.`time` FROM `comments` as c JOIN user_personal_info as u on c.`sender_id` = u.`id` where c.post_id = " . $postRow['id'] . " order by c.time asc";
             $commentResult = mysql_query($commentSql);
             if (mysql_num_rows($commentResult) > 0) {
                 while ($commentRow = mysql_fetch_array($commentResult)) {
                     $image = getUserPixSet($commentRow['sender_id']);
-                    $postValue .= '<div id="comment" class=' . $commentRow['id'] . '><img class="profile_small" src="' . $image['image35x35'] . '"/><p class="name"><a href="page.php?view=profile&uid=' . $commentRow['sender_id'] . '">' . $commentRow['lastname'] . ' ' . $commentRow['firstname'] . '</a></p><p class="status">' . $commentRow['comment'] . '</p><p class="time" id="tpc' . $commentRow['id'] . '">' . agoServer($commentRow['time']) . '</p></div><script>setTimeout(timeUpdate,20000,\'' . $commentRow['time'] . '\',\'tpc' . $commentRow['id'] . '\')</script>';
+                    $postValue .= '<div id="comment" class=' . $commentRow['id'] . '><img class="profile_small" src="' . $image['image35x35'] . '"/><p class="name"><a href="page.php?view=profile&uid=' . $commentRow['sender_id'] . '">' . $commentRow['lastname'] . ' ' . $commentRow['firstname'] . '</a></p><p class="status">' . make_links_clickable($commentRow['comment']) . '</p><p class="time" id="tpc' . $commentRow['id'] . '">' . agoServer($commentRow['time']) . '</p></div><script>setTimeout(timeUpdate,20000,\'' . $commentRow['time'] . '\',\'tpc' . $commentRow['id'] . '\')</script>';
                 }
 //                $postValue .= '</span><span id="box'.$postRow['id'].'"><div id="commentbox"><form method="GET" onsubmit="getValue(\'' . $postRow['id'] . '\',\'commentsPost\');return false"><img class="profile_small" src="' . $_SESSION['auth']['image35x35'] . '" /><input class="commenttext" type="text" id="c' . $postRow['id'] . '"/></form><div class="arrowdown"> </div></div></span></div>';
             }//else{
@@ -577,7 +580,7 @@ function sendPost($userId, $community, $comm, $text, $senderFullname) {
         $arr['imgL'] = $_SESSION['auth']['image50x50'];
         $arr['imgS'] = $_SESSION['auth']['image35x35'];
         $arr['name'] = $senderFullname;
-        $arr['text'] = htmlspecialchars($text);
+        $arr['text'] = make_links_clickable(htmlspecialchars($text));
         $arr['com_id'] = $community;
         $arr['com'] = $comm;
         $arr['time'] = "now";
@@ -607,7 +610,7 @@ function sendComment($userId, $postId, $comment, $senderFullname) {
         $arr['sender_id'] = $userId;
         $arr['imgS'] = $_SESSION['auth']['image35x35'];
         $arr['name'] = $senderFullname;
-        $arr['text'] = htmlspecialchars($comment);
+        $arr['text'] = make_links_clickable(htmlspecialchars($comment));
         $arr['time'] = "now";
         $row = mysql_fetch_array(mysql_query("SELECT NOW() as rawTime"));
         $arr['rawTime'] = $row['rawTime'];
@@ -624,7 +627,7 @@ function sendPirvateMessage($userId, $reciver_id, $comment, $senderFullname) {
         $arr['id'] = mysql_insert_id();
         $arr['imgL'] = $_SESSION['auth']['image50x50'];
         $arr['name'] = $senderFullname;
-        $arr['text'] = htmlspecialchars($comment);
+        $arr['text'] = make_links_clickable(htmlspecialchars($comment));
         $arr['time'] = ago(time());
         $row = mysql_fetch_array(mysql_query("SELECT NOW() as rawTime"));
         $arr['rawTime'] = $row['rawTime'];
@@ -705,12 +708,12 @@ function getGossbag($userId, $postId = "0") {
             $temp["infoType"] = "gb";
             $arr['data'][] = $temp;
         }
-//        $sql = "UPDATE user_time_update SET gossbag=NOW() WHERE user_id=$userId";
-//        mysql_query($sql);
-//        if (mysql_affected_rows() == 0) {
-//            $sql = "INSERT INTO user_time_update(user_id) VALUES('$userId')";
-//            @mysql_query($sql);
-//        }
+        $sql = "UPDATE user_time_update SET gossbag=NOW() WHERE user_id=$userId";
+        mysql_query($sql);
+        if (mysql_affected_rows() == 0) {
+            $sql = "INSERT INTO user_time_update(user_id) VALUES('$userId')";
+            @mysql_query($sql);
+        }
     }
     if (count($arr) > 0) {
         $arr['status'] = "success";
@@ -763,6 +766,11 @@ function getFriendRequest($userId) {
             $image = getUserPixSet($row['sender_id']);
             $arr[] = array("rowId" => $row['id'], "id" => $row['sender_id'], "fullname" => $row['fullname'], "caption" => "Sent you a friend request", "img" => $image['image50x50'], "location" => $row['location'], "time" => agoServer($row['time']), "rawTime" => $row['time']);
         }
+    }
+    if (count($arr) > 0) {
+        $arr['status'] = "success";
+    } else {
+        $arr['status'] = "failed";
     }
     return $arr;
 }
@@ -838,7 +846,7 @@ function showInbox($userInbox) {
                 $eachMsgarr['msgid'] = $row['id'];
                 $eachMsgarr['id'] = $row['receiver_id'];
                 $eachMsgarr['name'] = $row['receiverLname'] . ' ' . $row['receiverFname'];
-                $eachMsgarr['text'] = $row['message'];
+                $eachMsgarr['text'] = make_links_clickable($row['message']);
                 $eachMsgarr['time'] = agoServer($row['time']);
                 $eachMsgarr['rawTime'] = $row['time'];
                 $eachMsgarr['status'] = 'R';
@@ -885,6 +893,11 @@ function showInbox($userInbox) {
 //            }
 //        }
     }
+    if (count($genArr) > 0) {
+        $genArr['status'] = "success";
+    } else {
+        $genArr['status'] = "failed";
+    }
     return $genArr; //$finalArra;
 }
 
@@ -904,7 +917,7 @@ function getInboxMessage($contactId, $userId, $limit = 10) {
         foreach ($arr as $x) {
             $response .= $x;
         }
-        $response .= '</span><div id="commentbox"><form method="GET" onsubmit="getValue(\'' . $contactId . '\',\'commentConver\');return false"><input class="commenttext" type="text" id="m' . $contactId . '"/><span id="scrolto"></span></form><div class="arrowdown"> </div></div>';
+        $response .= '</span><div id="commentbox"><form method="GET" onsubmit="getValue(\'' . $contactId . '\',\'commentConver\');return false"><input class="commenttext" type="text" id="m' . $contactId . '"/><span id="conver_loading"></span></form><div class="arrowdown"> </div></div>';
     } else {
         $response .= 'Conversation does not exist!';
     }
@@ -1180,9 +1193,27 @@ function declineFrq($userId, $frndId, $key) {
     return $arr;
 }
 
-function search($term, $userId) {
+function search($term) {
     $val = array();
-    $val['data'] = array("name" => "Soladoye Abdulrasheed", "id" => $userId);
+    $sqlP = "SELECT * FROM `user_personal_info` WHERE `firstname` LIKE '%" . clean($term) . "%' OR `lastname` LIKE '%" . clean($term) . "%' OR email LIKE '%" . clean($term) . "%'";
+    $resultP = mysql_query($sqlP);
+    if (mysql_num_rows($resultP) > 0) {
+        while ($row = mysql_fetch_array($resultP)) {
+            $img = getUserPixSet($row['id']);
+            $image = array();
+            $image['image3535'] = $img['image35x35'];
+            $image['image5050'] = $img['image50x50'];
+            $image['image100100'] = $img['image100x100'];
+            $val['people'][] = array("id" => $row['id'], "fullname" => $row['lastname'] . ' ' . $row['firstname'], "location" => $row['location'], "img" => $image);
+        }
+    }
+    $sqlC = "SELECT c.*,count(cs.community_id) as subscriber FROM `community` as c JOIN community_subscribers as cs on c.id=cs.community_id WHERE c.`name` LIKE '%" . clean($term) . "%' group by cs.community_id";
+    $resultC = mysql_query($sqlC);
+    if (mysql_num_rows($resultC) > 0) {
+        while ($row = mysql_fetch_array($resultC)) {
+            $val['community'][] = array("id" => $row['id'], "name" => $row['name'], "subscriber" => $row['subscriber']);
+        }
+    }
     return $val;
 }
 
@@ -1240,10 +1271,10 @@ function gossout($userId, $postId, $community_id, $community_name, $senderFullna
     } else {
         $sharedPost1 = '<span class="notBold">Gossout</span><div class="post">
                 <img class="profile_small"src="' . $image['image50x50'] . '"/>
-                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . $postRow['lastname'] . ' ' . $postRow['firstname'] . '</a></p><p class="status">' . clean($postRow['post']) . '</p><ul class="box"><li><img src="'.$postRow['250x250'].'"/></li></ul><div class="post_activities"><span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . clean($postRow['name']) . '</a></span></div></div>';
+                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . $postRow['lastname'] . ' ' . $postRow['firstname'] . '</a></p><p class="status">' . clean($postRow['post']) . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '"/></li></ul><div class="post_activities"><span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . clean($postRow['name']) . '</a></span></div></div>';
         $sharedPost2 = '<span class="notBold">Gossout</span><div class="post">
                 <img class="profile_small"src="' . $image['image50x50'] . '"/>
-                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . $postRow['lastname'] . ' ' . $postRow['firstname'] . '</a></p><p class="status">' . $postRow['post'] . '</p><ul class="box"><li><img src="'.$postRow['250x250'].'"/></li></ul><div class="post_activities"><span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div></div>';
+                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . $postRow['lastname'] . ' ' . $postRow['firstname'] . '</a></p><p class="status">' . $postRow['post'] . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '" onclick="enlargePostPix(\'' . $postRow['250x250'] . '\',\'' . $postRow['name'] . '\');"/></li></ul><div class="post_activities"><span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div></div>';
     }
     $sql = "INSERT INTO `post`(`post`, `community_id`, `sender_id`) VALUES ('" . $sharedPost1 . "','$community_id','$userId')";
     mysql_query($sql);
@@ -1262,7 +1293,7 @@ function gossout($userId, $postId, $community_id, $community_name, $senderFullna
         $row = mysql_fetch_array(mysql_query("SELECT NOW() as rawTime"));
         $arr['rawTime'] = $row['rawTime'];
         $arr['status'] = "success";
-        $arr['message'] = "Post sent successfully!" . ($sharedPost2);
+        $arr['message'] = "Post sent successfully!";
         alertGossbag($userId, $id, $community_id, "$senderFullname shared a post from " . $postRow['name']);
     } else {
         $arr['message'] = "Failt to send your post at this time";
@@ -1386,6 +1417,10 @@ function sendGetExternalData($url, $post_data) {
     $result = curl_exec($curl_connection);
     curl_close($curl_connection);
     return $result;
+}
+
+function make_links_clickable($text) {
+    return preg_replace('!(((f|ht)tp://)[-a-zA-Zа-яА-Я()0-9@:%_+.~#?&;//=]+)!i', '<a href="$1" target="_blank">$1</a>', $text);
 }
 
 function getGossoutUsers($withImage = true) {

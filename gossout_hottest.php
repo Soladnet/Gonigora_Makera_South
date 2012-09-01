@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../executecommand.php';
+include 'executecommand.php';
 connect();
 echo '<div class="posts">';
 $sql = "SELECT c.post_id,p.community_id ,count(c.`post_id`)as commentCount FROM `comments` as c RIGHT JOIN post as p on p.id=c.post_id group by `post_id` order by commentCount desc";

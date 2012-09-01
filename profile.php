@@ -121,11 +121,11 @@ $my_friends = getUserFriends($_SESSION['auth']['id'],false,true);
                                         <div class="p">
                                             <div id="tabs">
                                                 <ul class="tabs">
-                                                    <li class="lefttab"><a href="gossoutpages/userTimeline.php">Updates </a></li>
+                                                    <li class="lefttab"><a href="userTimeline.php">Updates </a></li>
 <?php if (array_key_exists($id, $my_friends) || $id == $_SESSION['auth']['id']) { ?>
                                                         <li><a href="userPhotos.php"> Photos </a></li>
                                                         <!--                                                <li><a href="gossoutpages/userVideos.php"> Videos </a></li>-->
-                                                        <li class="righttab"><a href="gossoutpages/userPersonalInfo.php"> Info </a></li>
+                                                        <li class="righttab"><a href="userPersonalInfo.php"> Info </a></li>
 <?php } ?>
                                                 </ul>
                                             </div>

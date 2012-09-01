@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 include 'executecommand.php';
 if (isset($_POST['action'])) {
@@ -45,6 +46,9 @@ if (isset($_POST['action'])) {
             $postId = $_POST['sourceId'];
             $arr = sendPirvateMessage($userId, $postId, $text, $senderFullname);
             echo json_encode($arr);
+        } else if ($_POST['action'] == "morePost") {
+            $userId = $_SESSION['auth']['id'];
+            echo showPostAndComment($userId,0,0,0, $_POST['posts']);
         }
     } else if (isset($_POST['inbox'])) {
         $userId = $_SESSION['auth']['id'];
@@ -144,8 +148,8 @@ if (isset($_POST['action'])) {
     } else if (isset($_POST['com']) && $_POST['action'] == 'update') {
         $arr = subscribeToCommunity($_SESSION['auth']['id'], $_POST['com'], $_POST['comcat']);
         echo json_encode($arr);
-    } else if (isset($_POST['q'])) {
-        $arr = search($_POST['q'], $_SESSION['auth']['id']);
+    } else if (isset($_POST['search'])) {
+        $arr = search($_POST['search']);
         echo json_encode($arr);
     } else if (isset($_POST['ppix'])) {
         $sql1 = "INSERT INTO `user_profile_pix` (`username`, `pix_id`) VALUES ('" . $_SESSION['auth']['id'] . "', '" . $_POST['ppix'] . "')";

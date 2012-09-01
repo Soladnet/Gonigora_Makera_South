@@ -33,9 +33,14 @@
 
                     These terms of use govern your use of our website; by using our website, you accept these terms of use in full.   If you disagree with these terms of use or any part of these terms of use, you must not use our website. 
                     </br>
-                    [You must be at least [18] years of age to use our website.  By using our website and by agreeing to these terms of use, you warrant and represent that you are at least [18] years of age.]
+                    [You must be at least [13] years of age to use our website.  By using our website and by agreeing to these terms of use, you warrant and represent that you are at least [13] years of age.]
                     </br>
                     [Our website uses cookies.  By using our website and agreeing to these terms of use, you consent to our use of cookies in accordance with the terms of our [privacy policy / cookies policy].]
+
+                    <p><b>	Licence to use website</b></p>
+
+
+                    <p><b>	Acceptable use</b></p>
 
 
 
@@ -66,17 +71,79 @@
 
                     <p>We may disable usernames and passwords, delete accounts, and delete any information associated with an account, in our sole discretion without notice or explanation.</p>
 
-              
+                    <p><b>	User generated content</b></p>
+
+
+
+                    <p><b>	Limited warranties</b></p>
+
+
+
+                    <p><b>	Limitations and exclusions of liability</b></p>
+
+
+                    <p><b>	Indemnity</b></p>
+
+
+
+                    <p><b>	Breaches of these terms of use</b></p>
+
+
+
+                    <p><b>	Third party websites</b></p>
+
+
+
+                    <p><b>	Trade marks</b></p>
+
+
+
+                    <p><b>	Competitions</b></p>
+
+
+
+                    <p><b>	Variation</b></p>
+
+
+
+                    <p><b>	Assignment</b></p>
+
+
+
+                    <p><b> Severability</b></p>
+
+
+
+                    <p><b> Exclusion of third party rights</b></p>
+
+
+
+                    <p><b>	Entire agreement</b></p>
+
+
+
+                    <p><b> Law and jurisdiction</b></p>
+
+
+
+                    <p><b> Registrations and authorisations</b></p>
+
+
+
+                    <p><b> Our details</b></p>
 
 
 
 
 
-            <div class="clear"></div>
-            <?php include_once("footer.php"); ?>
                 </div>
             </div>
         </div>
-        
+        <div id="nav2" class="footer nav2_gradient">
+            <span id="logo">
+                &copy; <?php echo date("Y") ?> Gossout.com
+            </span>
+            <div class="clear"></div>
+        </div>
     </body>
 </html>

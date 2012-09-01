@@ -9,11 +9,11 @@ if (!isset($_SESSION['auth'])) {
     <head>
         <meta charset="utf-8">
         <?php include_once("head.php"); ?>
-     <!--   <style>
+<!--        <style>
             .content,select,input{
                 font-size: .8em;
             }
-        </style> -->
+        </style>-->
         <script>
             function dfn(selected,id){
                 $("#"+id).val(selected);
@@ -51,10 +51,26 @@ if (!isset($_SESSION['auth'])) {
                             },
                             success: function( data ) {
                                 response( $.map( data.data, function( item ) {
-                                    var cname = item.name.split(",");
+                                    //var cnameraw = item.name.split(",");
+                                    var subtextRaw = item.subtext.split(",");
+                                    var subtext = "";
+                                    for(var i=0;i<subtextRaw.length;i++){
+                                        if(i>0 && subtext!=""){
+                                            subtext +=", ";
+                                        }
+                                        if($.trim(subtextRaw[i])!="Not Specified"){
+                                            subtext +=subtextRaw[i];
+                                        }
+                                        
+                                    }
+                                    if($.trim(subtext)==""){
+                                        var cname = item.name;
+                                    }else{
+                                        var cname = item.name +", "+ subtext;
+                                    }
                                     return {
-                                        label: cname[0] + ", " + item.subtext,
-                                        value: cname[0] + ", " + item.subtext
+                                        label: cname,
+                                        value: cname
                                     }
                                 }));
                             }

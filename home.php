@@ -8,7 +8,7 @@
             #status_community{display: none;font-size: .7em;color:#999;}
         </style>
         <script>
-            var laststate= 3;
+            var laststate= 0;
             $(function() {
                 $( "#status" ).toggle(
                 function() {
@@ -20,11 +20,91 @@
                     $("#status_community").css("display", "none");
                 }
             );
+                jQuery(
+                function($)
+                {
+                    $('.content').bind('scroll', function()
+                    {
+                        if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight){
+                            //alert(laststate);
+                            laststate += 5;
+                            showMorePost(laststate);
+//                            alert(res);
+                        }
+                    })
+                }
+            );
+
+                var cache = {};
+                $( "#s" ).autocomplete({
+                    source: 
+                        function (request, response) {
+                        var term = request.term;
+                        $("#s_loading").html("<img src='images/load.gif' />");
+                        //                        if ( term in cache ) {
+                        //                            response( $.map( output.people, function( item ) {
+                        //                                return {
+                        //                                    label: item.fullname ,
+                        //                                    value: item.fullname
+                        //                                }
+                        //                            })
+                        //                        );
+                        //                            response($.map( output.community, function( item ) {
+                        //                                return {
+                        //                                    label: item.name ,
+                        //                                    value: item.name
+                        //                                }
+                        //                            }));
+                        //                            return;
+                        //                        }
+                        $.ajax({
+                            url: 'exec.php',  
+                            data: {
+                                action: '',
+                                search: term
+                            }, 
+                            cache: false, 
+                            dataType: "json", 
+                            type: "post",
+                            success: function(output) {
+                                /*"<img src='"+item.img.image3535+"'/>"+*/
+                                cache[ term ] = output;
+                                $("#s_loading").html("");
+                                response( $.map( output.people, function( item ) {
+                                    return {
+                                        label: item.fullname ,
+                                        value: item.fullname
+                                    }
+                                })
+                            );
+                                response($.map( output.community, function( item ) {
+                                    return {
+                                        label: item.name ,
+                                        value: item.name
+                                    }
+                                }));
+                            }
+                        });
+                    }
+                    ,
+                    minLength: 2,
+                    select: function( event, ui ) {
+                        //alert(ui.item.label);
+                    }
+                });
+                //                $.ui.autocomplete.prototype._renderItem = function(ul, item) {
+                //                    //console.log(item);
+                //                    var a = $('<a>', {
+                //                        href: "page.php?view=search&/" + item.value,
+                //                        text: item.label
+                //                    });
+                //                    var $li = $('<li>');
+                //                    return $li.append(a).data('item.autocomplete', item).appendTo(ul);
+                //                };​
             });
             
-            
         </script>
-        
+
     </head>
     <body id="#style">
 
@@ -37,7 +117,7 @@
                     <div id="tabs">
                         <ul>
                             <li class="lefttab"><a href="#timeline" >Timeline </a></li>
-                            <li class="righttab"><a href="gossoutpages/gossout_hottest.php" >Hottest Gossip </a></li>
+                            <li class="righttab"><a href="gossout_hottest.php" >Hottest Gossip </a></li>
                         </ul>
                         <div id="timeline">
                             <div id="postbox">
@@ -141,7 +221,9 @@
                                                                     7:50 PM Today
                                                                 </p>
                                                             </div>-->
+                                
                             </div>
+                            <span id="posts_loading"></span>
                         </div>
 
                     </div>					

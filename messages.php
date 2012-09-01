@@ -25,7 +25,7 @@ if (!isset($_SESSION['auth'])) {
                             if (isset($_GET['open'])) {
                                 echo '<li class="lefttab"><a href="#conversation" >Conversation</a></li><li class="righttab"><a href="gossoutpages/inbox.php" >Inbox</a></li>';
                             } else {
-                                echo '<li class="lefttab"><a href="gossoutpages/inbox.php"  >Inbox</a></li>';
+                                echo '<li class="lefttab"><a href="inbox.php"  >Inbox</a></li>';
                             }
                             ?>
 
