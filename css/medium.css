@@ -162,7 +162,7 @@ ul.box li {
     -moz-box-shadow   : 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset; 
     box-shadow        : 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset; 
 }
-ul.box liimg{
+ul.box li img{
     cursor: pointer;
 }
 ul.box li:before,

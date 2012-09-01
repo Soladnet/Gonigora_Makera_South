@@ -219,7 +219,7 @@ ul.box li {
     -moz-box-shadow   : 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset; 
     box-shadow        : 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset; 
 }
-ul.box liimg{
+ul.box li img{
     cursor: pointer;
 }
 ul.box li:before,
@@ -908,7 +908,7 @@ form#signup label.desc {
 .fnx_detail{
     font-size: .85em;
 }
-#index_fnx{
+.index_fnx{
     background-color:#FAFAFA;
     height: 140px;
     border: 1px solid #F4F4F4;
@@ -923,13 +923,13 @@ form#signup label.desc {
 .gossip_index{
     background: url(../images/image-gossip.png) no-repeat left top!important;
 }	
-#index_fnx span{
+.index_fnx span{
     padding-right:20px;
     padding-left: 150px;
     text-align:justify;
     display:block;
 }
-#index_fnx .fnx{
+.index_fnx .fnx{
     text-align:center;
     font-size: 1em;
     font-weight: bold;

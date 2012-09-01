@@ -83,15 +83,7 @@ if (isset($_POST['login'])) {
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Gossout</title><title>
-        <?php
-        if (isset($_GET['view'])) {
-            echo toSentenceCase($_GET['view']);
-        } else {
-            echo "Gossout";
-        }
-        ?>
-    </title>
+    <title>Gossout</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />  
     <!--- http://bit.ly/NfpVMY -->
@@ -140,17 +132,17 @@ if (isset($_POST['login'])) {
     <div class="center_div width800">
         <div class="inner_wrappper box_shadow8 center_div ">
             <div id="column1">
-                <div id="index_fnx" class="community_index" > 
+                <div  class="community_index index_fnx" > 
                 	<span> <h1 class="fnx">Share With Communities <hr> </h1>
                     <p class="fnx_detail">Subscribe to campus or locality communities relevant to you and start talking.</p>
                      </span>
                 </div>
-                <div id="index_fnx" class="friend_index"> 
+                <div  class="friend_index index_fnx"> 
                	    <span> <h1 class="fnx">Interact With Friends <hr></h1> 
                     <p class="fnx_detail">Have fun with friends: Send private messages, Tweaks and Winks.</p>
                     </span>
                 </div>
-                <div id="index_fnx" class="gossip_index"> 
+                <div  class="gossip_index index_fnx"> 
                     <span><h1 class="fnx">Get Hottest Gossip<hr></h1>
                     <p class="fnx_detail">Get the hottest gossip instantly through the Hottest Gossip feature.</p>
                     </span>
@@ -254,8 +246,8 @@ if (isset($_POST['login'])) {
                             <option value="11">November</option>
                             <option value="12">December</option>
                         </select>
-                        <input type="number" min="1" max="31" maxlength="2" name="dob_day" size="2" required placeholder="DD" />
-                        <input type="number" max="<?php echo date("Y")-13?>" min="1800" maxlength="4" size="4" name="dob_yr" required placeholder="YYYY" />
+                        <input type="number" min="1" max="31" name="dob_day" size="2" required placeholder="DD" />
+                        <input type="number" max="<?php echo date("Y")-13?>" min="1800" size="4" name="dob_yr" required placeholder="YYYY" />
                         <!--                                        <input name="dob" type="text" readonly="" id="regDate" value="" tabindex="5" required placeholder="YYYY-MM-DD"/>-->
 
                     </li><!-- ************************ -->
@@ -270,7 +262,7 @@ if (isset($_POST['login'])) {
                             echo "<span class='req'>" . $_SESSION['err']['email'] . "</span><br/>";
                         }
                         ?>
-                        <input id="Field5" name="email" type="email" spellcheck="false" placeholder="" class="field text medium" value="" maxlength="50" tabindex="8" required /> 
+                        <input  name="email" type="email" spellcheck="false" placeholder="" class="field text medium" value="" maxlength="50" tabindex="8" required /> 
                     </li>  <!-- ************************ -->
 
                     <li >
@@ -278,7 +270,7 @@ if (isset($_POST['login'])) {
                             Password
                             <span class="req">*</span>
                         </label>
-                        <input id="Field5" name="password" type="password" placeholder="" spellcheck="false" class="field text medium" value="" min="6" maxlength="255" tabindex="8" required /> 
+                        <input  name="password" type="password" placeholder="" spellcheck="false" class="field text medium" value="" min="6" maxlength="255" tabindex="8" required /> 
                     </li>  <!-- ************************ -->
 
                     <li >
@@ -286,7 +278,7 @@ if (isset($_POST['login'])) {
                             Confirm Password
                             <span class="req">*</span>
                         </label>
-                        <input id="Field5" name="cpassword" type="password" spellcheck="false" placeholder="" class="field text medium" value="" tabindex="8" required /> 
+                        <input  name="cpassword" type="password" spellcheck="false" placeholder="" class="field text medium" value="" tabindex="8" required /> 
                         <?php
                         if (isset($_SESSION['err']) && isset($_SESSION['err']["pssword"])) {
                             echo "<span class='req'>" . $_SESSION['err']['pssword'] . "</span><br/>";
@@ -301,7 +293,7 @@ if (isset($_POST['login'])) {
                         </div>
                     </li> <!-- ************************ -->
                     <li>
-                        <p  class="info">By clicking Sign Up, you agree to our Terms and that you have read and understand our Data Use Policy.</p>
+                        <p  class="info">By clicking Sign Up, you agree to our <a href="page.php?view=terms">Terms</a> and that you have read and understand our Data Use Policy.</p>
                     </li>
                 </ul>
             </form> 
