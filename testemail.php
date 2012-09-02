@@ -37,15 +37,22 @@ connect();
             <input type="submit"/>
         </form>
         <?php
-        $arr = search("Ah");
-        if(isset($arr['people']))
-        foreach ($arr['people'] as $x){
-            echo "<img src='".$x['img']['image3535']."' />".$x['fullname']."<br/>";
+        $my_friends = getUserFriends($_SESSION['auth']['id'],true);
+        if(array_key_exists(50, $my_friends)){
+            echo 1;
+        }else{
+            echo 0;
         }
-        if(isset($arr['community']))
-        foreach ($arr['community'] as $x){
-            echo "<img src='images/community_35x35.png' />".shortenStr($x['name'],50)."<br/>";
-        }
+        echo json_encode($my_friends);
+//        $arr = search("Ah");
+//        if(isset($arr['people']))
+//        foreach ($arr['people'] as $x){
+//            echo "<img src='".$x['img']['image3535']."' />".$x['fullname']."<br/>";
+//        }
+//        if(isset($arr['community']))
+//        foreach ($arr['community'] as $x){
+//            echo "<img src='images/community_35x35.png' />".shortenStr($x['name'],50)."<br/>";
+//        }
 //        print_r($arr);
         ?>
 <!--        <form action="do_ajaxfileupload_post.php" method="POST" enctype="multipart/form-data">

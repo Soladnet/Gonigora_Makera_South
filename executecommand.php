@@ -290,7 +290,7 @@ function dateToString($date, $withYear = false) {
 function logout() {
     session_destroy();
     session_unset();
-    header("Location: index.php");
+    header("Location: login.php");
     exit();
 }
 
@@ -502,9 +502,9 @@ function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0, $low
             $where .="where p.id=$withPost_id";
         }
     }
-    
+
     $limit = "Limit $lowlimit,5";
-    
+
     $postValue = "";
     $postSql = "SELECT p.id,p.post,c.name,p.community_id,p.sender_id,p.time,s.`lastname`,s.`firstname`,cp.`250x250`,cp.`original` FROM `post` as p JOIN user_personal_info as s on p.sender_id=s.id JOIN community_subscribers as cs on (cs.user=$userId and cs.`community_id`=p.`community_id`) JOIN community as c on cs.`community_id`=c.id LEFT JOIN community_pix AS cp ON p.id = cp.post_id $where order by p.id desc $limit";
     $postResult = mysql_query($postSql); //or die(mysql_error());
@@ -518,7 +518,7 @@ function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0, $low
             } else {
                 $postValue .= '<div class="post" id=' . $postRow['id'] . '>
                 <img class="profile_small"src="' . $image['image50x50'] . '"/>
-                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . $postRow['lastname'] . ' ' . $postRow['firstname'] . '</a></p><p class="status">' . make_links_clickable($postRow['post']) . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '" alt="'.$postRow['name'].'" onclick="enlargePostPix(\'' . $postRow['250x250'] . '\',\'Shared with ' . $postRow['name'] . '\');"/></li></ul><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span> . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . $postRow['lastname'] . ' ' . $postRow['firstname'] . '</a></p><p class="status">' . make_links_clickable($postRow['post']) . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '" alt="' . $postRow['name'] . '" onclick="enlargePostPix(\'' . $postRow['250x250'] . '\',\'Shared with ' . $postRow['name'] . '\');"/></li></ul><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span> . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
             }
             $commentSql = "SELECT c.`id`,c.`comment`,c.`sender_id`,u.`lastname`,u.`firstname`,c.`time` FROM `comments` as c JOIN user_personal_info as u on c.`sender_id` = u.`id` where c.post_id = " . $postRow['id'] . " order by c.time asc";
             $commentResult = mysql_query($commentSql);
@@ -775,17 +775,31 @@ function getFriendRequest($userId) {
     return $arr;
 }
 
+function cancelFrq($userId, $frndId) {
+    $sql = "UPDATE usercontacts SET status='C' WHERE username1=$userId AND username2=$frndId AND status='N'";
+    mysql_query($sql);
+    $arr = array();
+    if (mysql_affected_rows() > 0) {
+        $arr['status'] = "success";
+        $arr['message'] = "Friend Request Canceled!";
+    } else {
+        $arr['status'] = "failed";
+        $arr['message'] = "Your request have been accepted!";
+    }
+    return $arr;
+}
+
 function sendFrq($userId, $frndId) {
-    $sql = "SELECT * FROM usercontacts WHERE (username1=$userId AND username2=$frndId) OR (username1=$frndId AND username2=$userId) AND status='N'";
+    $sql = "SELECT * FROM usercontacts WHERE ((username1=$userId AND username2=$frndId) OR (username1=$frndId AND username2=$userId)) AND (status='N' OR status='Y')";
     $result = mysql_query($sql);
     if (mysql_num_rows($result) > 0) {
         $arr = array();
         $arr['status'] = "failed";
-        $arr['message'] = "Friend Request failed!";
+        $arr['message'] = "You can only send request once!";
         return $arr;
     }
     $sql = "INSERT INTO usercontacts(username1,username2,sender_id) VALUES('$userId','$frndId','$userId')";
-    @mysql_query($sql);
+    mysql_query($sql);
     $arr = array();
     if (mysql_affected_rows() > 0) {
         $arr['status'] = "success";
@@ -794,7 +808,20 @@ function sendFrq($userId, $frndId) {
         $arr['status'] = "failed";
         $arr['message'] = "Friend Request failed!";
     }
+//    $arr['status'] = "failed";
+//    $arr['message'] = "$sql";
     return $arr;
+}
+
+function checkFrqStatus($userId, $frndId) {
+    $sql = "SELECT * FROM usercontacts WHERE ((username1=$userId AND username2=$frndId) OR (username1=$frndId AND username2=$userId)) AND status='N'";
+    $result = mysql_query($sql);
+    $arr = array();
+    if (mysql_num_rows($result) > 0) {
+        $arr['status'] = "pending";
+        return $arr;
+    }
+    $arr['status'] = "";
 }
 
 function getConversationUpdate($contactId, $userId) {
@@ -1151,15 +1178,17 @@ function getCommunityMembers($commId) {
 function getUserFriends($userId, $accepted = false) {
     $arr = array();
     if (!$accepted) {
-        $sql = "SELECT if($userId<>uc.username1,uc.username1,uc.username2) AS id,concat(p.lastname,' ',p.firstname) AS fullname,p.location,uc.time FROM usercontacts as uc JOIN user_personal_info AS p ON if($userId<>uc.username1,uc.username1,uc.username2)=p.id WHERE (uc.username1=$userId OR uc.username2=$userId) AND uc.status<>'D'";
+        //get both friends accepted and pending
+        $sql = "SELECT if($userId<>uc.username1,uc.username1,uc.username2) AS id,concat(p.lastname,' ',p.firstname) AS fullname,p.location,uc.time FROM usercontacts as uc JOIN user_personal_info AS p ON if($userId<>uc.username1,uc.username1,uc.username2)=p.id WHERE (uc.username1=$userId OR uc.username2=$userId) AND uc.status<>'D' AND uc.status<>'C'";
     } else {
+        //get only accepted friends
         $sql = "SELECT if($userId<>uc.username1,uc.username1,uc.username2) AS id,concat(p.lastname,' ',p.firstname) AS fullname,p.location,uc.time FROM usercontacts as uc JOIN user_personal_info AS p ON if($userId<>uc.username1,uc.username1,uc.username2)=p.id WHERE (uc.username1=$userId OR uc.username2=$userId) AND uc.status='Y'";
     }
 
     $result = mysql_query($sql);
     if (mysql_num_rows($result) > 0) {
         while ($row = mysql_fetch_array($result)) {
-            $arr[$row['id']] = array("id" => $row['id'], "fullname" => $row['fullname'], "image" => getUserPixSet($userId), "location" => $row['location']);
+            $arr[$row['id']] = array("id" => $row['id'], "fullname" => $row['fullname'], "image" => getUserPixSet($row['id']), "location" => $row['location'] ? $row['location'] : "Not Specified");
         }
     }
     return $arr;

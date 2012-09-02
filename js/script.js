@@ -1104,35 +1104,51 @@ function showGossoutModeldialog(dialodId,postId){
 }
 function sendFriendRequest(userid){
     var val = $("#status_"+userid).html();
-    if(val=="Send Friend Request"){
-        $("#status_"+userid).html("Sending Request");
-        $("#people_loading"+userid).html("<img src='images/load.gif' />");
-        $.ajax({
-            url: 'exec.php',  
-            data: {
-                action: '',  
-                frq: userid
-            }, 
-            cache: false, 
-            dataType: "json", 
-            type: "post",
-            success: function(output) {
-                if(output){
-                    if(output.status=="success"){
-                        showFlashMessageDialoge(output.message,"messenger","info");
-                        $("#status_"+userid).html("Request Sent!");
-                        $("#people_loading"+userid).html("");
+    var alt = $("#sfr").val();
+    var data = {};
+    if(val=="Send Friend Request" || alt == "Send Friend Request"){
+//        $("#status_"+userid).html("Sending Request");
+        $(".people_loading"+userid).html("<img src='images/load.gif' />");
+        data = {
+            action: '',  
+            frq: userid
+        };
+    }else if(val == "Cancel Request" || alt == "Cancel Request"){
+        data = {
+            action: '',  
+            cfrq: userid
+        }
+    }
+    $.ajax({
+        url: 'exec.php',  
+        data: data, 
+        cache: false, 
+        dataType: "json", 
+        type: "post",
+        success: function(output) {
+            if(output){
+                //                    alert(output);
+                if(output.status=="success"){
+                    showFlashMessageDialoge(output.message,"messenger","info");
+                    if(val=="Send Friend Request" || alt == "Send Friend Request"){
+                        $("#status_"+userid).html("Cancel Request");
+                        $("#sfr").val("Cancel Request");
+                        $(".people_loading"+userid).html("<img src='images/load.gif' />");
                         $( "#p_"+userid ).hide( "drop", {}, 1000);
-                    }else{
-                        $( "#p_"+userid ).hide( "drop", {}, 1000);
-                        showFlashMessageDialoge(output.message,"messenger","error");
+                    }else if(val == "Cancel Request" || alt == "Cancel Request"){
+                        $("#status_"+userid).html("Send Friend Request");
+                        $("#sfr").val("Send Friend Request");
                     }
+                    
+                }else{
+                    showFlashMessageDialoge(output.message,"messenger","error");
                 }
             }
-        });
-        
-    }
-    
+        },
+        complete:function(dataxml,status){
+            $(".people_loading"+userid).html("");
+        }
+    });
     
 }
 function acceptOrDeclineFrq(id,action,key){

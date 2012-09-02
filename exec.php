@@ -207,6 +207,9 @@ if (isset($_POST['action'])) {
     } else if (isset($_POST['frq'])) {
         $arr = sendFrq($_SESSION['auth']['id'], $_POST['frq']);
         echo json_encode($arr);
+    }else if (isset($_POST['cfrq'])) {
+        $arr = cancelFrq($_SESSION['auth']['id'], $_POST['cfrq']);
+        echo json_encode($arr);
     } else if (isset($_POST['acceptfrq'])) {
         if ($_POST['action'] == "acpt") {
             $arr = acceptFrq($_SESSION['auth']['id'], $_POST['acceptfrq'], $_POST['key']);

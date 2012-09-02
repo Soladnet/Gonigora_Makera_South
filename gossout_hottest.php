@@ -3,7 +3,7 @@ session_start();
 include 'executecommand.php';
 connect();
 echo '<div class="posts">';
-$sql = "SELECT c.post_id,p.community_id ,count(c.`post_id`)as commentCount FROM `comments` as c RIGHT JOIN post as p on p.id=c.post_id group by `post_id` order by commentCount desc";
+$sql = "SELECT c.post_id,p.community_id ,count(distinct(c.`sender_id`))as commentCount FROM `comments` as c RIGHT JOIN post as p on p.id=c.post_id group by c.`sender_id` order by commentCount desc";
 $result = mysql_query($sql) or die(mysql_error());
 if (mysql_num_rows($result) > 0) {
     $hottestCount = 0;

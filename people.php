@@ -29,8 +29,9 @@
                             <div class="details">
                             <span class="p_name"><a href="page.php?view=profile&uid=' . $value['id'] . '">' .$value['fullname'] . '</a></span>
                                 <span class="p_location">' . shortenStr($value['location']) . '</span>
-                                    <div class="post_activities"><span onclick="sendFriendRequest(\'' . $value['id'] . '\')" id="status_' . $value['id'] . '">Send Friend Request</span><span id="people_loadin'.$value['id'].'"></span></div>
+                                    <div class="post_activities"><span onclick="sendFriendRequest(\'' . $value['id'] . '\')" id="status_' . $value['id'] . '">Send Friend Request</span></div>
                                     </div>
+                                    <span class="people_loading'.$value['id'].'"></span>
                                     </div>';
                         $count++;
                         if($count>2){

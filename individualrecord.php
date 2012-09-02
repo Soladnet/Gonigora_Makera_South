@@ -32,7 +32,7 @@
                                         }else if($row['type']=="W"){
                                             $option = "<span onclick='tweakwink(\"".$row['sender_id']."\",\"W\")'>Wink Back</span>";
                                         }
-                                        echo '<div class="post"><img class="profile_small" src="'.$image['image50x50'].'"/><p class="name">'.$row['sender_fullname'].'</p><p class="status">'.$row['naration'].'</p><p class="time">'.agoServer($row['time']).'</p><div class="post_activities"> '.$option.'</div></div>';
+                                        echo '<div class="post"><img class="profile_small" src="'.$image['image50x50'].'"/><p class="name"><a href="page.php?view=profile&uid='.$row['sender_id'].'">'.$row['sender_fullname'].'</p><p class="status">'.$row['naration'].'</p><p class="time">'.agoServer($row['time']).'</p><div class="post_activities"> '.$option.'</div></div>';
                                     }
                                 }
                                 ?>

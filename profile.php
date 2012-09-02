@@ -25,7 +25,8 @@ $fullname = $row['lastname'] . " " . $row['firstname'];
 $location = $row['location'];
 $gender = $row['gender'];
 $id = $row['id'];
-$my_friends = getUserFriends($_SESSION['auth']['id'],false,true);
+$my_friends = getUserFriends($_SESSION['auth']['id'], true);
+$userFriends = getUserFriends($id, true);
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -63,22 +64,29 @@ $my_friends = getUserFriends($_SESSION['auth']['id'],false,true);
                             <?php
                             if ($id != $_SESSION['auth']['id']) {
                                 ?>
-                                <input type="submit" value="Tweak" id="tweak" <?php $arr = canTweakWink($_SESSION['auth']['id'], $id, "T");if (!$arr['status']) {echo 'disabled=""';}?> onclick="tweakwink(<?php echo $id; ?>, 'T')">
+                                <input type="submit" value="Tweak" id="tweak" <?php
+                        $arr = canTweakWink($_SESSION['auth']['id'], $id, "T");
+                        if (!$arr['status']) {
+                            echo 'disabled=""';
+                        }
+                                ?> onclick="tweakwink(<?php echo $id; ?>, 'T')">
                                     <br>
-                                        <input type="submit" value="Wink" id="wink" <?php $arr = canTweakWink($_SESSION['auth']['id'], $id, "W");if (!$arr['status']) {echo 'disabled=""';}?> onclick="tweakwink(<?php echo $id; ?>, 'W')">
+                                        <input type="submit" value="Wink" id="wink" <?php
+                               $arr = canTweakWink($_SESSION['auth']['id'], $id, "W");
+                               if (!$arr['status']) {
+                                   echo 'disabled=""';
+                               }
+                                ?> onclick="tweakwink(<?php echo $id; ?>, 'W')">
                                             <br>
-
                                                 <?php
                                                 if (array_key_exists($id, $my_friends)) {
                                                     ?>
                                                     <input type="submit" value="Quick Message"  onclick="showMessageModelDialog('dialog','<?php echo "To: $fullname" ?>','<?php echo $id ?>')" />
                                                     <br />
-                                                    <input type="submit" value="See Friends" />
-                                                    <br/>
                                                     <?php
                                                 } else {
                                                     ?>
-                                                    <input type="submit" value="Send Friend Request" onclick="sendFriendRequest('<?php echo $id ?>')" />
+                                                    <input type="submit" value="<?php $frqstatus = checkFrqStatus($_SESSION['auth']['id'],$id); if($frqstatus['status']=="pending"){echo "Cancel Request";}else{echo "Send Friend Request";}?>" onclick="sendFriendRequest('<?php echo $id ?>')" id="sfr"/>
                                                     <br />
                                                     <?php
                                                 }
@@ -96,12 +104,12 @@ $my_friends = getUserFriends($_SESSION['auth']['id'],false,true);
                                                 <p><?php echo "Name: $fullname" ?></p>
                                                 <p><?php echo "Location: $location" ?> </p>
                                                 <p><?php
-                                                if ($gender == "M") {
-                                                    echo "Gender: Male";
-                                                } else {
-                                                    echo "Gender: Female";
-                                                }
-                                                ?></p> 
+                                        if ($gender == "M") {
+                                            echo "Gender: Male";
+                                        } else {
+                                            echo "Gender: Female";
+                                        }
+                                            ?></p> 
                         <!--                         <p>Gossips: 20</p> -->
                                             </div>                                       
                                             <div id="profile_actions">
@@ -122,19 +130,20 @@ $my_friends = getUserFriends($_SESSION['auth']['id'],false,true);
                                             <div id="tabs">
                                                 <ul class="tabs">
                                                     <li class="lefttab"><a href="userTimeline.php">Updates </a></li>
-<?php if (array_key_exists($id, $my_friends) || $id == $_SESSION['auth']['id']) { ?>
+                                                    <?php if (array_key_exists($id, $my_friends) || $id == $_SESSION['auth']['id']) { ?>
                                                         <li><a href="userPhotos.php"> Photos </a></li>
                                                         <!--                                                <li><a href="gossoutpages/userVideos.php"> Videos </a></li>-->
-                                                        <li class="righttab"><a href="userPersonalInfo.php"> Info </a></li>
-<?php } ?>
+                                                        <li ><a href="userPersonalInfo.php"> Info </a></li>
+                                                        <li class="righttab"><a href="friends.php"> Friends (<?php echo count($userFriends);?>)</a></li>
+                                                    <?php } ?>
                                                 </ul>
                                             </div>
 
                                         </div>
-<?php ?>
+                                        <?php ?>
                                         </div>
 
-<?php include_once("right.php"); ?>
+                                        <?php include_once("right.php"); ?>
                                         </div>
                                         <div id="dialog"></div>
                                         </body>
