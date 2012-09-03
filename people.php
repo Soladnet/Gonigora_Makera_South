@@ -27,7 +27,7 @@
                         echo '<div class="person" id="p_' . $value['id'] . '">
                         <img src="' . $value['image']['image50x50'] . '" alt="' . $value['fullname'] . '" />
                             <div class="details">
-                            <span class="p_name"><a href="page.php?view=profile&uid=' . $value['id'] . '">' .$value['fullname'] . '</a></span>
+                            <span class="p_name"><a href="page.php?view=profile&uid=' . $value['id'] . '">' .toSentenceCase($value['fullname']) . '</a></span>
                                 <span class="p_location">' . shortenStr($value['location']) . '</span>
                                     <div class="post_activities"><span onclick="sendFriendRequest(\'' . $value['id'] . '\')" id="status_' . $value['id'] . '">Send Friend Request</span></div>
                                     </div>

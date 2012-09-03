@@ -1048,7 +1048,7 @@ function showMessageModelDialog(id,title,cid){
     });
 }
 function showGossoutModeldialog(dialodId,postId){
-    $("#"+dialodId).html('<input type="checkbox" id="gcheck" checked="checked" value="'+postId+'" /><label for="gcheck" class="width_95">Share with my Gossout Communities</label><input type="checkbox" id="fbcheck"  /><label for="fbcheck" class="width_95">Share with Facebook friends</label><script>$(function() {$( "#fbcheck" ).button();$( "#gcheck" ).button();});</script>');
+    $("#"+dialodId).html('<input type="checkbox" id="gcheck" checked="checked" value="'+postId+'" /><label for="gcheck" class="width_95">Share with my Gossout Communities</label><input type="checkbox" id="fbcheck"  value="'+postId+'"/><label for="fbcheck" class="width_95">Share with Facebook friends</label><span id="gossout_loading"></span><script>$(function() {$( "#fbcheck" ).button();$( "#gcheck" ).button();});</script>');
     $("#"+dialodId).dialog({
         autoOpen: true,
         modal: true,
@@ -1059,32 +1059,54 @@ function showGossoutModeldialog(dialodId,postId){
         draggable: true,
         buttons: {
             Gossout: function() {
-                if($("#gcheck").attr('checked')?true:false){
+                var data = {};
+                if($("#gcheck").attr('checked')?true:false && $("#fbcheck").attr('checked')?true:false){
                     var gossout = $("#gcheck").val();
+                    var facebook = $("#fbcheck").val();
+                    data={
+                        action: 'gossout',
+                        gossout: gossout,
+                        facebook:facebook
+                    };
+                }else if($("#gcheck").attr('checked')?true:false){
+                    gossout = $("#gcheck").val();
+                    data={
+                        action: 'gossout',
+                        gossout: gossout
+                    };
+                }else if($("#fbcheck").attr('checked')?true:false){
+                    facebook = $("#fbcheck").val();
+                    data={
+                        action: 'gossout',
+                        facebook:facebook
+                    };
+                }
+                if(data.action){
+                    $("#gossout_loading").html("<img src='images/load.gif' />");
                     $.ajax({
                         url: 'exec.php',  
-                        data: {
-                            action: '',  
-                            gossout: gossout
-                        }, 
+                        data: data, 
                         cache: false, 
                         dataType: "json", 
                         type: "post",
                         success: function(output) {
                             if(output){
                                 if(output.status=="success"){
-                                    var result = '<div class="post" id=' + output.id + '><img class="profile_small"src="' +output.imgL+ '"/><p class="name"><a href="page.php?view=profile&uid='+output.sender_id+'">' +output.name+ '</a></p><p class="status">' +output.text+ '</p><p class="time" id="tp'+output.id+'">' +output.time+ '</p><div class="post_activities"> <span>Gossout</span> . <span onclick="showCommentBox(\'box'+output.id+'\',\''+output.id+'\',\''+output.imgS+'\')">comment</span> . <span><a href="page.php?view=community&com='+output.com_id+'">in '+output.com+'</a></span></div><script>setTimeout(timeUpdate,20000,\''+output.rawTime+'\',\'tp'+output.id+'\')</script><span id="comments' +output.id+ '"></span><span id="box'+output.id+'"></span></div>';
-                                    $(".posts").html(result+$(".posts").html());
-                                    $( "#status" ).animate({
-                                        height:30
-                                    }, 1000 );
-                                    $( "#"+dialodId ).dialog( "close" );
+                                    if(data.gossout){
+                                        var result = '<div class="post" id=' + output.id + '><img class="profile_small"src="' +output.imgL+ '"/><p class="name"><a href="page.php?view=profile&uid='+output.sender_id+'">' +output.name+ '</a></p><p class="status">' +output.text+ '</p><p class="time" id="tp'+output.id+'">' +output.time+ '</p><div class="post_activities"> <span>Gossout</span> . <span onclick="showCommentBox(\'box'+output.id+'\',\''+output.id+'\',\''+output.imgS+'\')">comment</span> . <span><a href="page.php?view=community&com='+output.com_id+'">in '+output.com+'</a></span></div><script>setTimeout(timeUpdate,20000,\''+output.rawTime+'\',\'tp'+output.id+'\')</script><span id="comments' +output.id+ '"></span><span id="box'+output.id+'"></span></div>';
+                                        $(".posts").html(result+$(".posts").html());  
+                                    }
                                     showFlashMessageDialoge(output.message,"messenger","info");
                                 }else{
                                     $("#"+dialodId ).dialog( "close" );
                                     showFlashMessageDialoge(output.message,"messenger","error");
                                 }
                             }
+                        },
+                        complete:function(dataxml,status){
+                            $("#gossout_loading").html(status);
+                            setTimeout($( this ).dialog( "close" ),2000);
+                            
                         }
                     });
                 }
@@ -1107,7 +1129,7 @@ function sendFriendRequest(userid){
     var alt = $("#sfr").val();
     var data = {};
     if(val=="Send Friend Request" || alt == "Send Friend Request"){
-//        $("#status_"+userid).html("Sending Request");
+        //        $("#status_"+userid).html("Sending Request");
         $(".people_loading"+userid).html("<img src='images/load.gif' />");
         data = {
             action: '',  

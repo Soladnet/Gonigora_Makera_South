@@ -2,7 +2,7 @@
 
 session_start();
 include("executecommand.php");
-connect();
+$conn_arr = connect();
 if (isset($_GET['signout'])) {
     logout();
 }

@@ -36,7 +36,7 @@ if (isset($_GET['view'])) {
             }
         } else if (strtolower($_GET['view']) == "facebook") {
             $_SESSION['find'] = $_GET["view"];
-            header("Location: oauth2callback/");
+            include 'socialmedia.php';
         } else if (strtolower($_GET['view']) == "notification") {
             include("individualrecord.php");
         } else if (strtolower($_GET['view']) == "tweakwink") {

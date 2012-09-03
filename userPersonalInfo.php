@@ -46,7 +46,7 @@ $row = mysql_fetch_array($result);
                     </ul>
                     <?php
                 }
-                echo "<p><span class='desc'>Fullname:</span> " . $row['lastname'] . ', ' . $row['firstname'] . "</p>";
+                echo "<p><span class='desc'>Fullname:</span> " . $row['firstname'] . ', ' . $row['lastname'] . "</p>";
                 echo "<p><span class='desc'>Email:</span> " . $row['email'] . "</p>";
                 echo "<p><span class='desc'>Gender:</span> " . $row['gender'] . "</p>";
                 echo "<p><span class='desc'>Date of Birth:</span> " . dateToString($row['dob']) . "</p>";

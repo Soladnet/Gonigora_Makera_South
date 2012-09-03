@@ -21,7 +21,7 @@ if (mysql_num_rows($result) > 0) {
     $row = mysql_fetch_array($result);
 }
 $image = getUserPixSet($id);
-$fullname = $row['lastname'] . " " . $row['firstname'];
+$fullname = $row['firstname'] . " " . $row['lastname'];
 $location = $row['location'];
 $gender = $row['gender'];
 $id = $row['id'];

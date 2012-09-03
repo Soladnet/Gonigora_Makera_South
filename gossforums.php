@@ -83,7 +83,7 @@
                                 </td>
                                 <td align="right">' . $value['postCount'] . '</td>
                                 <td align="right">' . $value['commentCount'] . '</td>
-                                <td><a href="page.php?view=profile&uid=' . $value['lastSender_id'] . '">' . $value['lastSender'] . '</a></td>
+                                <td><a href="page.php?view=profile&uid=' . $value['lastSender_id'] . '">' . toSentenceCase($value['lastSender']) . '</a></td>
                             </tr>';
                                 }
                                 ?>

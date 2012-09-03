@@ -26,7 +26,7 @@ if (count($friends) > 0) {
             $option = "";
         }
 
-        echo '<div class="post" style="width:48%;float:left;"><img class="profile_small" src="' . $details['image']['image50x50'] . '"/><p class="name"><a href="page.php?view=profile&uid=' . $details['id'] . '">' . $details['fullname'] . '</a></p><p class="status">' . $details['location'] . '</p><p class="time"><span class="people_loading'.$details['id'].'"></span></p><div class="post_activities">' . $option . '</div></div>';
+        echo '<div class="post" style="width:48%;float:left;"><img class="profile_small" src="' . $details['image']['image50x50'] . '"/><p class="name"><a href="page.php?view=profile&uid=' . $details['id'] . '">' . toSentenceCase($details['fullname']) . '</a></p><p class="status">' . $details['location'] . '</p><p class="time"><span class="people_loading'.$details['id'].'"></span></p><div class="post_activities">' . $option . '</div></div>';
     }
 } else {
     echo "No Friends was found!";

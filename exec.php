@@ -3,7 +3,7 @@
 session_start();
 include 'executecommand.php';
 if (isset($_POST['action'])) {
-    connect();
+    $conn_arr = connect();
     if (isset($_POST['count'])) {
         $arr = getUpdateCount($_SESSION['auth']['id']);
         echo json_encode($arr);
@@ -48,7 +48,7 @@ if (isset($_POST['action'])) {
             echo json_encode($arr);
         } else if ($_POST['action'] == "morePost") {
             $userId = $_SESSION['auth']['id'];
-            echo showPostAndComment($userId,0,0,0, $_POST['posts']);
+            echo showPostAndComment($userId, 0, 0, 0, $_POST['posts']);
         }
     } else if (isset($_POST['inbox'])) {
         $userId = $_SESSION['auth']['id'];
@@ -207,7 +207,7 @@ if (isset($_POST['action'])) {
     } else if (isset($_POST['frq'])) {
         $arr = sendFrq($_SESSION['auth']['id'], $_POST['frq']);
         echo json_encode($arr);
-    }else if (isset($_POST['cfrq'])) {
+    } else if (isset($_POST['cfrq'])) {
         $arr = cancelFrq($_SESSION['auth']['id'], $_POST['cfrq']);
         echo json_encode($arr);
     } else if (isset($_POST['acceptfrq'])) {
@@ -236,12 +236,55 @@ if (isset($_POST['action'])) {
         $tweakwink = $_POST['tweakwink'];
         $arr = sendTweakWink($userId, $receiver_id, $tweakwink);
         echo json_encode($arr);
-    } else if (isset($_POST['gossout'])) {
+    } else if ($_POST['action'] == "gossout") {
         $userid = $_SESSION['auth']['id'];
         $community_id = $_SESSION['auth']['community']['id'];
         $community_name = $_SESSION['auth']['community']['name'];
         $senderFullname = $_SESSION['auth']['fullname'];
-        $arr = gossout($userid, $_POST['gossout'], $community_id, $community_name, $senderFullname);
+
+        if (isset($_POST['gossout'])) {
+            $arr = gossout($userid, $_POST['gossout'], $community_id, $community_name, $senderFullname);
+        }
+        if (isset($_POST['facebook'])) {
+            $fbUser = $conn_arr['facebook_obj']->getUser();
+            if (isset($_POST['gossout'])) {
+                if ($fbUser) {
+                    $image = getUserPixSet($userId);
+                    if ($image['image100x100'] == 'images/blankmal100x100.png' || $image['image100x100'] == 'images/blankfem100x100.png') {
+                        $image['image100x100'] = "images/logo_image_text.png";
+                    }
+                    $sql = "SELECT p.post,p.community_id,c.name,concat(u.lastname,' ',u.firstname) as fullname FROM `post` as p JOIN community as c on p.community_id=c.id JOIN user_personal_info as u ON u.id=p.sender_id WHERE p.`id`=" . $_POST['facebook'];
+                    $result = mysql_query($sql);
+                    $row = mysql_fetch_array($result);
+
+                    sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array(
+                        'name' => $row['fullname'] . ' from ' . $row['name'] . ' gossout: ',
+                        'link' => 'www.gossout.com/page.php?view=community&com=' . $row['community_id'],
+                        'message' => $row['post'],
+                        'caption' => $row['post']/* ,
+                              'picture' => 'http://gossout.com/'.$image['image100x100'] */
+                    ));
+                }
+            } else {
+                if ($fbUser) {
+                    $image = getUserPixSet($userId);
+                    if ($image['image100x100'] == 'images/blankmal100x100.png' || $image['image100x100'] == 'images/blankfem100x100.png') {
+                        $image['image100x100'] = "images/logo_image_text.png";
+                    }
+                    $sql = "SELECT p.post,p.community_id,c.name,concat(u.lastname,' ',u.firstname) as fullname FROM `post` as p JOIN community as c on p.community_id=c.id JOIN user_personal_info as u ON u.id=p.sender_id WHERE p.`id`=" . $_POST['facebook'];
+                    $result = mysql_query($sql);
+                    $row = mysql_fetch_array($result);
+
+                    sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array(
+                        'name' => $row['fullname'] . ' from ' . $row['name'] . ' gossout: ',
+                        'link' => 'www.gossout.com/page.php?view=community&com=' . $row['community_id'],
+                        'message' => $row['post'],
+                        'caption' => $row['post']/* ,
+                              'picture' => 'http://gossout.com/'.$image['image100x100'] */
+                    ));
+                }
+            }
+        }
         echo json_encode($arr);
     }
 } else {
