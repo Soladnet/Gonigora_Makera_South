@@ -522,6 +522,9 @@ form#signup label.desc {
     background-color: #fff;
     border: 1px solid #ccc;
 }
+#tlkio{
+    display: none;
+}
 /*  profile styling     *************************************************************************************/
 .person{    margin: 0px auto 0;    background:  #FAFAFA;    border: 1px solid   #F5F5F5;    margin: 2px;    -webkit-border-radius: 3px 3px 3px 3px;    cursor:pointer; }
 .person:hover{    background:#A6CC8B;}

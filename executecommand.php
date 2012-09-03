@@ -1,5 +1,4 @@
 <?php
-
 //function to show any messages
 function messages() {
     $message = '';
@@ -212,7 +211,7 @@ function login($username, $password, $rem = false) {
 }
 
 function subscribeToCommunity($userId, $com, $comcat) {
-    $sql = "SELECT `id` FROM `community` WHERE `name` = '" . clean(htmlspecialchars(toSentenceCase($com))) . "' and category = '" . clean(htmlspecialchars($comcat)) . "'";
+    $sql = "SELECT `id` FROM `community` WHERE `name` = '" . clean(htmlspecialchars(toSentenceCase(trim($com)))) . "' and category = '" . clean(htmlspecialchars($comcat)) . "'";
     $result = mysql_query($sql);
     $arr = array();
     if (mysql_num_rows($result) > 0) {

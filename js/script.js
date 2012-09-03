@@ -1060,7 +1060,7 @@ function showGossoutModeldialog(dialodId,postId){
         buttons: {
             Gossout: function() {
                 var data = {};
-                if($("#gcheck").attr('checked')?true:false && $("#fbcheck").attr('checked')?true:false){
+                if(($("#gcheck").attr('checked')?true:false) && ($("#fbcheck").attr('checked')?true:false)){
                     var gossout = $("#gcheck").val();
                     var facebook = $("#fbcheck").val();
                     data={
@@ -1090,22 +1090,42 @@ function showGossoutModeldialog(dialodId,postId){
                         dataType: "json", 
                         type: "post",
                         success: function(output) {
+                            $("#gossout_loading").html("");
                             if(output){
-                                if(output.status=="success"){
+                                if(output.status=="success" || output.fbstatus=="success"){
                                     if(data.gossout){
-                                        var result = '<div class="post" id=' + output.id + '><img class="profile_small"src="' +output.imgL+ '"/><p class="name"><a href="page.php?view=profile&uid='+output.sender_id+'">' +output.name+ '</a></p><p class="status">' +output.text+ '</p><p class="time" id="tp'+output.id+'">' +output.time+ '</p><div class="post_activities"> <span>Gossout</span> . <span onclick="showCommentBox(\'box'+output.id+'\',\''+output.id+'\',\''+output.imgS+'\')">comment</span> . <span><a href="page.php?view=community&com='+output.com_id+'">in '+output.com+'</a></span></div><script>setTimeout(timeUpdate,20000,\''+output.rawTime+'\',\'tp'+output.id+'\')</script><span id="comments' +output.id+ '"></span><span id="box'+output.id+'"></span></div>';
-                                        $(".posts").html(result+$(".posts").html());  
+                                        if(output.status=="success"){
+                                            var result = '<div class="post" id=' + output.id + '><img class="profile_small"src="' +output.imgL+ '"/><p class="name"><a href="page.php?view=profile&uid='+output.sender_id+'">' +output.name+ '</a></p><p class="status">' +output.text+ '</p><p class="time" id="tp'+output.id+'">' +output.time+ '</p><div class="post_activities"> <span onclick=\'showGossoutModeldialog("dialog","'+postId+'")\'>Gossout</span> . <span onclick="showCommentBox(\'box'+output.id+'\',\''+output.id+'\',\''+output.imgS+'\')">comment</span> . <span><a href="page.php?view=community&com='+output.com_id+'">in '+output.com+'</a></span></div><script>setTimeout(timeUpdate,20000,\''+output.rawTime+'\',\'tp'+output.id+'\')</script><span id="comments' +output.id+ '"></span><span id="box'+output.id+'"></span></div>';
+                                            $(".posts").html(result+$(".posts").html());
+                                        }else{
+                                            showFlashMessageDialoge(output.message,"messenger","error");
+                                        }
+                                    }
+                                    if(data.facebook){
+                                        if(output.fbstatus!="success"){
+                                            window.location = 'page.php?view=facebook&post='+data.facebook;
+                                        }else{
+                                            $("#gossout_loading").html(output.fbmsg);
+                                        }
                                     }
                                     showFlashMessageDialoge(output.message,"messenger","info");
                                 }else{
-                                    $("#"+dialodId ).dialog( "close" );
+//                                    $("#"+dialodId ).dialog( "close" );
                                     showFlashMessageDialoge(output.message,"messenger","error");
                                 }
                             }
                         },
                         complete:function(dataxml,status){
+                            var st = $("#gossout_loading").html();
                             $("#gossout_loading").html(status);
-                            setTimeout($( this ).dialog( "close" ),2000);
+                            if(st=="<img src='images/load.gif' />"){
+                                $("#gossout_loading").html(status);
+                            }else{
+                                
+//                                setTimeout(function(){
+//                                    $("#"+dialodId).dialog( "close" );
+//                                }, 2000);
+                            }
                             
                         }
                     });

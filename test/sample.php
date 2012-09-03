@@ -1,9 +1,9 @@
 <?php
 session_start();
-//include '../executecommand.php';
+include '../executecommand.php';
 //echo toSentenceCase('ahmadu Bello Uni');
 //include '../../Gossout-Project/yahoo-yos-social-php5-0.1-18-gd34814f/yahoo-yos-social-php5-d34814f/lib/Yahoo/';
-//connect();
+connect();
 //print_r(sendPost('48', '26', "Some Community name", "Hey's", "Soladnet"));
 // $key = 'olaray';
 //$string = 'string to be encrypted'; // note the spaces
@@ -30,7 +30,7 @@ session_start();
 //       echo $text;
 //
 //}
-print_r($_SESSION);
+//print_r($_SESSION);
 ?>
 <!DOCTYPE HTML>
 <html> 
@@ -54,5 +54,8 @@ print_r($_SESSION);
     <body>
         <div id="load">
         </div>
+        <form method="PoST" action="../exec.php">
+            <input type="text" name="gossout"/><input type="submit" name="action" value="gossout"/>
+        </form>
     </body>
 </html>

@@ -221,7 +221,7 @@ if (!isset($_SESSION['auth'])) {
                             <p class="heading">Disclaimer</p>
                             <p style="padding: 8px; line-height: 2em;">Gossout won't share your personal information you import with anyone, but we will store them (when necessary) on your behalf and may use them later to help others search for people or to generate friend suggestions for you and others. <!--Depending on your email provider, addresses from your contacts list and mail folders may be imported. You should only import contacts from accounts you've set up for personal use.--></p>
                             <p>
-                                <a href="page.php?view=facebook"><img src="images/facebook1.png" /></a>
+                                <a href="page.php?view=facebook&share="><img src="images/facebook1.png" /></a>
                             </p>
                             <span style="display: block;" class="menu_bottom">&nbsp;<a href="page.php?view=home"><span style="float: right; margin-left: .4em;margin-right: .4em;" class="skip" id="skip">Skip</span></a><span style="float: right; margin-left: .4em;margin-right: .4em;" class="next" id="join">Continue</span><span style="float: right" id="back" class="back">Back</span><span style="display: block" class="clear"></span></span>
                         </div>
