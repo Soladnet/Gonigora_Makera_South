@@ -7,7 +7,7 @@
         <td> <a href="page.php?view=privacy">Privacy</a> </td>
     </tr>
     <tr >
-        <td colspan="3"> &copy; <?php echo date("Y");?> <a href="http://www.gossout.com">GossOut</a></td>
+        <td colspan="3"> &copy; <?php echo date("Y");?> <a href="http://www.gossout.com">Gossout</a></td>
     </tr>
     </table>
     <div class="clear"></div>

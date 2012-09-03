@@ -58,6 +58,7 @@ if (isset($_POST['login'])) {
                 <span >New around here? &nbsp;&nbsp;&nbsp; </span>
                 <a href="index.php"><input type="button" value="Sign-Up!" /></a>
             </div>
+            <div class="clear"></div>
 
         </div>
 
