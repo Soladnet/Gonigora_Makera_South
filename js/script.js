@@ -1110,7 +1110,7 @@ function showGossoutModeldialog(dialodId,postId){
                                     }
                                     showFlashMessageDialoge(output.message,"messenger","info");
                                 }else{
-//                                    $("#"+dialodId ).dialog( "close" );
+                                    //                                    $("#"+dialodId ).dialog( "close" );
                                     showFlashMessageDialoge(output.message,"messenger","error");
                                 }
                             }
@@ -1122,9 +1122,9 @@ function showGossoutModeldialog(dialodId,postId){
                                 $("#gossout_loading").html(status);
                             }else{
                                 
-//                                setTimeout(function(){
-//                                    $("#"+dialodId).dialog( "close" );
-//                                }, 2000);
+                            //                                setTimeout(function(){
+                            //                                    $("#"+dialodId).dialog( "close" );
+                            //                                }, 2000);
                             }
                             
                         }
@@ -1359,6 +1359,52 @@ function showMorePost(start){
         //            alert(status);
         }
     });
+}
+function lookup(inputString) {
+    if(inputString.length == 0) {
+        $('#suggestions').fadeOut(); // Hide the suggestions box
+    } else {
+        $("#s_loading").html("<img src='images/load.gif' />");
+        $.ajax({
+            url: 'exec.php',  
+            data: {
+                action: '',
+                search: inputString
+            }, 
+            cache: false, 
+            dataType: "json", 
+            type: "post",
+            success: function(output) {
+                if(output){
+                    var result = "";
+                    $('#suggestions').fadeIn();
+                    if(output.people.status=="success"){
+                        result +='<div class="heading">PEOPLE</div>';
+                        $.each(output.people, function(i,output){
+                            if(output.id)
+                                result += '<div class="post"><img src="'+output.img+'" alt=""/><p class="name"><a href="page.php?view=profile&uid='+output.id+'">'+output.fullname+'</a></p><p class="status">'+output.location+'</p></div>';
+                        });
+                        
+                    }
+                    if(output.community.status=="success"){
+                        var img = output.community.img;
+                        result +='<div class="heading">COMMUNITIES</div>';
+                        $.each(output.community, function(i,output){
+                            if(output.id)
+                                result += '<div class="post"><img src="'+img+'" alt=""/><p class="name"><a href="page.php?view=community&com='+output.id+'">'+output.fullname+'</a></p><p class="status">Subscribers '+output.subscriber+'</p></div>';
+                        });
+                        
+                    }
+                    result +='<div class="heading">&nbsp;</div>';
+                    $('#suggestions').html(result);
+                }
+            },
+            complete: function(dataXML,status){
+                $("#s_loading").html("");
+            }
+        });
+    
+    }
 }
 function refreshCommunityChat(){
     

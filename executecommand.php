@@ -1,4 +1,5 @@
 <?php
+
 //function to show any messages
 function messages() {
     $message = '';
@@ -73,7 +74,7 @@ function registerUser($firstname, $lastname, $gender, $dob, $email, $password) {
                 $arr['email'] = $email;
                 $arr['first_name'] = toSentenceCase($firstname);
                 $arr['last_name'] = toSentenceCase($lastname);
-                $arr['fullname'] = toSentenceCase($firstname . ' ' .$lastname );
+                $arr['fullname'] = toSentenceCase($firstname . ' ' . $lastname);
                 $arr['gender'] = $gender;
                 $arr['dob'] = $dob;
                 $arr['id'] = $id;
@@ -334,7 +335,7 @@ function connect() {
     $db = mysql_connect(HOSTNAME, USERNAME, PASSWORD) or die('I cannot connect to MySQL.');
     mysql_select_db(DATABASE_NAME, $db) or die('Database missing');
     $arr['connection_link'] = $db;
-    $facebook = new Facebook(array('appId' => FACEBOOK_API_ID,'secret' => FACEBOOK_SECRETE,));
+    $facebook = new Facebook(array('appId' => FACEBOOK_API_ID, 'secret' => FACEBOOK_SECRETE,));
     $arr['facebook_obj'] = $facebook;
     return $arr;
 }
@@ -941,6 +942,7 @@ function getInboxMessage($contactId, $userId, $limit = 10) {
         while ($row = mysql_fetch_array($result)) {
             $img = "";
             $img = getUserPixSet($row['sender_id']);
+            //page.php?view=profile&uid=".$row['sender_id']."
             $arr[] = "<div class='post' id='inb_conv" . $row['id'] . "'><img class='profile_small' src='" . $img['image50x50'] . "'/><p class='name'><a href='#'>" . toSentenceCase($row['firstname'] . " " . $row['lastname']) . "</a></p><p class='status'>" . $row['message'] . "</p><p class='time' id='inb_conv_tc" . $row['id'] . "'>" . agoServer($row['time']) . "</p></div><script>setTimeout(timeUpdate,20000,'" . $row['time'] . "','inb_conv_tc" . $row['id'] . "')</script>";
         }
         $arr = array_reverse($arr);
@@ -1074,7 +1076,11 @@ function toSentenceCase($str) {
         if (strtolower($x) == "of") {
             $exp[] = strtolower($x);
         } else {
+            if(strlen($x)>0){
             $exp[] = strtoupper($x[0]) . substr($x, 1);
+            }else{
+                $exp[] = strtoupper($x);
+            }
         }
     }
     return implode(' ', $exp);
@@ -1237,15 +1243,22 @@ function search($term) {
             $image['image3535'] = $img['image35x35'];
             $image['image5050'] = $img['image50x50'];
             $image['image100100'] = $img['image100x100'];
-            $val['people'][] = array("id" => $row['id'], "fullname" => toSentenceCase($row['firstname'] . ' ' . $row['lastname']), "location" => $row['location'], "img" => $image);
+            $val['people'][] = array("id" => $row['id'], "fullname" => toSentenceCase($row['firstname'] . ' ' . $row['lastname']), "location" => $row['location']?$row['location']:"N/A", "img" => $img['image50x50']);
         }
+        $val['people']['status'] = "success";
+    } else {
+        $val['people']['status'] = "failed";
     }
     $sqlC = "SELECT c.*,count(cs.community_id) as subscriber FROM `community` as c JOIN community_subscribers as cs on c.id=cs.community_id WHERE c.`name` LIKE '%" . clean($term) . "%' group by cs.community_id";
     $resultC = mysql_query($sqlC);
     if (mysql_num_rows($resultC) > 0) {
         while ($row = mysql_fetch_array($resultC)) {
-            $val['community'][] = array("id" => $row['id'], "name" => $row['name'], "subscriber" => $row['subscriber']);
+            $val['community'][] = array("id" => $row['id'], "fullname" => $row['name'], "subscriber" => $row['subscriber']);
         }
+        $val['community']['status'] = "success";
+        $val['community']['img'] = "images/image-community5050.png";
+    } else {
+        $val['community']['status'] = "failed";
     }
     return $val;
 }
@@ -1455,10 +1468,12 @@ function sendGetExternalData($url, $post_data) {
 function make_links_clickable($text) {
     return preg_replace('!(((f|ht)tp://)[-a-zA-Zа-яА-Я()0-9@:%_+.~#?&;//=]+)!i', '<a href="$1" target="_blank">$1</a>', $text);
 }
+
 function sendToFacbook($facebookObject, $api, $method, $paramArr) {
     $postId = $facebookObject->api($api, $method, $paramArr);
     return $postId;
 }
+
 function getGossoutUsers($withImage = true) {
     if ($withImage) {
         $sql = "SELECT * from ";

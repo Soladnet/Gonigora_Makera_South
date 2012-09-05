@@ -86,17 +86,19 @@ if (isset($_GET['view'])) {
             active: false,
             icons: false
         });
-    });
-    $(document).ready(function(){
         $("#messenger").hide();
         getUpdateCount();
         showMenu('#popGossbag','.menu1');
         showMenu('#popMessage','.menu2');
         showMenu('#popFriend_Request','.menu3');
         showMenu('#popSettings','.menu4');
+        $("input").blur(function(){
+            setTimeout(function(){
+               $('#suggestions').fadeOut(); 
+            },1000);
+            
+        });
+        $('div.tabs').tabs();
     });
-	
-	$(function() {
-		$('div.tabs').tabs();
-	});
+   
 </script>

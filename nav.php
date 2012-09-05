@@ -3,8 +3,9 @@
     <div class="gossforums"><span><a href="page.php?view=community" >Communities</a></span></div>
 <!--    <div><a class="settings"><span>Sign Out</span></a></div>-->
     <form method="get" id="searchform" >
-        <span id="s_loading"></span><input type="text" style="height: 100%" class="field" name="s" id="s" placeholder="People/Community" onkeyup="search('#s')">
+        <span id="s_loading"></span><input type="text" style="height: 100%" class="field" name="s" id="s" placeholder="People/Community" onkeyup="lookup(this.value);">
         <input type="submit" class="submit" name="submit" id="searchsubmit" value="Search">
+        <div id="suggestions"></div>
     </form>
     
 </div>

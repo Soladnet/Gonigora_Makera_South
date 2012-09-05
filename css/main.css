@@ -368,7 +368,34 @@ input[type=password]:focus {
 #searchsubmit {
     display: none;
 }
-
+/*********SEARCH suggestions**********/
+#suggestions{ 
+    position: absolute;
+    right: 2px; 
+    width:320px; 
+    display:none;
+    background-color: #fff;
+    overflow: auto;
+    max-height: 400px;
+    padding: 0px;
+    border: solid;
+    border-width: 1px; 
+}
+#suggestions div{
+    width:100%;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+#suggestions .heading{
+    color: #ffffff;
+}
+#suggestions .heading:hover{
+    background-color: #E0E0E0;
+}
+#suggestions .post:hover{
+    background-color: #99C53D;
+}
+/**************END SEARCH suggestions**********/
 /*  index.php & login.php   *******************************************************************/
 #column1,
 #column2 {

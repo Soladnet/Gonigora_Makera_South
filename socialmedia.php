@@ -15,7 +15,7 @@ if (isset($_SESSION['find'])) {
                     'link' => 'www.gossout.com',
                     'message' => 'I just joined the latest gossip community on Gossout. You can also come check it out!',
                     'caption' => 'Have a new feeling of social networking by getting lattest information from community of your choices',
-                    'picture' => 'http://gossout.com/images/logo.jpg'));
+                    'picture' => 'http://gossout.com/images/logo75x75.png'));
                 $arr['status'] = "success";
             } catch (FacebookApiException $e) {
                 $user = null;
