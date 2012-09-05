@@ -59,8 +59,8 @@ class UploadHandler {
                 'thumbnail' => array(
                     'upload_dir' => dirname($_SERVER['SCRIPT_FILENAME']) . '/thumbnails/',
                     'upload_url' => $this->getFullUrl() . '/thumbnails/',
-                    'max_width' => 100,
-                    'max_height' => 100
+                    'max_width' => 250,
+                    'max_height' => 250
                 ),
                 'image35x35' => array(
                     'upload_dir' => dirname($_SERVER['SCRIPT_FILENAME']) . '/thumbnails/',

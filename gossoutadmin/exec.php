@@ -246,108 +246,71 @@ if (isset($_POST['action'])) {
             $arr = gossout($userid, $_POST['gossout'], $community_id, $community_name, $senderFullname);
         }
         if (isset($_POST['facebook'])) {
+
             $fbUser = $conn_arr['facebook_obj']->getUser();
             if (isset($_POST['gossout'])) {
                 if ($fbUser) {
                     $sql = "SELECT p.id,p.post,c.name,p.community_id,p.sender_id,p.time,concat(s.`firstname`,s.`lastname`) as fullname,if(cp.`100x100` IS NULL,'images/logo75x75.png',cp.`100x100`) as image FROM `post` as p JOIN user_personal_info as s on p.sender_id=s.id JOIN community as c on p.`community_id`=c.id LEFT JOIN community_pix AS cp ON p.id = cp.post_id WHERE p.id=" . $_POST['facebook'];
                     $result = mysql_query($sql);
                     $row = mysql_fetch_array($result);
-                    if (!strpos($row['post'], "<span>")) {
-                        if ($row['image'] == "images/logo75x75.png") {
-                            $str = "";
-                            if ($row['sender_id'] != $_SESSION['auth']['id']) {
-                                $str = $row['fullname']." says: ";
-                            }
-                            try {
-                                $fbPostId = sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array('message' => $str.$row['post']));
-                                $arr['fbstatus'] = "success";
-                                $arr['fb_post_id'] = $fbPostId;
-                                $arr['fbmsg'] = "Shared with facebook";
-                            } catch (FacebookApiException $e) {
-                                $arr['fbstatus'] = "failed";
-                                $arr['fbmsg'] = "Opps! We cannot connect you to facebook now...try again later";
-                            }
-                        } else {
-                            try {
-                                $str = "";
-                                if ($row['sender_id'] == $_SESSION['auth']['id']) {
-                                    $str = "I just shared a picture on Gossout";
-                                } else {
-                                    $str = toSentenceCase($row['fullname']) . ' shared a picture of ' . toSentenceCase($row['name']) . ' community on Gossout';
-                                }
-                                $fbPostId = sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array(
-                                    'name' => $str,
-                                    'link' => 'www.gossout.com/page.php?view=notification&open=' . $row['id'],
-                                    'message' => $row['post'],
-                                    'caption' => $row['post'],
-                                    'picture' => 'http://gossout.com/' . $row['image']
-                                        ));
-                                $arr['fbstatus'] = "success";
-                                $arr['fb_post_id'] = $fbPostId;
-                                $arr['fbmsg'] = "Shared with facebook";
-                            } catch (FacebookApiException $e) {
-                                $arr['fbstatus'] = "failed";
-                                $arr['fbmsg'] = "Opps! We cannot connect you to facebook now...try again later";
-                            }
+                    if ($row['image'] == "images/logo75x75.png") {
+                        try {
+                            sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array('message' => $row['post']));
+                        } catch (FacebookApiException $e) {
+                            $arr['fbstatus'] = "failed";
+                            $arr['fbmsg'] = "";
                         }
                     } else {
-                        $arr['fbstatus'] = "failed";
-                        $arr['fbmsg'] = "This post cannot be sent to facebook at this time";
+                        try {
+                            sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array(
+                                'name' => toSentenceCase($row['fullname']) . ' shared a gossip from ' . toSentenceCase($row['name']) . ' on Gossout',
+                                'link' => 'www.gossout.com/page.php?view=notification&open=' . $row['id'],
+                                'message' => $row['post'],
+                                'caption' => $row['post'],
+                                'picture' => 'http://gossout.com/' . $row['image']
+                            ));
+                            $arr['fbstatus'] = "success";
+                            $arr['fbmsg'] = "Shared with facebook successfull!";
+                        } catch (FacebookApiException $e) {
+                            $arr['fbstatus'] = "failed";
+                            $arr['fbmsg'] = "";
+                        }
                     }
                 } else {
                     $arr['fbstatus'] = "failed";
-                    $arr['fbmsg'] = "Facebook authentication failed";
+                    $arr['fbmsg'] = "";
                 }
             } else {
                 if ($fbUser) {
                     $sql = "SELECT p.id,p.post,c.name,p.community_id,p.sender_id,p.time,concat(s.`firstname`,s.`lastname`) as fullname,if(cp.`100x100` IS NULL,'images/logo75x75.png',cp.`100x100`) as image FROM `post` as p JOIN user_personal_info as s on p.sender_id=s.id JOIN community as c on p.`community_id`=c.id LEFT JOIN community_pix AS cp ON p.id = cp.post_id WHERE p.id=" . $_POST['facebook'];
                     $result = mysql_query($sql);
                     $row = mysql_fetch_array($result);
-                    if (!strpos($row['post'], "<span>")) {
-                        if ($row['image'] == "images/logo75x75.png") {
-                            $str = "";
-                            if ($row['sender_id'] != $_SESSION['auth']['id']) {
-                                $str = $row['fullname']." says: ";
-                            }
-                            try {
-                                $fbPostId = sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array('message' => $str.$row['post']));
-                                $arr['fbstatus'] = "success";
-                                $arr['fb_post_id'] = $fbPostId;
-                                $arr['fbmsg'] = "Shared with facebook";
-                            } catch (FacebookApiException $e) {
-                                $arr['fbstatus'] = "failed";
-                                $arr['fbmsg'] = "Opps! We cannot connect you to facebook now...try again later";
-                            }
-                        } else {
-                            try {
-                                $str = "";
-                                if ($row['sender_id'] == $_SESSION['auth']['id']) {
-                                    $str = "I just shared a picture on Gossout";
-                                } else {
-                                    $str = toSentenceCase($row['fullname']) . ' shared a picture of ' . toSentenceCase($row['name']) . ' community on Gossout';
-                                }
-                                $fbPostId = sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array(
-                                    'name' => $str,
-                                    'link' => 'www.gossout.com/page.php?view=notification&open=' . $row['id'],
-                                    'message' => $row['post'],
-                                    'caption' => $row['post'],
-                                    'picture' => 'http://gossout.com/' . $row['image']
-                                        ));
-                                $arr['fbstatus'] = "success";
-                                $arr['fb_post_id'] = $fbPostId;
-                                $arr['fbmsg'] = "Shared with facebook";
-                            } catch (FacebookApiException $e) {
-                                $arr['fbstatus'] = "failed";
-                                $arr['fbmsg'] = "Opps! We cannot connect you to facebook now...try again later";
-                            }
+                    if ($row['image'] == "images/logo75x75.png") {
+                        try {
+                            sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array('message' => $row['post']));
+                        } catch (FacebookApiException $e) {
+                            $arr['fbstatus'] = "failed";
+                            $arr['fbmsg'] = "";
                         }
                     } else {
-                        $arr['fbstatus'] = "failed";
-                        $arr['fbmsg'] = "This post cannot be sent to facebook at this time";
+                        try {
+                            sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array(
+                                'name' => toSentenceCase($row['fullname']) . ' shared a gossip from ' . toSentenceCase($row['name']) . ' on Gossout',
+                                'link' => 'www.gossout.com/page.php?view=notification&open=' . $row['id'],
+                                'message' => $row['post'],
+                                'caption' => $row['post'],
+                                'picture' => 'http://gossout.com/' . $row['image']
+                            ));
+                            $arr['fbstatus'] = "success";
+                            $arr['fbmsg'] = "Shared with facebook successfull!";
+                        } catch (FacebookApiException $e) {
+                            $arr['fbstatus'] = "failed";
+                            $arr['fbmsg'] = "";
+                        }
                     }
                 } else {
                     $arr['fbstatus'] = "failed";
-                    $arr['fbmsg'] = "Facebook authentication failed";
+                    $arr['fbmsg'] = "";
                 }
             }
         }
