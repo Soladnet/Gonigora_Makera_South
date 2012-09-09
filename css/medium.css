@@ -42,8 +42,6 @@ input[type=file]:hover,
 input[type=reset]:hover,
 button:hover {
     border: 1px solid #99c53d;
-    -webkit-box-shadow: 0 0 0 1px #91ce4f;
-    box-shadow: 0 0 0 1px #91ce4f;
 }
 input[type=text],
 input[type=password],
@@ -56,8 +54,6 @@ textarea,select {
     border-radius        : 2px;
     color: #717373;
     font-size: 100%;
-    -webkit-box-shadow: 0 1px 1px 0 #f2f2f2;
-    box-shadow        : 0 1px 1px 0 #f2f2f2;
     -webkit-background-clip: padding-box;
     -moz-background-clip   : padding;
     background-clip        : padding-box;
@@ -72,9 +68,6 @@ input[type=password]:focus,
 textarea:focus {
     border: 1px solid #91ce4f;
     color: #717171;
-    -webkit-box-shadow: 0 0 0 2px rgba(0,0,0,0.04) ,inset 0 1px 2px 0 #91ce4f;
-    -moz-box-shadow   : 0 0 0 2px rgba(0,0,0,0.04) ,inset 0 1px 2px 0 #91ce4f;
-    box-shadow        : 0 0 0 2px rgba(0,0,0,0.04) ,inset 0 1px 2px 0 #91ce4f;
 }
 textarea {
     resize: none;
@@ -132,17 +125,13 @@ textarea {
 }
 .box_shadow {
     border: 1px solid #999;
-    -webkit-box-shadow: 0 0 2px 0 #999;
-    box-shadow: 0 0 2px 0 #999;
 }
 .box_shadow8 {
-    -webkit-box-shadow: 0 0 8px 0 #999;
-    box-shadow: 0 0 8px 0 #999;
+    border: 1px solid #999;
 }
 
 .box_shadow1 {
-    -webkit-box-shadow: 0 0 1px 0 #999;
-    box-shadow: 0 0 1px 0 #999;
+    border: 1px solid #999;
 }
 .clear {
     clear: both;
@@ -203,10 +192,8 @@ ul.box li {
     margin: 0 30px 30px 0;
     background: #fff;
     width: 105px;
-    text-align: center;
-    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
-    -moz-box-shadow   : 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset; 
-    box-shadow        : 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset; 
+    text-align: center;    
+    border: 1px solid rgba(0, 0, 0, 0.27);
 }
 ul.box li img{
     cursor: pointer;
@@ -222,9 +209,6 @@ ul.box li:after {
     max-width: 300px; /* avoid rotation causing ugly appearance at large container widths */
     max-height: 100px;
     height: 55%;
-    -webkit-box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow   : 0 8px 16px rgba(0, 0, 0, 0.3);
-    box-shadow        : 0 8px 16px rgba(0, 0, 0, 0.3);
     -webkit-transform: skew(-15deg) rotate(-6deg);
     -moz-transform   : skew(-15deg) rotate(-6deg);
     -ms-transform    : skew(-15deg) rotate(-6deg);
@@ -461,9 +445,7 @@ form#signup label.desc {
     width: 250px;
     max-height: 440px;
     overflow-y: auto;
-    -webkit-box-shadow: 0px 0px 3px rgba(0,0,0,.5);
-    -moz-box-shadow: 0px 0px 3px rgba(0,0,0,.5);
-    box-shadow: 0px 0px 3px rgba(0,0,0,.5);
+    border: 1px solid #717171;
     padding: 2px;
 }
 #tooltip_menu1 div,#tooltip_menu2 div,#tooltip_menu3 div,#tooltip_menu4 div {/*important*/
@@ -553,9 +535,7 @@ form#signup label.desc {
     -webkit-border-radius: 0 5px 0 0;
     border-radius:0 5px 0 0;
     font-size: 1em;
-    -webkit-box-shadow: 0 0 3px #666;
-    -moz-box-shadow   : 0 0 3px #666;
-    box-shadow        : 0 0 3px #666;
+    border: 1px solid #717171;
     overflow: auto;
 }
 .right_container{
@@ -611,9 +591,7 @@ form#signup label.desc {
     -moz-border-radius: 5px 0 0 0;
     overflow: auto;
     background-color: #fff;
-    -webkit-box-shadow: 0 0 3px #666;
-    -moz-box-shadow   : 0 0 3px #666;
-    box-shadow        : 0 0 3px #666;
+    border: 1px solid #717171;
 }
 .lefttab{
     margin:0px;
