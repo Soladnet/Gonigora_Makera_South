@@ -192,11 +192,11 @@ if (isset($_POST['login'])) {
                     <ul>
                         <li>
                             <label for="first_name">First:</label>
-                            <input  name="first_name" placeholder="" type="text" size="12" value=""  tabindex="1"  spellcheck="false" class="red"  required/>
+                            <input  name="first_name" placeholder="" type="text" value=""  tabindex="1"  spellcheck="false" class="red"  required/>
                         </li>
                         <li>
                             <label for="last_name">Last:</label>
-                            <input  name="last_name" type="text"  value="" size="12" placeholder="" tabindex="2" spellcheck="false"   required/>
+                            <input  name="last_name" type="text"  value="" placeholder="" tabindex="2" spellcheck="false"   required/>
                         </li>
                     </ul> </li> <!-- ************************ -->
 
