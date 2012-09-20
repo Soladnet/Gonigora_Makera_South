@@ -1,8 +1,3 @@
-<?php
-session_start();
-include 'executecommand.php';
-connect();
-?>
 <!doctype html>
 <html lang="en">
 
@@ -15,7 +10,13 @@ connect();
         <link rel="stylesheet" href="css/ie.css" type="text/css" media="screen" />
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
-        <script src="js/jquery-1.5.2.min.js" type="text/javascript"></script>
+        <script src="js/script.js" type="text/javascript"></script>
+        <script src="../js/jquery-1.8.0.min.js" type="text/javascript"></script>
+        <script type="text/javascript" src="../js/home_ajaxfileupload.js"></script> 
+
+        <script type="text/javascript" src="../js/jquery-ui-1.8.23.custom.min.js"></script>
+        <link rel="stylesheet" href="../css/custom-theme/jquery-ui-1.8.23.custom.css" type="text/css" />
+
         <script src="js/hideshow.js" type="text/javascript"></script>
         <script src="js/jquery.tablesorter.min.js" type="text/javascript"></script>
         <script type="text/javascript" src="js/jquery.equalHeight.js"></script>
@@ -26,8 +27,18 @@ connect();
             } 
         );
             $(document).ready(function() {
-
                 //When page loads...
+                $( "#status" ).toggle(
+                function() {
+                    $( "#status" ).animate({  height: 60  }, 500 );
+                    $("#status_community").css("display", "inline");
+                },
+                function() {
+                    $( "#status" ).animate({ height:30 }, 500 );
+                    $("#status_community").css("display", "none");
+                }
+            );
+                
                 $(".tab_content").hide(); //Hide all content
                 $("ul.tabs li:first").addClass("active").show(); //Activate first tab
                 $(".tab_content:first").show(); //Show first tab content
@@ -59,15 +70,21 @@ connect();
 
         <header id="header">
             <hgroup>
-                <h1 class="site_title"><a href="index.html">Gossout Admin</a></h1>
+                <h1 class="site_title"><a href="index.php">Gossout Admin</a></h1>
                 <h2 class="section_title">Dashboard</h2><div class="btn_view_site"><a href="http://www.gossout.com">View Site</a></div>
             </hgroup>
         </header> <!-- end of header bar -->
 
         <section id="secondary_bar">
             <div class="user">
-                <p>Welcome Admin <!--(<a href="#">3 Messages</a>)--></p>
-                <a class="logout_user" href="#" title="Logout">Logout</a> 
+                <p>Welcome <?php
+if (isset($_SESSION['auth'])) {
+    echo "<a href='../page.php?view=profile&uid=" . $_SESSION['auth']['id'] . "'>" . $_SESSION['auth']["fullname"] . "</a>";
+} else {
+    echo "UNKNOWN";
+}
+?> <!--(<a href="#">3 Messages</a>)--></p>
+                <a class="logout_user" href="page.php?view=home&signout=" title="Logout">Logout</a> 
             </div>
             <div class="breadcrumbs_container">
                 <article class="breadcrumbs"><a href="index.php">Website Admin</a> <div class="breadcrumb_divider"></div> <a class="current">Dashboard</a></article>
@@ -117,13 +134,16 @@ connect();
 
         <section id="main" class="column">
 
-            <!--            <h4 class="alert_info">Welcome to the free MediaLoot admin panel template, this could be an informative message.</h4>-->
-
+            <h4 id="act_alert_msg"></h4>
+            <!--            <h4 class="alert_info">Welcome to the free MediaLoot admin panel template, this could be an informative message.</h4>
+                        <h4 class="alert_warning">A Warning Alert</h4>
+                        <h4 class="alert_error">An Error Message</h4>
+                        <h4 class="alert_success">A Success Message</h4>-->
             <article class="module width_full">
                 <header><h3>Site Statistics</h3></header>
                 <div class="module_content">
                     <article class="stats_graph">
-<!--                        <img src="http://www.gossout.com/images/logo_image_text.png" alt="" />-->
+                        <img src="../images/logo_image_text.png" height="120" alt="" align="left" />
                     </article>
 
                     <article class="stats_overview">
@@ -147,10 +167,10 @@ connect();
             </article><!-- end of stats article -->
 
             <article class="module width_3_quarter">
-                <header><h3 class="tabs_involved">Content Manager</h3>
+                <header><h3 class="tabs_involved">User Activities</h3>
                     <ul class="tabs">
-                        <li><a href="#tab1">Posts</a></li>
-                        <li><a href="#tab2">Comments</a></li>
+                        <li><a href="#tab1">New Users</a></li>
+                        <li><a href="#tab2">Community Stat</a></li>
                     </ul>
                 </header>
 
@@ -159,16 +179,15 @@ connect();
                         <table class="tablesorter" cellspacing="0"> 
                             <thead> 
                                 <tr> 
-                                    <th></th> 
-                                    <th>Post Name</th> 
+<!--                                    <th></th> -->
+                                    <th>Full Name</th> 
+                                    <th>Location</th> 
                                     <th>Community</th> 
-                                    <th>Sender</th> 
-                                    <th>Created On</th> 
-                                    <th>Actions</th> 
+                                    <th>Time</th> 
                                 </tr> 
                             </thead>
                             <?php
-                            $arr = getPosts();
+                            $arr = getRecentUsers();
                             if (count($arr["data"]) > 0) {
                                 ?>
                                 <tbody> 
@@ -176,12 +195,11 @@ connect();
                                     foreach ($arr["data"] as $x) {
                                         ?>
                                         <tr> 
-                                            <td><input type="checkbox" name="post_<?php echo $x['id']; ?>"></td> 
-                                            <td><?php echo $x['post']; ?></td> 
-                                            <td><?php echo $x['community']; ?></td> 
-                                            <td><?php echo $x['sender']; ?></td> 
-                                            <td><?php echo $x['time']; ?></td> 
-                                            <td><input type="image" src="images/icn_edit.png" title="Edit" disabled=""><input type="image" src="images/icn_trash.png" title="Trash"></td> 
+        <!--                                            <td><input type="checkbox" name="post_<?php echo $x['id']; ?>"></td> -->
+                                            <td><?php echo $x['fullname']; ?></td> 
+                                            <td><?php echo $x['location']; ?></td> 
+                                            <td><?php echo "<!--<a href='' target='blank'>-->" . $x['community'] . "<!--</a>-->"; ?></td> 
+                                            <td><?php echo agoServer($x['joined']); ?></td> 
                                         </tr>
                                         <?php
                                     }
@@ -197,49 +215,33 @@ connect();
                         <table class="tablesorter" cellspacing="0"> 
                             <thead> 
                                 <tr> 
-                                    <th></th> 
-                                    <th>Comment</th> 
-                                    <th>Posted by</th> 
-                                    <th>Posted On</th> 
-                                    <th>Actions</th> 
+                                    <th>Community</th>
+                                    <th>Subscribers</th>
+                                    <th>Discussion</th>
+                                    <th>Comments</th>
+                                    <th>Last Post</th>
                                 </tr> 
                             </thead> 
                             <tbody> 
-<!--                                <tr> 
-                                    <td><input type="checkbox"></td> 
-                                    <td>Lorem Ipsum Dolor Sit Amet</td> 
-                                    <td>Mark Corrigan</td> 
-                                    <td>5th April 2011</td> 
-                                    <td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
-                                </tr> 
-                                <tr> 
-                                    <td><input type="checkbox"></td> 
-                                    <td>Ipsum Lorem Dolor Sit Amet</td> 
-                                    <td>Jeremy Usbourne</td> 
-                                    <td>6th April 2011</td> 
-                                    <td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
-                                </tr>
-                                <tr> 
-                                    <td><input type="checkbox"></td> 
-                                    <td>Sit Amet Dolor Ipsum</td> 
-                                    <td>Super Hans</td> 
-                                    <td>10th April 2011</td> 
-                                    <td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
-                                </tr> 
-                                <tr> 
-                                    <td><input type="checkbox"></td> 
-                                    <td>Dolor Lorem Amet</td> 
-                                    <td>Alan Johnson</td> 
-                                    <td>16th April 2011</td> 
-                                    <td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
-                                </tr> 
-                                <tr> 
-                                    <td><input type="checkbox"></td> 
-                                    <td>Dolor Lorem Amet</td> 
-                                    <td>Dobby</td> 
-                                    <td>16th April 2011</td> 
-                                    <td><input type="image" src="images/icn_edit.png" title="Edit"><input type="image" src="images/icn_trash.png" title="Trash"></td> 
-                                </tr> -->
+                                <?php
+                                $arr = getAllCommunity();
+                                $i = 0;
+                                foreach ($arr as $value) {
+                                    $i++;
+                                    echo '<tr>
+                                    <td><p class="catg_name"><!--<a href="page.php?view=community&com=' . $value['id'] . '">-->' . $value['name'] . '<!--</a>--></p>
+                                        <!--<p class="catg_desc">' . $value['description'] . '</p>-->
+                                    </td>
+                                    <td> ' . $value['subscriber'] . '</td>
+                                    <td align="right">' . $value['postCount'] . '</td>
+                                    <td align="right">' . $value['commentCount'] . '</td>
+                                    <td><!--<a href="page.php?view=profile&uid=' . $value['lastSender_id'] . '">-->' . toSentenceCase($value['lastSender']) . '<!--</a>--></td>
+                                </tr>';
+                                    if ($i >= 10) {
+                                        break;
+                                    }
+                                }
+                                ?>
                             </tbody> 
                         </table>
 
@@ -250,7 +252,7 @@ connect();
             </article><!-- end of content manager article -->
 
             <article class="module width_quarter">
-                <header><h3>Messages</h3></header>
+                <header><h3>Admin Chat Box</h3></header>
                 <div class="message_list">
                     <div class="module_content">
 <!--                        <div class="message"><p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor.</p>
@@ -274,81 +276,96 @@ connect();
             </article><!-- end of messages article -->
 
             <div class="clear"></div>
-
-            <article class="module width_full">
-                <header><h3>Share with Gossout Community</h3></header>
-                <div class="module_content">
-                    <fieldset>
-                        <label>Communities</label>
-                        <select name="">
-                            <?php
-                            $arr = getAllCommunity();
-                            if (count($arr) > 0) {
-                                foreach ($arr as $value) {
-                                    $selected = "";
-                                    if ($value['name'] == "Ahmadu Bello University, Zaria, Nigeria") {
-                                        $selected = "selected=selected";
+            <form id="statusUpdate" onSubmit="return false" method="POST" enctype="multipart/form-data">
+                <article class="module width_full">
+                    <header><h3>Share with Gossout Community</h3></header>
+                    <div class="module_content">
+                        <fieldset>
+                            <label>Communities</label>
+                            <select name="community" id="community_selected">
+                                <?php
+                                if ($_SESSION['auth']['admin'] == "AS") {
+                                    $arr = getAllCommunity();
+                                    if (count($arr) > 0) {
+                                        foreach ($arr as $value) {
+                                            $selected = "";
+                                            $val = $value['name'];
+                                            if ($val == "Zuma Broadcast") {
+                                                $selected = "selected=selected";
+                                                $val = "Share with all communities";
+                                            }
+                                            echo "<option value='" . $value['id'] . "' $selected>" . $val . "</option>";
+                                        }
                                     }
-                                    echo "<option value='" . $value['id'] . "' $selected>" . $value['name'] . "</option>";
                                 }
-                            }
-                            ?>
-                        </select>
-                    </fieldset>
-                    <fieldset>
-                        <label>Content</label>
-                        <textarea rows="12"></textarea>
-                    </fieldset>
-<!--                    <fieldset style="width:48%; float:left; margin-right: 3%;">  to make two field float next to one another, adjust values accordingly 
-                        <label>Category</label>
-                        <select style="width:92%;">
-                            <option>Articles</option>
-                            <option>Tutorials</option>
-                            <option>Freebies</option>
-                        </select>
-                    </fieldset>
-                    <fieldset style="width:48%; float:left;">  to make two field float next to one another, adjust values accordingly 
-                        <label>Tags</label>
-                        <input type="text" style="width:92%;">
-                    </fieldset><div class="clear"></div>-->
-                </div>
-                <footer>
-                    <div class="submit_link">
-                        <select>
-                            <option>Draft</option>
-                            <option>Published</option>
-                        </select>
-                        <input type="submit" value="Publish" class="alt_btn">
-                        <input type="submit" value="Reset">
+                                ?>
+                            </select>
+                        </fieldset>
+                        <fieldset>
+                            <label>Content</label>
+
+                            <textarea placeholder="What's happening right now!" class="update_textarea" id="status" ></textarea>
+                            <span id="status_community"><?php
+//                            if ($_SESSION['auth']['community']['name'] != "") {
+//                                echo "Share with " . $_SESSION['auth']['community']['name'];
+//                            } else {
+//                                echo "<span class='req'>Join a community before you can share information</span>";
+//                            }
+                                ?></span><span id="share_loading"></span>
+                            <br/>
+                <!--                                <input type="button" value="Button"/>
+                                                <input type="reset" value="Clear"/>-->
+
+                        </fieldset>
+                        <!--                    <fieldset style="width:48%; float:left; margin-right: 3%;">  to make two field float next to one another, adjust values accordingly 
+                                                <label>Category</label>
+                                                <select style="width:92%;">
+                                                    <option>Articles</option>
+                                                    <option>Tutorials</option>
+                                                    <option>Freebies</option>
+                                                </select>
+                                            </fieldset>
+                                            <fieldset style="width:48%; float:left;">  to make two field float next to one another, adjust values accordingly 
+                                                <label>Tags</label>
+                                                <input type="text" style="width:92%;">
+                                            </fieldset><div class="clear"></div>-->
                     </div>
-                </footer>
-            </article><!-- end of post new article -->
+                    <footer>
+                        <div class="submit_link">
+    <!--                        <select>
+                                <option>Draft</option>
+                                <option>Published</option>
+                            </select>-->
+                            <input id="fileToUpload" type="file" size="45" name="fileToUpload" class="input" >
+                            <input type="submit" value="Share" onClick="getValue('#status','posts');"/>
+    <!--                        <input type="submit" value="Publish" class="alt_btn">-->
+                            <input type="reset" value="Reset">
+                        </div>
+                    </footer>
 
-            <h4 class="alert_warning">A Warning Alert</h4>
 
-            <h4 class="alert_error">An Error Message</h4>
+                </article></form><!-- end of post new article -->
 
-            <h4 class="alert_success">A Success Message</h4>
 
-            <article class="module width_full">
-                <header><h3>Basic Styles</h3></header>
-                <div class="module_content">
-                    <h1>Header 1</h1>
-                    <h2>Header 2</h2>
-                    <h3>Header 3</h3>
-                    <h4>Header 4</h4>
-                    <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras mattis consectetur purus sit amet fermentum. Maecenas faucibus mollis interdum. Maecenas faucibus mollis interdum. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p>
-
-                    <p>Donec id elit non mi porta <a href="#">link text</a> gravida at eget metus. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis consectetur purus sit amet fermentum. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.</p>
-
-                    <ul>
-                        <li>Donec ullamcorper nulla non metus auctor fringilla. </li>
-                        <li>Cras mattis consectetur purus sit amet fermentum.</li>
-                        <li>Donec ullamcorper nulla non metus auctor fringilla. </li>
-                        <li>Cras mattis consectetur purus sit amet fermentum.</li>
-                    </ul>
-                </div>
-            </article><!-- end of styles article -->
+            <!--            <article class="module width_full">
+                            <header><h3>Basic Styles</h3></header>
+                            <div class="module_content">
+                                <h1>Header 1</h1>
+                                <h2>Header 2</h2>
+                                <h3>Header 3</h3>
+                                <h4>Header 4</h4>
+                                <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras mattis consectetur purus sit amet fermentum. Maecenas faucibus mollis interdum. Maecenas faucibus mollis interdum. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p>
+            
+                                <p>Donec id elit non mi porta <a href="#">link text</a> gravida at eget metus. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis consectetur purus sit amet fermentum. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.</p>
+            
+                                <ul>
+                                    <li>Donec ullamcorper nulla non metus auctor fringilla. </li>
+                                    <li>Cras mattis consectetur purus sit amet fermentum.</li>
+                                    <li>Donec ullamcorper nulla non metus auctor fringilla. </li>
+                                    <li>Cras mattis consectetur purus sit amet fermentum.</li>
+                                </ul>
+                            </div>
+                        </article> end of styles article -->
             <div class="spacer"></div>
         </section>
 

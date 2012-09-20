@@ -289,7 +289,7 @@ if (isset($_POST['login'])) {
                     <li>
                         <div>
 
-                            <input id="saveForm" name="saveForm" class="btTxt submit" type="submit" value="Sign-up" /><span id="loading"></span>
+                            <input name="saveForm" type="submit" value="Sign-up" /><span id="loading"></span>
                         </div>
                     </li> <!-- ************************ -->
                     <li>

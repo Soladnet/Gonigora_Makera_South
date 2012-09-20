@@ -1,331 +1,299 @@
-function parseURLParams(url,count) {
-    var queryStart = url.indexOf("?") + 1;
-    var queryEnd   = url.indexOf("#") + 1 || url.length + 1;
-    var query      = url.slice(queryStart, queryEnd - 1);
-
-    if (query === url || query === "") return;
-
-    var params  = {};
-    var nvPairs = query.replace(/\+/g, " ").split("&");
-
-    for (var i=0; i<nvPairs.length; i++) {
-        var nv = nvPairs[i].split("=");
-        var n  = decodeURIComponent(nv[0]);
-        var v  = decodeURIComponent(nv[1]);
-        if ( !(n in params) ) {
-            params[n] = [];
+function parseURLParams(a,b){
+    var c=a.indexOf("?")+1;
+    var d=a.indexOf("#")+1||a.length+1;
+    var e=a.slice(c,d-1);
+    if(e===a||e==="")return;
+    var f={};
+    
+    var g=e.replace(/\+/g," ").split("&");
+    for(var h=0;h<g.length;h++){
+        var i=g[h].split("=");
+        var j=decodeURIComponent(i[0]);
+        var k=decodeURIComponent(i[1]);
+        if(!(j in f)){
+            f[j]=[]
         }
-        params[n].push(nv.length === 2 ? v : null);
+        f[j].push(i.length===2?k:null)
     }
-    t = (params.view+"").substring(0, 1).toUpperCase()+(params.view+"").substring(1, (params.view+"").length);
-    if(count>0){
-        document.title = t+" ( "+count+" )";
-    }else{
-        document.title = t;
+    t=(f.view+"").substring(0,1).toUpperCase()+(f.view+"").substring(1,(f.view+"").length);
+    if(b>0){
+        document.title=t+" ( "+b+" )"
+    }
+    else{
+        document.title=t
     }
 }
-function getValue(id,type){
-    if($(id).hasClass("sending")){
-        return;
+function getValue(a,b){
+    if($(a).hasClass("sending")){
+        return
     }else{
-        $(id).addClass("sending");
+        $(a).addClass("sending")
     }
-    if(type=="posts"){
-        
-        var val = $.trim($(id).val());
+    
+    if(b=="posts"){
+        var c=$.trim($(a).val());
         if($("#fileToUpload").val()==""){
-            if(val==""){
-                return;
+            if(c==""){
+                return
             }else{
-                $("#share_loading").html('<img src="images/load.gif" />');
-                $(id).attr('disabled', 'disabled');
-                sendData(val,type,'.posts',id);   
+                $("#share_loading").html('<img src="../images/load.gif" />');
+                $(a).attr("disabled","disabled");
+                sendData(c,b,".posts",a)
             }
         }else{
-            $(id).attr('disabled', 'disabled');
-            $("#share_loading").html('<img src="images/load.gif" />');
-            ajaxFileUpload(val,id);
+            $(a).attr("disabled","disabled");
+            $("#share_loading").html('<img src="../images/load.gif" />');
+            ajaxFileUpload(c,a);
         }
-    }
-    else if(type=="commentsPost"){
-        var comment = $.trim($("#c"+id).val());
-        if(comment==""){
-            return;
+    }else if(b=="commentsPost"){
+        var d=$.trim($("#c"+a).val());
+        if(d==""){
+            return
         }
-        $("#c"+id).attr('disabled', 'disabled').addClass("sending");
-        $("#c_loading"+id).html("<img src='images/load.gif' />");
-        sendComment(comment, type, "#comments"+id, "#c"+id, id);
-        $("#c"+id).removeAttr('disabled');
-    
-    }else if(type=="commentConver"){
-        var conver = $.trim($("#m"+id).val());
-        if(conver==""){
-            return;
+        $("#c"+a).attr("disabled","disabled").addClass("sending");
+        $("#c_loading"+a).html("<img src='images/load.gif' />");
+        sendComment(d,b,"#comments"+a,"#c"+a,a);
+        $("#c"+a).removeAttr("disabled")
+    }else if(b=="commentConver"){
+        var e=$.trim($("#m"+a).val());
+        if(e==""){
+            return
         }
-        $("#m"+id).attr('disabled', 'disabled');
-        $("#m"+id).addClass("sending");
-        
-        $("#conver_loading"+id).html("<img src='images/load.gif' />");
-        sendComment(conver, type, "#message", "#m"+id, id);
-        $("#m"+id).removeAttr('disabled');
-    //        $( ".content" ).scrollTop( 3534543 );
-    
+        $("#m"+a).attr("disabled","disabled");
+        $("#m"+a).addClass("sending");
+        $("#conver_loading"+a).html("<img src='images/load.gif' />");
+        sendComment(e,b,"#message","#m"+a,a);
+        $("#m"+a).removeAttr("disabled")
     }
 }
-function sendData(value,to,updateHtml,source){
-    $.ajax({
-        url: 'exec.php',  
-        data: {
-            action: to,  
-            posts: value
+function sendData(a,b,c,d){
+    var comunity_id = $("#community_selected").val();
+    $.ajax(
+    {
+        url:"exec.php",
+        data:{
+            action:b,
+            posts:a,
+            com:comunity_id
         },
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            if(to=="posts"){
-                if (output){ // fix strange ie bug
-                    if(output.status=="success"){
-                        //                        alert(output.status);
-                        var result = '<div class="post" id=' + output.id + '><img class="profile_small"src="' +output.imgL+ '"/><p class="name"><a href="page.php?view=profile&uid='+output.sender_id+'">' +output.name+ '</a></p><p class="status">' +output.text+ '</p><p class="time" id="tp'+output.id+'">' +output.time+ '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' + output.id + '\');">Gossout</span> . <span onclick="showCommentBox(\'box'+output.id+'\',\''+output.id+'\',\''+output.imgS+'\')">comment</span> . <span><a href="page.php?view=community&com='+output.com_id+'">in '+output.com+'</a></span></div><script>setTimeout(timeUpdate,20000,\''+output.rawTime+'\',\'tp'+output.id+'\')</script><span id="comments' +output.id+ '"></span><span id="box'+output.id+'"></span></div>';
-                        $(updateHtml).html(result+$(updateHtml).html());
-                        $( "#status" ).animate({
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(a){
+            if(b=="posts"){
+                if(a){
+                    if(a.status=="success"){
+                       $("#status").animate({
                             height:30
-                        }, 1000 );
-                        $("#status_community").css("display", "none");
-                        $(source).removeAttr('disabled');
-                        $(source).val("");
-                        $(source).removeClass("sending");
-                        showFlashMessageDialoge(output.message,"messenger","info");
-                        
-                    }
-                    else if(output.status=="failed"){
-                        $(source).removeAttr('disabled');
-                        showFlashMessageDialoge(output.message,"messenger","error");
+                        },1e3);
+                        $(d).removeAttr("disabled");
+                        $(d).val("");
+                        $(d).removeClass("sending");
+                        showFlashMessageDialoge(a.message,"act_alert_msg","info")
+                    }else if(a.status=="failed"){
+                        $(d).removeAttr("disabled");
+                        showFlashMessageDialoge(a.message,"act_alert_msg","error")
                     }
                 }
-                $("#share_loading").html("");
+                $("#share_loading").html("")
             }
-        
-        
         }
-    });
+    })
 }
-function sendComment(value,to,updateHtml,source,postId){
+function sendComment(a,b,c,d,e){
     $.ajax({
-        url: 'exec.php', 
-        data: {
-            action: to, 
-            posts: value,
-            sourceId:postId
-        }, 
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            function callback() {
-                setTimeout(function() {
-                    $( "shade" ).removeAttr( "style" ).hide().fadeIn();
-                }, 1000 );
-                $(".post").removeClass("shade");
+        url:"exec.php",
+        data:{
+            action:b,
+            posts:a,
+            sourceId:e
+        },
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(a){
+            function f(){
+                setTimeout(function(){
+                    $("shade").removeAttr("style").hide().fadeIn()
+                },1e3);
+                $(".post").removeClass("shade")
             }
-            if (output){ // fix strange ie bug
-                if(to=="commentsPost"){
-                    var result = '<div id="comment" class='+ output.id + '><img class="profile_small" src="'+output.imgS+ '"/><p class="name"><a href="page.php?view=profile&uid='+output.sender_id+'">' +output.name+ '</a></p><p class="status">'  +output.text+ '</p><p class="time" id="tpc'+output.id+'">' +output.time+ '</p></div><script>setTimeout(timeUpdate,20000,\''+output.rawTime+'\',\'tpc'+output.id+'\')</script>';
-                    
-                    if(updateHtml!=""){
-                        $(updateHtml).html($(updateHtml).html()+result);
+            if(a){
+                if(b=="commentsPost"){
+                    var g='<div id="comment" class='+a.id+'><img class="profile_small" src="'+a.imgS+'"/><p class="name"><a href="page.php?view=profile&uid='+a.sender_id+'">'+a.name+'</a></p><p class="status">'+a.text+'</p><p class="time" id="tpc'+a.id+'">'+a.time+"</p></div><script>setTimeout(timeUpdate,20000,'"+a.rawTime+"','tpc"+a.id+"')</script>";
+                    if(c!=""){
+                        $(c).html($(c).html()+g)
                     }
-                    $("#c_loading"+postId).html("");
-                    $("#"+postId).removeClass("sending");
-                }else if(to=="commentConver"){
-                    if(updateHtml!=""){
-                        result = "<div class='post shade' id='inb_conv" + output.id + "'><img class='profile_small' src='" +output.imgL+ "'/><p class='name'><a href='#'>"+output.name+ "</a></p><p class='status'>"  +output.text+ "</p><p class='time' id='inb_conv_tc"+output.id+"'>" +output.time+  "</p></div><script>setTimeout(timeUpdate,20000,'"+output.rawTime+"','inb_conv_tc"+output.id+"')</script>";
-                        $(updateHtml).html($(updateHtml).html()+result);
-                        $( ".shade" ).effect( "bounce", {}, 100, callback );
-                        
-                    }
-                    else{
-                        showFlashMessageDialoge("Message Sent!","messenger","info");
+                    $("#c_loading"+e).html("");
+                    $("#"+e).removeClass("sending")
+                }
+                else if(b=="commentConver"){
+                    if(c!=""){
+                        g="<div class='post shade' id='inb_conv"+a.id+"'><img class='profile_small' src='"+a.imgL+"'/><p class='name'><a href='#'>"+a.name+"</a></p><p class='status'>"+a.text+"</p><p class='time' id='inb_conv_tc"+a.id+"'>"+a.time+"</p></div><script>setTimeout(timeUpdate,20000,'"+a.rawTime+"','inb_conv_tc"+a.id+"')</script>";
+                        $(c).html($(c).html()+g);
+                        $(".shade").effect("bounce",{},100,f)
+                    }else{
+                        showFlashMessageDialoge("Message Sent!","messenger","info")
                     }
                 }
-                $(source).val(""); 
-                $(source).removeClass("sending");
+                $(d).val("");
+                $(d).removeClass("sending")
             }
         }
-    });
+    })
 }
-function showCommentBox(updateHtml,id,img){
-    var val = $("#"+updateHtml).html();
-    if(val==""){
-        $("#"+updateHtml).html('<div id="commentbox"><form method="GET" onsubmit="getValue(\'' +id+ '\',\'commentsPost\');return false"><table class="commentTable"><tr><td class="comment-img-td"><img class="profile_small" src="' + img + '" /></td><td><input class="commenttext" type="text" id="c' +id + '"/></td></tr></table><span id="c_loading' +id + '"></span></form>');
-        $("#c"+id).focus();
+function showCommentBox(a,b,c){
+    var d=$("#"+a).html();
+    if(d==""){
+        $("#"+a).html('<div id="commentbox"><form method="GET" onsubmit="getValue(\''+b+'\',\'commentsPost\');return false"><table class="commentTable"><tr><td class="comment-img-td"><img class="profile_small" src="'+c+'" /></td><td><input class="commenttext" type="text" id="c'+b+'"/></td></tr></table><span id="c_loading'+b+'"></span></form>');
+        $("#c"+b).focus()
     }else{
-        $("#"+updateHtml).html("");
+        $("#"+a).html("")
     }
 }
 function getUpdateCount(){
     $.ajax({
-        url: 'exec.php', 
-        data: {
-            action: '', 
-            count: ''
-        }, 
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            var count = 0;
-            if (output){ // fix strange ie bug
-                if(output.bag>0){
-                    $('#gossbag').html("GossBag <sup class='req'>"+output.bag+"</sup>");
-                    count = count + output.bag;
+        url:"exec.php",
+        data:{
+            action:"",
+            count:""
+        },
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(a){
+            var b=0;
+            if(a){
+                if(a.bag>0){
+                    $("#gossbag").html("GossBag <sup class='req'>"+a.bag+"</sup>");
+                    b=b+a.bag
                 }else{
-                    $('#gossbag').html("GossBag");
+                    $("#gossbag").html("GossBag")
                 }
-                if(output.msg>0){
-                    $('#messages').html("Messages <sup class='req'>"+output.msg+"</sup>");
-                    count = count + output.msg;
-                }
-                else{
-                    $('#messages').html("Messages");
-                }
-                if(output.frq>0){
-                    $('#friend_requests').html("Friend Requests <sup class='req'>"+output.frq+"</sup>");
-                    count = count+ output.frq;
+                if(a.msg>0){
+                    $("#messages").html("Messages <sup class='req'>"+a.msg+"</sup>");
+                    b=b+a.msg
                 }else{
-                    $('#friend_requests').html("Friend Requests");
+                    $("#messages").html("Messages")
+                }
+                if(a.frq>0){
+                    $("#friend_requests").html("Friend Requests <sup class='req'>"+a.frq+"</sup>");
+                    b=b+a.frq
+                }else{
+                    $("#friend_requests").html("Friend Requests")
                 }
             }
-            
-            parseURLParams(document.URL, count);
+            parseURLParams(document.URL,b)
         }
     });
-    setTimeout(getUpdateCount, 3000);
+    setTimeout(getUpdateCount,3e3)
 }
 function getInbox(){
     $.ajax({
-        url: 'exec.php',
-        data: {
-            action: "Messages",
-            flcikr:''
+        url:"exec.php",
+        data:{
+            action:"Messages",
+            flcikr:""
         },
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            var result = "";
-            $.each(output, function(i,output){
-                if (output){ // fix strange ie bug
-                    var lastSent = "";
-                    if(output.isUser){
-                        lastSent = "<img class='profile_small' src='images/reply.png'/>";
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(a){
+            var b="";
+            $.each(a,function(a,c){
+                if(c){
+                    var d="";
+                    if(c.isUser){
+                        d="<img class='profile_small' src='images/reply.png'/>"
                     }else{
-                        lastSent = "";
+                        d=""
                     }
-                    var shade = "";
-                    if(output.status=="N"){
-                        shade = " shade";
+                    var e="";
+                    if(c.status=="N"){
+                        e=" shade"
                     }else{
-                        shade = "";
+                        e=""
                     }
-                    result += "<div class='post"+shade+"' id='"+output.msgid+ "'><img class='profile_small' src='" +output.img+ "'/>"+lastSent+"<p class='name'><a href='page.php?view=Messages&open=" +output.id+ "'>" +output.name+ "</a></p><p class='status'>"+output.text+"</p><p class='time' id='tim"+output.msgid+"'>" +output.time+ "</p></div><script>setTimeout(timeUpdate,20000,'"+ouput.rawTime+"','tim"+output.msgid+"')<script>";
+                    b+="<div class='post"+e+"' id='"+c.msgid+"'><img class='profile_small' src='"+c.img+"'/>"+d+"<p class='name'><a href='page.php?view=Messages&open="+c.id+"'>"+c.name+"</a></p><p class='status'>"+c.text+"</p><p class='time' id='tim"+c.msgid+"'>"+c.time+"</p></div><script>setTimeout(timeUpdate,20000,'"+ouput.rawTime+"','tim"+c.msgid+"')<script>"
                 }
             });
-            result += '';
-            $("#inbox").html(result);
+            b+="";
+            $("#inbox").html(b)
         }
     });
-    setTimeout(getInbox, 30000);
+    setTimeout(getInbox,3e4)
 }
-function getUpdateFlicker(id,message){
-    if($(id).hasClass("clicked")){
-        $(id).removeClass("clicked");
-        return;
+function getUpdateFlicker(a,b){
+    if($(a).hasClass("clicked")){
+        $(a).removeClass("clicked");
+        return
     }
-    var baseLink;
-    //    if(message=="GossBag"){
-    //        baseLink = "#";
-    //    }else if(message=="Messages"){
-    baseLink = "page.php?view="+message;
-    //    }
-    //    else if(message=="Friend Requests"){
-    //        baseLink = "#";
-    //    }
-    
+    var c;
+    c="page.php?view="+b;
     $.ajax({
-        url: 'exec.php',
-        data: {
-            action: message,
-            flcikr:''
+        url:"exec.php",
+        data:{
+            action:b,
+            flcikr:""
         },
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            $(id).addClass("clicked");
-            var result = "";
-            if (output.status=="success"){ // fix strange ie bug
-                if(message=="GossBag"){
-                    $("#gossbagloading").remove()
-                    $.each(output.data, function(i,output){
-                        if(output.id){
-                            if(output.infoType=="gb"){
-                                result += "<div class='post' id='"+output.id+ "'><img class='profile_small' src='" +output.img+ "'/><p class='name'><a href='page.php?view=notification&open=" +output.post_id+ "'>" +output.fullname+ "</a></p><p class='status'>"+output.caption+"</p><div class='post_activities'>" +output.sTime+ "</div></div><script>makeMeClickable("+output.id+")</script>";
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(c){
+            $(a).addClass("clicked");
+            var d="";
+            if(c.status=="success"){
+                if(b=="GossBag"){
+                    $("#gossbagloading").remove();
+                    $.each(c.data,function(a,b){
+                        if(b.id){
+                            if(b.infoType=="gb"){
+                                d+="<div class='post' id='"+b.id+"'><img class='profile_small' src='"+b.img+"'/><p class='name'><a href='page.php?view=notification&open="+b.post_id+"'>"+b.fullname+"</a></p><p class='status'>"+b.caption+"</p><div class='post_activities'>"+b.sTime+"</div></div><script>makeMeClickable("+b.id+")</script>"
                             }else{
-                                result += "<div class='post' id='tw_f"+output.id+ "'><img class='profile_small' src='" +output.img+ "'/><p class='name'><a href='page.php?view=tweakwink&open=" +output.id+ "'>" +output.fullname+ "</a></p><p class='status'>"+output.caption+"</p><div class='post_activities'>" +output.sTime+ "</div></div>";
-                            } 
+                                d+="<div class='post' id='tw_f"+b.id+"'><img class='profile_small' src='"+b.img+"'/><p class='name'><a href='page.php?view=tweakwink&open="+b.id+"'>"+b.fullname+"</a></p><p class='status'>"+b.caption+"</p><div class='post_activities'>"+b.sTime+"</div></div>"
+                            }
                         }
-                        
-                    });
-                }else if(message=="Messages"){
+                    })
+                }else if(b=="Messages"){
                     $("#messagesloading").remove();
-                    $.each(output, function(i,output){
-                        if(output.msgid){
-                            var lastSent = "";
-                            if(output.isUser){
-                                lastSent = "<img class='profile_small' src='images/reply.png'/>";
+                    $.each(c,function(a,c){
+                        if(c.msgid){
+                            var e="";
+                            if(c.isUser){
+                                e="<img class='profile_small' src='images/reply.png'/>"
                             }else{
-                                lastSent = "";
+                                e=""
                             }
-                            var shade = "";
-                            if(output.status=="N"){
-                                shade = " shade";
+                            var f="";
+                            if(c.status=="N"){
+                                f=" shade"
                             }else{
-                                shade = "";
+                                f=""
                             }
-                            result += "<div class='post"+shade+"' id='"+output.msgid+ "'><img class='profile_small' src='" +output.img+ "'/>"+lastSent+"<p class='name'><a href='page.php?view="+message+"&open=" +output.id+ "'>" +output.name+ "</a></p><p class='status'>"+output.text+"</p><div class='post_activities'>" +output.time+ "</div></div>"+'<script>makeMeClickable("#'+output.msgid+'");</script>';    
+                            d+="<div class='post"+f+"' id='"+c.msgid+"'><img class='profile_small' src='"+c.img+"'/>"+e+"<p class='name'><a href='page.php?view="+b+"&open="+c.id+"'>"+c.name+"</a></p><p class='status'>"+c.text+"</p><div class='post_activities'>"+c.time+"</div></div>"+'<script>makeMeClickable("#'+c.msgid+'");</script>'
                         }
-                        
-                    });
-                }else if(message=="Friend Requests"){
+                    })
+                }else if(b=="Friend Requests"){
                     $("#friendreqloading").remove();
-                    //                    alert("done");
-                    $.each(output, function(i,output){
-                        if(output.id){
-                            result += "<div class='post' id='frq"+output.id+ "'><img class='profile_small' src='" +output.img+ "'/><p class='name'><a href='page.php?view="+message+"&open=" +output.id+ "'>" +output.fullname+ "</a></p><p class='status'>"+output.caption+"</p><p class='time'>" +output.time+ "</p>"+'<span id="requestoption'+output.id+'"><input type="submit" value="Accept" onclick="acceptOrDeclineFrq(\''+output.id+'\',\'acpt\',\''+output.rowId+'\')" class="ash_gradient" /><input type="submit" value="Decline" class="ash_gradient" onclick="acceptOrDeclineFrq(\''+output.id+'\',\'decl\',\''+output.rowId+'\')" /></span>'+"</div>";//+'<script>makeMeClickable("#'+output.id+'");</script>';
+                    $.each(c,function(a,c){
+                        if(c.id){
+                            d+="<div class='post' id='frq"+c.id+"'><img class='profile_small' src='"+c.img+"'/><p class='name'><a href='page.php?view="+b+"&open="+c.id+"'>"+c.fullname+"</a></p><p class='status'>"+c.caption+"</p><p class='time'>"+c.time+"</p>"+'<span id="requestoption'+c.id+'"><input type="submit" value="Accept" onclick="acceptOrDeclineFrq(\''+c.id+"','acpt','"+c.rowId+'\')" class="ash_gradient" /><input type="submit" value="Decline" class="ash_gradient" onclick="acceptOrDeclineFrq(\''+c.id+"','decl','"+c.rowId+"')\" /></span>"+"</div>"
                         }
-                    });
-                }   
+                    })
+                }
             }else{
-                if(output.status=="failed"){
-                    result = "<div class='post'><p class='name'>Notification</p><p class='status'>Your bag is empty</p></div>";
+                if(c.status=="failed"){
+                    d="<div class='post'><p class='name'>Notification</p><p class='status'>Your bag is empty</p></div>"
                 }
             }
-            
-            //            result += '<div class="menu_bottom"><a href="'+baseLink+'"><span>Show all '+message+'</span></a></div>';
-            $(id).html(result);
+            $(a).html(d)
         }
-        
-    });
-
+    })
 }
-function showMenu(id,itemClass){
-    
-    $(function() {
-        $(itemClass).click(function() {
-            
-            if ($(itemClass).hasClass("bt")) {
+function showMenu(a,b){
+    $(function(){
+        $(b).click(function(){
+            if($(b).hasClass("bt")){
                 $("#popGossbag").hide();
                 $("#popMessage").hide();
                 $("#popFriend_Request").hide();
@@ -334,1078 +302,986 @@ function showMenu(id,itemClass){
                 $(".menu2").addClass("bt").removeClass("clicked");
                 $(".menu3").addClass("bt").removeClass("clicked");
                 $(".menu4").addClass("bt").removeClass("clicked");
-                
-                $(itemClass).removeClass("bt").addClass("clicked");
-                $(id).show();
-            
-            } else {
-                $(itemClass).removeClass("clicked").addClass("bt")
-                $(id).hide();
+                $(b).removeClass("bt").addClass("clicked");
+                $(a).show()
+            }else{
+                $(b).removeClass("clicked").addClass("bt");
+                $(a).hide()
             }
-        });
-    // alert("id= "+id);
-    });
+        })
+    })
 }
-function getConversationUpdate(contactId){
-    if(contactId==0){
+function getConversationUpdate(a){
+    if(a==0){
         $(".content").scrollTop(43535);
-        return;
+        return
     }
-    
     $.ajax({
-        url: 'exec.php',
-        data: {
-            action: "conver",
-            inbox: contactId
+        url:"exec.php",
+        data:{
+            action:"conver",
+            inbox:a
         },
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            if(output){
-                
-                if(output.status=="success"){
-                    var result = "";
-                    $.each(output.data, function(i,output){
-                        result += "<div class='post' id='" +output.id+ "'><img class='profile_small' src='" +output.img+ "'/><p class='name'><a href='#'>" +output.name +"</a></p><p class='status'>"+output.text+"</p><p class='time' id='inb_conv_tc"+output.id+"'>"+output.time+"</p></div>"+'<script>setTimeout(timeUpdate,20000,\''+output.rawTime+'\',\'inb_conv_tc'+output.id+'\');</script>';
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(a){
+            if(a){
+                if(a.status=="success"){
+                    var b="";
+                    $.each(a.data,function(a,c){
+                        b+="<div class='post' id='"+c.id+"'><img class='profile_small' src='"+c.img+"'/><p class='name'><a href='#'>"+c.name+"</a></p><p class='status'>"+c.text+"</p><p class='time' id='inb_conv_tc"+c.id+"'>"+c.time+"</p></div>"+"<script>setTimeout(timeUpdate,20000,'"+c.rawTime+"','inb_conv_tc"+c.id+"');</script>"
                     });
-                    $("#message").html($("#message").html()+result);
-                    $(".content").scrollTop(43535);
+                    $("#message").html($("#message").html()+b);
+                    $(".content").scrollTop(43535)
                 }
             }
-        
         }
     });
-    setTimeout(getConversationUpdate, 15000,contactId);
+    setTimeout(getConversationUpdate,15e3,a)
 }
-function editInfo(id){
-    if(id=="pinfo"){
-        if($("#"+id).hasClass("ui-icon-pencil")){
-            $("#"+id).removeClass("ui-icon-pencil");
-            $("#"+id).addClass("ui-icon-check");
+function editInfo(a){
+    if(a=="pinfo"){
+        if($("#"+a).hasClass("ui-icon-pencil")){
+            $("#"+a).removeClass("ui-icon-pencil");
+            $("#"+a).addClass("ui-icon-check")
         }else{
-            if($("#"+id).hasClass("ui-icon-clock")){
-                showFlashMessageDialoge("Please wait...we're still processing your last request", "messenger","info");
-                return;
+            if($("#"+a).hasClass("ui-icon-clock")){
+                showFlashMessageDialoge("Please wait...we're still processing your last request","messenger","info");
+                return
             }else{
-                $("#"+id).removeClass("ui-icon-check");
-                $("#"+id).addClass("ui-icon-clock");
+                $("#"+a).removeClass("ui-icon-check");
+                $("#"+a).addClass("ui-icon-clock")
             }
-            var rel = $("#editRelationship").val();
-            var phone = $("#editPhone").val();
-            var url = $("#editUrl").val();
+            var b=$("#editRelationship").val();
+            var c=$("#editPhone").val();
+            var d=$("#editUrl").val();
             $.ajax({
-                url: 'exec.php',  
-                data: {
-                    action: 'update',  
-                    phn: phone,
-                    urls:url,
-                    rels:rel
-                }, 
-                cache: false, 
-                dataType: "json", 
-                type: "post",
-                success: function(output) {
-                    if (output){ // fix strange ie bug
-                        showFlashMessageDialoge(output.status, "messenger","info");
+                url:"exec.php",
+                data:{
+                    action:"update",
+                    phn:c,
+                    urls:d,
+                    rels:b
+                },
+                cache:false,
+                dataType:"json",
+                type:"post",
+                success:function(e){
+                    if(e){
+                        showFlashMessageDialoge(e.status,"messenger","info")
                     }
-                    $("#"+id).removeClass("ui-icon-clock");
-                    $("#"+id).addClass("ui-icon-pencil");
-                    
-                    $("#relationship").html(rel);
-                    $("#phone").html(phone);
-                    $("#url").html(url);
-                //                    var anchor = 
+                    $("#"+a).removeClass("ui-icon-clock");
+                    $("#"+a).addClass("ui-icon-pencil");
+                    $("#relationship").html(b);
+                    $("#phone").html(c);
+                    $("#url").html(d)
                 }
             });
-            return;
+            return
         }
-        var prev = $("#relationship").html();
+        var e=$("#relationship").html();
         $("#relationship").html("<select name = 'relationship' id='editRelationship'><option value='Single'>Single</option><option value='In a relationship'>In a relationship</option><option value='Married'>Married</option><option value='Divorced'>Divorced</option><option value='Its Complicated'>Its Complicated</option></select>");
-        prev = $("#phone").html();
-        $("#phone").html("<input type='text' name = 'relationship' value='"+prev+"' id='editPhone' />");
-        prev = $("#url").html();
-        $("#url").html("<input type='text' name = 'relationship' value='"+prev+"' id='editUrl' />");
-    
-    }else if(id=="plike"){
-        
-        if($("#"+id).hasClass("ui-icon-pencil")){
-            $("#"+id).removeClass("ui-icon-pencil");
-            $("#"+id).addClass("ui-icon-check");
+        e=$("#phone").html();
+        $("#phone").html("<input type='text' name = 'relationship' value='"+e+"' id='editPhone' />");
+        e=$("#url").html();
+        $("#url").html("<input type='text' name = 'relationship' value='"+e+"' id='editUrl' />")
+    }else if(a=="plike"){
+        if($("#"+a).hasClass("ui-icon-pencil")){
+            $("#"+a).removeClass("ui-icon-pencil");
+            $("#"+a).addClass("ui-icon-check")
         }else{
-            if($("#"+id).hasClass("ui-icon-clock")){
-                showFlashMessageDialoge("Please wait...we're still processing your last request", "messenger","info");
-                return;
+            if($("#"+a).hasClass("ui-icon-clock")){
+                showFlashMessageDialoge("Please wait...we're still processing your last request","messenger","info");
+                return
             }else{
-                $("#"+id).removeClass("ui-icon-check");
-                $("#"+id).addClass("ui-icon-clock");
+                $("#"+a).removeClass("ui-icon-check");
+                $("#"+a).addClass("ui-icon-clock")
             }
-            var likes = $("#likes").val();
-            
+            var f=$("#likes").val();
             $.ajax({
-                url: 'exec.php',  
-                data: {
-                    action: 'update',  
-                    likes: likes
-                }, 
-                cache: false,
-                dataType: "json",
-                type: "post",
-                success: function(output) {
-                    if (output){ // fix strange ie bug
-                        showFlashMessageDialoge(output.status, "messenger","info");
+                url:"exec.php",
+                data:{
+                    action:"update",
+                    likes:f
+                },
+                cache:false,
+                dataType:"json",
+                type:"post",
+                success:function(b){
+                    if(b){
+                        showFlashMessageDialoge(b.status,"messenger","info")
                     }
-                    $("#"+id).removeClass("ui-icon-clock");
-                    $("#"+id).addClass("ui-icon-pencil");
-                    
-                    
-                    $("#editlikes").html(likes);
+                    $("#"+a).removeClass("ui-icon-clock");
+                    $("#"+a).addClass("ui-icon-pencil");
+                    $("#editlikes").html(f)
                 }
             });
-            return;
+            return
         }
-        var likes = $("#editlikes").html();
-        $("#editlikes").html("<textarea id='likes' cols='50' rows='5'>"+likes+"</textarea>");
-    }else if(id=="pdislikes"){
-        if($("#"+id).hasClass("ui-icon-pencil")){
-            $("#"+id).removeClass("ui-icon-pencil");
-            $("#"+id).addClass("ui-icon-check");
+        var f=$("#editlikes").html();
+        $("#editlikes").html("<textarea id='likes' cols='50' rows='5'>"+f+"</textarea>")
+    }else if(a=="pdislikes"){
+        if($("#"+a).hasClass("ui-icon-pencil")){
+            $("#"+a).removeClass("ui-icon-pencil");
+            $("#"+a).addClass("ui-icon-check")
         }else{
-            if($("#"+id).hasClass("ui-icon-clock")){
-                showFlashMessageDialoge("Please wait...we're still processing your last request", "messenger","info");
-                return;
+            if($("#"+a).hasClass("ui-icon-clock")){
+                showFlashMessageDialoge("Please wait...we're still processing your last request","messenger","info");
+                return
             }else{
-                $("#"+id).removeClass("ui-icon-check");
-                $("#"+id).addClass("ui-icon-clock");
+                $("#"+a).removeClass("ui-icon-check");
+                $("#"+a).addClass("ui-icon-clock")
             }
-            var dislikes = $("#dislikes").val();
-            
+            var g=$("#dislikes").val();
             $.ajax({
-                url: 'exec.php',  
-                data: {
-                    action: 'update',  
-                    dislikes: dislikes
-                }, 
-                cache: false,
-                dataType: "json",
-                type: "post",
-                success: function(output) {
-                    if (output){ // fix strange ie bug
-                        showFlashMessageDialoge(output.status, "messenger","info");
+                url:"exec.php",
+                data:{
+                    action:"update",
+                    dislikes:g
+                },
+                cache:false,
+                dataType:"json",
+                type:"post",
+                success:function(b){
+                    if(b){
+                        showFlashMessageDialoge(b.status,"messenger","info")
                     }
-                    $("#"+id).removeClass("ui-icon-clock");
-                    $("#"+id).addClass("ui-icon-pencil");
-                    
-                    
-                    $("#editdislikes").html(dislikes);
+                    $("#"+a).removeClass("ui-icon-clock");
+                    $("#"+a).addClass("ui-icon-pencil");
+                    $("#editdislikes").html(g)
                 }
             });
-            return;
+            return
         }
-        var dislikes = $("#editdislikes").html();
-        $("#editdislikes").html("<textarea id='dislikes' cols='50' rows='5'>"+dislikes+"</textarea>");
-    }else if(id=="plocate"){
-        if($("#"+id).hasClass("ui-icon-pencil")){
-            $("#"+id).removeClass("ui-icon-pencil");
-            $("#"+id).addClass("ui-icon-check");
+        var g=$("#editdislikes").html();
+        $("#editdislikes").html("<textarea id='dislikes' cols='50' rows='5'>"+g+"</textarea>")
+    }else if(a=="plocate"){
+        if($("#"+a).hasClass("ui-icon-pencil")){
+            $("#"+a).removeClass("ui-icon-pencil");
+            $("#"+a).addClass("ui-icon-check")
         }else{
-            if($("#"+id).hasClass("ui-icon-clock")){
-                showFlashMessageDialoge("Please wait...we're still processing your last request", "messenger","info");
-                return;
+            if($("#"+a).hasClass("ui-icon-clock")){
+                showFlashMessageDialoge("Please wait...we're still processing your last request","messenger","info");
+                return
             }else{
-                $("#"+id).removeClass("ui-icon-check");
-                $("#"+id).addClass("ui-icon-clock");
+                $("#"+a).removeClass("ui-icon-check");
+                $("#"+a).addClass("ui-icon-clock")
             }
-            var location = $("#location").val();
-            if(location==""){
-                showFlashMessageDialoge("No changes were made", "messenger","info");
-                return;
+            var h=$("#location").val();
+            if(h==""){
+                showFlashMessageDialoge("No changes were made","messenger","info");
+                return
             }
             $.ajax({
-                url: 'exec.php',  
-                data: {
-                    action: 'update',  
-                    location: location
-                }, 
-                cache: false, 
-                dataType: "json", 
-                type: "post",
-                success: function(output) {
-                    if (output){ // fix strange ie bug
-                        showFlashMessageDialoge(output.status, "messenger","info");
+                url:"exec.php",
+                data:{
+                    action:"update",
+                    location:h
+                },
+                cache:false,
+                dataType:"json",
+                type:"post",
+                success:function(b){
+                    if(b){
+                        showFlashMessageDialoge(b.status,"messenger","info")
                     }
-                    $("#"+id).removeClass("ui-icon-clock");
-                    $("#"+id).addClass("ui-icon-pencil");
-                    
-                    $("#editlocation").html(location);
-                    
+                    $("#"+a).removeClass("ui-icon-clock");
+                    $("#"+a).addClass("ui-icon-pencil");
+                    $("#editlocation").html(h)
                 }
             });
-            return;
+            return
         }
-        function dfn(selected){
-            $("#location").val(selected);
-            return;
+        function i(a){
+            $("#location").val(a);
+            return
         }
-        
         $("#editlocation").html('<input type="text" id="location" size=50 value="'+$("#editlocation").html()+'"/><span id="location_loading"></span>');
-        var cache = {},
-        lastXhr;
-        $( "#location" ).autocomplete({
-            source: function( request, response ) {
-                var term = request.term;
+        var j={},k;
+        $("#location").autocomplete({
+            source:function(a,b){
+                var c=a.term;
                 $("#location_loading").html("<img src='images/load.gif' />");
-                if ( term in cache ) {
-                    response( $.map( cache[ term ].geonames, function( item ) {
-                        return {
-                            label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
-                            value: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName
+                if(c in j){
+                    b($.map(j[c].geonames,function(a){
+                        return{
+                            label:a.name+(a.adminName1?", "+a.adminName1:"")+", "+a.countryName,
+                            value:a.name+(a.adminName1?", "+a.adminName1:"")+", "+a.countryName
                         }
                     }));
-                    return;
+                    return
                 }
                 $.ajax({
-                    url: "http://api.geonames.org/searchJSON",
-                    dataType: "jsonp",
-                    data: {
-                        
-                        style: "full",
-                        maxRows: 10,
-                        username: 'soladnet',
-                        name_startsWith: term
+                    url:"http://api.geonames.org/searchJSON",
+                    dataType:"jsonp",
+                    data:{
+                        style:"full",
+                        maxRows:10,
+                        username:"soladnet",
+                        name_startsWith:c
                     },
-                    success: function( data ) {
-                        cache[ term ] = data;
+                    success:function(a){
+                        j[c]=a;
                         $("#location_loading").html("");
-                        response( $.map( data.geonames, function( item ) {
-                            return {
-                                label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
-                                value: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName
+                        b($.map(a.geonames,function(a){
+                            return{
+                                label:a.name+(a.adminName1?", "+a.adminName1:"")+", "+a.countryName,
+                                value:a.name+(a.adminName1?", "+a.adminName1:"")+", "+a.countryName
                             }
-                        }));
+                        }))
                     }
-                });
+                })
             },
-            minLength: 2,
-            select: function( event, ui ) {
-                dfn(ui.item.label);
+            minLength:2,
+            select:function(a,b){
+                i(b.item.label)
             },
-            open: function() {
-                $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+            open:function(){
+                $(this).removeClass("ui-corner-all").addClass("ui-corner-top")
             },
-            close: function() {
-                $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+            close:function(){
+                $(this).removeClass("ui-corner-top").addClass("ui-corner-all")
             }
-        });
-    }else if(id=="pbio"){
-        if($("#"+id).hasClass("ui-icon-pencil")){
-            $("#"+id).removeClass("ui-icon-pencil");
-            $("#"+id).addClass("ui-icon-check");
+        })
+    }else if(a=="pbio"){
+        if($("#"+a).hasClass("ui-icon-pencil")){
+            $("#"+a).removeClass("ui-icon-pencil");
+            $("#"+a).addClass("ui-icon-check")
         }else{
-            if($("#"+id).hasClass("ui-icon-clock")){
-                showFlashMessageDialoge("Please wait...we're still processing your last request", "messenger","info");
-                return;
+            if($("#"+a).hasClass("ui-icon-clock")){
+                showFlashMessageDialoge("Please wait...we're still processing your last request","messenger","info");
+                return
             }else{
-                $("#"+id).removeClass("ui-icon-check");
-                $("#"+id).addClass("ui-icon-clock");
+                $("#"+a).removeClass("ui-icon-check");
+                $("#"+a).addClass("ui-icon-clock")
             }
-            var bio = $("#biography").val();
-            
+            var l=$("#biography").val();
             $.ajax({
-                url: 'exec.php',  
-                data: {
-                    action: 'update',  
-                    bio: bio
-                }, 
-                cache: false,
-                dataType: "json",
-                type: "post",
-                success: function(output) {
-                    if (output){ // fix strange ie bug
-                        showFlashMessageDialoge(output.status, "messenger","info");
+                url:"exec.php",
+                data:{
+                    action:"update",
+                    bio:l
+                },
+                cache:false,
+                dataType:"json",
+                type:"post",
+                success:function(b){
+                    if(b){
+                        showFlashMessageDialoge(b.status,"messenger","info")
                     }
-                    $("#"+id).removeClass("ui-icon-clock");
-                    $("#"+id).addClass("ui-icon-pencil");
-                    
-                    
-                    $("#editbio").html(bio);
+                    $("#"+a).removeClass("ui-icon-clock");
+                    $("#"+a).addClass("ui-icon-pencil");
+                    $("#editbio").html(l)
                 }
             });
-            return;
+            return
         }
-        var bio = $("#editbio").html();
-        $("#editbio").html("<textarea id='biography' cols='50' rows='5'>"+bio+"</textarea>");
-    }else if(id=="pqoute"){
-        if($("#"+id).hasClass("ui-icon-pencil")){
-            $("#"+id).removeClass("ui-icon-pencil");
-            $("#"+id).addClass("ui-icon-check");
+        var l=$("#editbio").html();
+        $("#editbio").html("<textarea id='biography' cols='50' rows='5'>"+l+"</textarea>")
+    }else if(a=="pqoute"){
+        if($("#"+a).hasClass("ui-icon-pencil")){
+            $("#"+a).removeClass("ui-icon-pencil");
+            $("#"+a).addClass("ui-icon-check")
         }else{
-            if($("#"+id).hasClass("ui-icon-clock")){
-                showFlashMessageDialoge("Please wait...we're still processing your last request", "messenger","info");
-                return;
+            if($("#"+a).hasClass("ui-icon-clock")){
+                showFlashMessageDialoge("Please wait...we're still processing your last request","messenger","info");
+                return
             }else{
-                $("#"+id).removeClass("ui-icon-check");
-                $("#"+id).addClass("ui-icon-clock");
+                $("#"+a).removeClass("ui-icon-check");
+                $("#"+a).addClass("ui-icon-clock")
             }
-            var quote = $("#favoriteqoute").val();
-            
+            var m=$("#favoriteqoute").val();
             $.ajax({
-                url: 'exec.php',  
-                data: {
-                    action: 'update',  
-                    quote: quote
-                }, 
-                cache: false,
-                dataType: "json",
-                type: "post",
-                success: function(output) {
-                    if (output){ // fix strange ie bug
-                        showFlashMessageDialoge(output.status, "messenger","info");
+                url:"exec.php",
+                data:{
+                    action:"update",
+                    quote:m
+                },
+                cache:false,
+                dataType:"json",
+                type:"post",
+                success:function(b){
+                    if(b){
+                        showFlashMessageDialoge(b.status,"messenger","info")
                     }
-                    $("#"+id).removeClass("ui-icon-clock");
-                    $("#"+id).addClass("ui-icon-pencil");
-                    $("#editQuote").html(quote);
+                    $("#"+a).removeClass("ui-icon-clock");
+                    $("#"+a).addClass("ui-icon-pencil");
+                    $("#editQuote").html(m)
                 }
             });
-            return;
+            return
         }
-        var quote = $("#editQuote").html();
-        $("#editQuote").html("<textarea id='favoriteqoute' cols='50' rows='5'>"+quote+"</textarea>");
-    }else if(id=="pcommunity"){
-        if($("#"+id).hasClass("ui-icon-pencil")){
-            $("#"+id).removeClass("ui-icon-pencil");
-            $("#"+id).addClass("ui-icon-check");
+        var m=$("#editQuote").html();
+        $("#editQuote").html("<textarea id='favoriteqoute' cols='50' rows='5'>"+m+"</textarea>")
+    }else if(a=="pcommunity"){
+        if($("#"+a).hasClass("ui-icon-pencil")){
+            $("#"+a).removeClass("ui-icon-pencil");
+            $("#"+a).addClass("ui-icon-check")
         }else{
-            if($("#"+id).hasClass("ui-icon-clock")){
-                showFlashMessageDialoge("Please wait...we're still processing your last request", "messenger","info");
-                return;
+            if($("#"+a).hasClass("ui-icon-clock")){
+                showFlashMessageDialoge("Please wait...we're still processing your last request","messenger","info");
+                return
             }else{
-                $("#"+id).removeClass("ui-icon-check");
-                $("#"+id).addClass("ui-icon-clock");
+                $("#"+a).removeClass("ui-icon-check");
+                $("#"+a).addClass("ui-icon-clock")
             }
-            var community = $.trim($("#com").val());
-            var comcat = $("#comcat").val();
-            if($.trim(community)==""){
-                showFlashMessageDialoge("No changes were made", "messenger","info");
-                return;
+            var n=$.trim($("#com").val());
+            var o=$("#comcat").val();
+            if($.trim(n)==""){
+                showFlashMessageDialoge("No changes were made","messenger","info");
+                return
             }
             $.ajax({
-                url: 'exec.php',  
-                data: {
-                    action: 'update',  
-                    com: community,
-                    comcat: comcat
-                }, 
-                cache: false,
-                dataType: "json",
-                type: "post",
-                success: function(output) {
-                    if (output){ // fix strange ie bug
-                        showFlashMessageDialoge(output.status, "messenger","info");
+                url:"exec.php",
+                data:{
+                    action:"update",
+                    com:n,
+                    comcat:o
+                },
+                cache:false,
+                dataType:"json",
+                type:"post",
+                success:function(b){
+                    if(b){
+                        showFlashMessageDialoge(b.status,"messenger","info")
                     }
-                    $("#"+id).removeClass("ui-icon-clock");
-                    $("#"+id).addClass("ui-icon-pencil");
-                    $("#editcommunity").html(community);
-                    $("#editcomcat").html("");
+                    $("#"+a).removeClass("ui-icon-clock");
+                    $("#"+a).addClass("ui-icon-pencil");
+                    $("#editcommunity").html(n);
+                    $("#editcomcat").html("")
                 }
             });
-            return;
+            return
         }
-        var community = $("#editcommunity").html();
+        var n=$("#editcommunity").html();
         $("#editcomcat").html('<select id="comcat"><option value="adcollege">Campus / College</option><option value="adcity">City</option></select>');
-        $("#editcommunity").html("<input  id='com' onkeydown='autoComplete(\"com\")' type='text' value='"+community+"' size=50 />");
-    }else if(id=="pexperience"){
-        alert('not supported');
-    }else if(id=="pentertainment"){
-        alert('not supported');
+        $("#editcommunity").html("<input  id='com' onkeydown='autoComplete(\"com\")' type='text' value='"+n+"' size=50 />")
+    }else if(a=="pexperience"){
+        alert("not supported")
+    }else if(a=="pentertainment"){
+        alert("not supported")
     }
 }
-function getAlbum(id,updateHtml){
+function getAlbum(a,b){
     $.ajax({
-        url: 'exec.php',  
-        data: {
-            action: id,  
-            album: ''
-        }, 
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            var result = "";
-            var count = 0;
-            $.each(output, function(i,output){
-                if(output!=""){
-                    result += "<option value='" +output.id+ "'>" +output.album+ "</option>";
-                    if(count==0){
-                        if(output.image){
-                            displayImages(output.image,"albumImages")                            
+        url:"exec.php",
+        data:{
+            action:a,
+            album:""
+        },
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(a){
+            var c="";
+            var d=0;
+            $.each(a,function(a,b){
+                if(b!=""){
+                    c+="<option value='"+b.id+"'>"+b.album+"</option>";
+                    if(d==0){
+                        if(b.image){
+                            displayImages(b.image,"albumImages")
                         }
-
                     }
                 }
-                count++;
+                d++
             });
-            
-            if(output!=""){
-                $("#"+updateHtml).html("<select name='album' onchange='getAlbumImages(this.value)'>"+result+"</select><span id='newAlbum'></span><span class='btn btn-success fileinput-button' style='float:right' ><span onclick=\"create('newAlbum')\"><span style='float:left' class='ui-icon ui-icon-plusthick'></span>Create new Album</span></span>");
+            if(a!=""){
+                $("#"+b).html("<select name='album' onchange='getAlbumImages(this.value)'>"+c+"</select><span id='newAlbum'></span><span class='btn btn-success fileinput-button' style='float:right' ><span onclick=\"create('newAlbum')\"><span style='float:left' class='ui-icon ui-icon-plusthick'></span>Create new Album</span></span>")
             }else{
-                $("#"+updateHtml).html("<span id='loading'></span><span id='newAlbum'></span><span class='btn btn-success fileinput-button' style='float:right' ><span onclick=\"create('newAlbum')\"><span style='float:left' class='ui-icon ui-icon-plusthick'></span>Create new Album</span></span>")
+                $("#"+b).html("<span id='loading'></span><span id='newAlbum'></span><span class='btn btn-success fileinput-button' style='float:right' ><span onclick=\"create('newAlbum')\"><span style='float:left' class='ui-icon ui-icon-plusthick'></span>Create new Album</span></span>")
             }
-        
-        
         }
-    });
+    })
 }
-function displayImages(obj,updateHtml){
-    $("#"+updateHtml).html("");
-    $.each(obj, function(i,obj){
-        $("#"+updateHtml).html($("#"+updateHtml).html()+'<li><img src="'+obj.img100100+'" /></li>');
-    });
+function displayImages(a,b){
+    $("#"+b).html("");
+    $.each(a,function(a,c){
+        $("#"+b).html($("#"+b).html()+'<li><img src="'+c.img100100+'" /></li>')
+    })
 }
-function getAlbumImages(id){
+function getAlbumImages(a){
     $.ajax({
-        url: 'exec.php',  
-        data: {
-            action: id,  
-            album: 'getImg'
-        }, 
-        cache: false,
-        dataType: "json",
-        type: "post",
-        success: function(output) {
-            if (output){ // fix strange ie bug
-                displayImages(output,"albumImages");
+        url:"exec.php",
+        data:{
+            action:a,
+            album:"getImg"
+        },
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(a){
+            if(a){
+                displayImages(a,"albumImages")
             }
         }
-    });
+    })
 }
-function create(id){
-    if(id=="newAlbum"){
-        $("#"+id).html("<span id='loading'></span><input type='text' id='newalbm' style='float:right;height:2.3em'/><span class='btn btn-success fileinput-button' style='float:right' ><span onclick=\"save('newalbm')\"><span style='float:left' class='ui-icon ui-icon-plusthick'></span>Save</span></span><span class='btn btn-success fileinput-button' style='float:right' ><span onclick=\"emptyElement('newAlbum')\"><span style='float:left' class='ui-icon ui-icon-plusthick'></span>Cancel</span></span>");
-    
+function create(a){
+    if(a=="newAlbum"){
+        $("#"+a).html("<span id='loading'></span><input type='text' id='newalbm' style='float:right;height:2.3em'/><span class='btn btn-success fileinput-button' style='float:right' ><span onclick=\"save('newalbm')\"><span style='float:left' class='ui-icon ui-icon-plusthick'></span>Save</span></span><span class='btn btn-success fileinput-button' style='float:right' ><span onclick=\"emptyElement('newAlbum')\"><span style='float:left' class='ui-icon ui-icon-plusthick'></span>Cancel</span></span>")
     }
 }
-function save(id){
-    var alb = $("#"+id).val();
-    if(alb==""){
-        return;
+function save(a){
+    var b=$("#"+a).val();
+    if(b==""){
+        return
     }else{
-        $("#"+id).attr("disabled", "disabled");
-        $("#loading").html("<img src='images/load.gif' />");
+        $("#"+a).attr("disabled","disabled");
+        $("#loading").html("<img src='images/load.gif' />")
     }
-    
     $.ajax({
-        url: 'exec.php',  
-        data: {
-            action: '',  
-            album: 'new',
-            name:alb
-        }, 
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            if(output.status){
-                
-                var result = "";
-                $.each(output, function(i,output){
-                    if(output.id){
-                        result += "<option value='" +output.id+ "'>" +output.album+ "</option>";
+        url:"exec.php",
+        data:{
+            action:"",
+            album:"new",
+            name:b
+        },
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(b){
+            if(b.status){
+                var c="";
+                $.each(b,function(a,b){
+                    if(b.id){
+                        c+="<option value='"+b.id+"'>"+b.album+"</option>"
                     }
                 });
                 emptyElement("newAlbum");
-                $("#album").html("<select name='album' onchange='getAlbumImages(this.value)'>"+result+"</select><span id='newAlbum'></span><span class='btn btn-success fileinput-button' style='float:right' ><span onclick=\"create('newAlbum')\"><span style='float:left' class='ui-icon ui-icon-plusthick'></span>Create new Album</span></span>");
+                $("#album").html("<select name='album' onchange='getAlbumImages(this.value)'>"+c+"</select><span id='newAlbum'></span><span class='btn btn-success fileinput-button' style='float:right' ><span onclick=\"create('newAlbum')\"><span style='float:left' class='ui-icon ui-icon-plusthick'></span>Create new Album</span></span>")
             }else{
-                $("#"+id).removeAttr("disabled")
+                $("#"+a).removeAttr("disabled")
             }
-        
         }
-    });
+    })
 }
-function emptyElement(id){
-    $("#"+id).html("");
+function emptyElement(a){
+    $("#"+a).html("")
 }
-function showFlashMessageDialoge(message,dialogId,status){
-    if(status=="error"){
-        $( "#"+dialogId ).removeClass("ui-state-highlight");
-        $( "#"+dialogId ).addClass("ui-state-error");
+function showFlashMessageDialoge(a,b,c){
+    if(c=="error"){
+        $("#"+b).removeClass("alert_success");
+        $("#"+b).removeClass("alert_warning");
+        $("#"+b).addClass("alert_error")
     }else{
-        $( "#"+dialogId ).removeClass("ui-state-error");
-        $( "#"+dialogId ).addClass("ui-state-highlight");
+        $("#"+b).removeClass("alert_error");
+        $("#"+b).removeClass("alert_warning");
+        $("#"+b).addClass("alert_success")
     }
-    $("#flashMsg").html(message);
-    //    $( "#"+dialogId ).css("text-align","center").css("width", "240px").css("padding", "0.7em").css("position", "absolute").css("display", "block").css("right", "0").css("bottom", "0").css("background-color", "whiteSmoke").css("cursor","pointer");
-    //    $( "#"+dialogId ).position({
-    //        of: $( ".left" ),
-    //        my: "center bottom",
-    //        at: "center bottom",
-    //        offset: "none",
-    //        collision: "0 0"
-    //    });
-    $( "#"+dialogId ).show( "scale", [], 500, function(){
-        setTimeout(function() {
-            $( "#"+dialogId+":visible" ).fadeOut();
-        }, 8000 );
-    } );
+    $("#"+b).html(a);
+    $("#"+b).show("scale",[],500,function(){
+        setTimeout(function(){
+            $("#"+b+":visible").fadeOut()
+        },8e3)
+    })
 }
-function timeUpdate(rawTime,updateHtml){
-    
+function timeUpdate(a,b){
     $.ajax({
-        url: 'exec.php',  
-        data: {
-            action: '',  
-            timeUpdate: rawTime
-        }, 
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            if(output){
-                $("#"+updateHtml).html(output.time);
+        url:"exec.php",
+        data:{
+            action:"",
+            timeUpdate:a
+        },
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(c){
+            if(c){
+                $("#"+b).html(c.time)
             }
-            setTimeout(timeUpdate,20000,rawTime, updateHtml);
+            setTimeout(timeUpdate,2e4,a,b)
         }
-    });
+    })
 }
-function join(id){
+function join(a){
     $.ajax({
-        url: 'exec.php',  
-        data: {
-            action: 'join',  
-            join: id
-        }, 
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            if(output){
-                if(output.status=="success"){
+        url:"exec.php",
+        data:{
+            action:"join",
+            join:a
+        },
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(b){
+            if(b){
+                if(b.status=="success"){
                     refreshRightPanel("mycommunity");
                     refreshRightPanel("suggestion");
                     $(".comhome").removeClass("addbutton");
                     $(".comhome").removeClass("ui-state-highlight");
                     $(".comhome").html("");
-                    $("#hom"+id).addClass("addbutton");
-                    $("#hom"+id).addClass("ui-state-highlight");
-                    $("#hom"+id).html('<img src="images/icon_home.png" />');
-                    $(".panel").html("<p>Unsubscribe | <span>Join</span></p>")
-                    $("#pan"+id).html('This is your current community');
-                    $("#status_community").html("Share with "+output.comm);
-                    showFlashMessageDialoge(output.message,"messenger","info");
+                    $("#hom"+a).addClass("addbutton");
+                    $("#hom"+a).addClass("ui-state-highlight");
+                    $("#hom"+a).html('<img src="images/icon_home.png" />');
+                    $(".panel").html("<p>Unsubscribe | <span>Join</span></p>");
+                    $("#pan"+a).html("This is your current community");
+                    $("#status_community").html("Share with "+b.comm);
+                    showFlashMessageDialoge(b.message,"messenger","info")
                 }else{
-                    showFlashMessageDialoge(output.message,"messenger","error");
+                    showFlashMessageDialoge(b.message,"messenger","error")
                 }
             }
         }
-    });
+    })
 }
-function unsubscribe(id){
+function unsubscribe(a){
     $.ajax({
-        url: 'exec.php',  
-        data: {
-            action: 'unsub',  
-            unsub: id
-        }, 
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            if(output){
-                if(output.status=="success"){
+        url:"exec.php",
+        data:{
+            action:"unsub",
+            unsub:a
+        },
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(b){
+            if(b){
+                if(b.status=="success"){
                     refreshRightPanel("mycommunity");
                     refreshRightPanel("suggestion");
-                    $("#pan"+id).html('<p><span onclick="subscribe('+id+')">Subscribe</span> | <span onclick="join('+id+')">Join</span></p>');
-                    showFlashMessageDialoge(output.message,"messenger","info");
+                    $("#pan"+a).html('<p><span onclick="subscribe('+a+')">Subscribe</span> | <span onclick="join('+a+')">Join</span></p>');
+                    showFlashMessageDialoge(b.message,"messenger","info")
                 }else{
-                    showFlashMessageDialoge(output.message,"messenger","error");
+                    showFlashMessageDialoge(b.message,"messenger","error")
                 }
             }
         }
-    });
+    })
 }
-function subscribe(id){
+function subscribe(a){
     $.ajax({
-        url: 'exec.php',  
-        data: {
-            action: 'sub',  
-            sub: id
-        }, 
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            if(output){
-                if(output.status=="success"){
+        url:"exec.php",
+        data:{
+            action:"sub",
+            sub:a
+        },
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(b){
+            if(b){
+                if(b.status=="success"){
                     refreshRightPanel("mycommunity");
                     refreshRightPanel("suggestion");
-                    $("#pan"+id).html('<p><span onclick="unsubscribe('+id+')">Unsubscribe</span> | <span onclick="join('+id+')">Join</span></p>');
-                    showFlashMessageDialoge(output.message,"messenger","info");
+                    $("#pan"+a).html('<p><span onclick="unsubscribe('+a+')">Unsubscribe</span> | <span onclick="join('+a+')">Join</span></p>');
+                    showFlashMessageDialoge(b.message,"messenger","info")
                 }else{
-                    showFlashMessageDialoge(output.message,"messenger","error");
+                    showFlashMessageDialoge(b.message,"messenger","error")
                 }
             }
         }
-    });
+    })
 }
-function refreshRightPanel(section){
+function refreshRightPanel(a){
     $.ajax({
-        url: 'getRightPanel.php',  
-        data: {
-            value: section
-        }, 
-        cache: false, 
-        type: "post",
-        success: function(output) {
-            if(output){
-                $("#"+section).html(output);
+        url:"getRightPanel.php",
+        data:{
+            value:a
+        },
+        cache:false,
+        type:"post",
+        success:function(b){
+            if(b){
+                $("#"+a).html(b)
             }else{
-                $("#"+section).html("");
+                $("#"+a).html("")
             }
         }
-    });
-    
+    })
 }
-function makeMeClickable(id){
-    $(id).click(function(){
-        window.location=$(this).find("a").attr("href"); 
-        return false;
-    });
+function makeMeClickable(a){
+    $(a).click(function(){
+        window.location=$(this).find("a").attr("href");
+        return false
+    })
 }
-
-function makeProfilePix(imgId){
+function makeProfilePix(a){
     $.ajax({
-        url: 'exec.php',  
-        data: {
-            action: '',  
-            ppix: imgId
-        }, 
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            if(output){
-                if(output.status=="success"){
-                    showFlashMessageDialoge(output.message,"messenger","info");
+        url:"exec.php",
+        data:{
+            action:"",
+            ppix:a
+        },
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(a){
+            if(a){
+                if(a.status=="success"){
+                    showFlashMessageDialoge(a.message,"messenger","info")
                 }else{
-                    showFlashMessageDialoge(output.message,"messenger","error");
+                    showFlashMessageDialoge(a.message,"messenger","error")
                 }
             }
         }
-    });
+    })
 }
-function positionMenu(imgId,menu){
-    $("#"+menu).html("<span onclick='makeProfilePix("+imgId+")'>Make Profile Pix</span>");
-    $( "#"+menu ).css("text-align","center").css("font-size",".9em").css("width","105").css("position", "absolute").css("display", "block").css("right", "0").css("bottom", "0").css("background-color", "whiteSmoke").css("cursor","pointer");
-    $( "#"+menu ).position({
-        of: $( "#img"+imgId ),
-        my: "right bottom",
-        at: "right bottom",
-        offset: "none",
-        collision: "0 0"
-    });
-    
+function positionMenu(a,b){
+    $("#"+b).html("<span onclick='makeProfilePix("+a+")'>Make Profile Pix</span>");
+    $("#"+b).css("text-align","center").css("font-size",".9em").css("width","105").css("position","absolute").css("display","block").css("right","0").css("bottom","0").css("background-color","whiteSmoke").css("cursor","pointer");
+    $("#"+b).position({
+        of:$("#img"+a),
+        my:"right bottom",
+        at:"right bottom",
+        offset:"none",
+        collision:"0 0"
+    })
 }
-function hideMenu(id){
-    
-    $( "#"+id ).hide( "fold", {}, 5000, $(function(){}) );
+function hideMenu(a){
+    $("#"+a).hide("fold",{},5e3,$(function(){}))
 }
-function showMessageModelDialog(id,title,cid){
-    $("#"+id).html("Message: <textarea cols='30' id='dialogtext'></textarea>");
-    
-    $("#"+id).dialog({
-        autoOpen: true,
-        modal: true,
-        show: "",
-        title: title,
-        minHeight: 50,
-        resizable: false,
-        draggable: true,
-        buttons: {
-            Send: function() {
-                //                $( this ).dialog( "close" );
-                var msg = $.trim($("#dialogtext").val());
-                if(msg==""){
-                    $( this ).dialog( "close" );
+function showMessageModelDialog(a,b,c){
+    $("#"+a).html("Message: <textarea cols='30' id='dialogtext'></textarea>");
+    $("#"+a).dialog({
+        autoOpen:true,
+        modal:true,
+        show:"",
+        title:b,
+        minHeight:50,
+        resizable:false,
+        draggable:true,
+        buttons:{
+            Send:function(){
+                var a=$.trim($("#dialogtext").val());
+                if(a==""){
+                    $(this).dialog("close");
                     showFlashMessageDialoge("No message was sent.","messenger","error");
-                    return;
+                    return
                 }else{
-                    sendComment(msg, "commentConver", "", "#dialogtext", cid);
-                    $( this ).dialog( "close" );
+                    sendComment(a,"commentConver","","#dialogtext",c);
+                    $(this).dialog("close")
                 }
-                
             },
-            Close: function() {
-                $( this ).dialog( "close" );
+            Close:function(){
+                $(this).dialog("close")
             }
-                        
         },
-        open: function() {
-            $("#dialogtext").focus();
+        open:function(){
+            $("#dialogtext").focus()
         },
-        close: function() {
-        //            $form[ 0 ].reset();
-        }
-    });
+        close:function(){}
+    })
 }
-function showGossoutModeldialog(dialodId,postId){
-    $("#"+dialodId).html('<input type="checkbox" id="gcheck" value="'+postId+'" /><label for="gcheck" class="width_95">Share with my Gossout Communities</label><input type="checkbox" id="fbcheck"  value="'+postId+'"/><label for="fbcheck" class="width_95">Share with Facebook friends</label><span id="gossout_loading"></span><script>$(function() {$( "#fbcheck" ).button();$( "#gcheck" ).button();});</script>');
-    $("#"+dialodId).dialog({
-        autoOpen: true,
-        modal: true,
-        show: "",
-        title: "Gossout Option",
-        minHeight: 50,
-        resizable: false,
-        draggable: true,
-        buttons: {
-            Gossout: function() {
-                var data = {};
-                if(($("#gcheck").attr('checked')?true:false) && ($("#fbcheck").attr('checked')?true:false)){
-                    var gossout = $("#gcheck").val();
-                    var facebook = $("#fbcheck").val();
-                    data={
-                        action: 'gossout',
-                        gossout: gossout,
-                        facebook:facebook
-                    };
-                }else if($("#gcheck").attr('checked')?true:false){
-                    gossout = $("#gcheck").val();
-                    data={
-                        action: 'gossout',
-                        gossout: gossout
-                    };
-                }else if($("#fbcheck").attr('checked')?true:false){
-                    facebook = $("#fbcheck").val();
-                    data={
-                        action: 'gossout',
-                        facebook:facebook
-                    };
+function showGossoutModeldialog(a,b){
+    $("#"+a).html('<input type="checkbox" id="gcheck" value="'+b+'" /><label for="gcheck" class="width_95">Share with my Gossout Communities</label><input type="checkbox" id="fbcheck"  value="'+b+'"/><label for="fbcheck" class="width_95">Share with Facebook friends</label><span id="gossout_loading"></span><script>$(function() {$( "#fbcheck" ).button();$( "#gcheck" ).button();});</script>');
+    $("#"+a).dialog({
+        autoOpen:true,
+        modal:true,
+        show:"",
+        title:"Gossout Option",
+        minHeight:50,
+        resizable:false,
+        draggable:true,
+        buttons:{
+            Gossout:function(){
+                var a={};
+                
+                if(($("#gcheck").attr("checked")?true:false)&&($("#fbcheck").attr("checked")?true:false)){
+                    var c=$("#gcheck").val();
+                    var d=$("#fbcheck").val();
+                    a={
+                        action:"gossout",
+                        gossout:c,
+                        facebook:d
+                    }
+                }else if($("#gcheck").attr("checked")?true:false){
+                    c=$("#gcheck").val();
+                    a={
+                        action:"gossout",
+                        gossout:c
+                    }
+                }else if($("#fbcheck").attr("checked")?true:false){
+                    d=$("#fbcheck").val();
+                    a={
+                        action:"gossout",
+                        facebook:d
+                    }
                 }
-                if(data.action){
+                if(a.action){
                     $("#gossout_loading").html("<img src='images/load.gif' />");
                     $.ajax({
-                        url: 'exec.php',  
-                        data: data, 
-                        cache: false, 
-                        dataType: "json", 
-                        type: "post",
-                        success: function(output) {
+                        url:"exec.php",
+                        data:a,
+                        cache:false,
+                        dataType:"json",
+                        type:"post",
+                        success:function(c){
                             $("#gossout_loading").html("");
-                            if(output){
-                                if(output.status=="success" || output.fbstatus=="success"){
-                                    if(data.gossout){
-                                        if(output.status=="success"){
-                                            var result = '<div class="post" id=' + output.id + '><img class="profile_small"src="' +output.imgL+ '"/><p class="name"><a href="page.php?view=profile&uid='+output.sender_id+'">' +output.name+ '</a></p><p class="status">' +output.text+ '</p><p class="time" id="tp'+output.id+'">' +output.time+ '</p><div class="post_activities"> <span onclick=\'showGossoutModeldialog("dialog","'+postId+'")\'>Gossout</span> . <span onclick="showCommentBox(\'box'+output.id+'\',\''+output.id+'\',\''+output.imgS+'\')">comment</span> . <span><a href="page.php?view=community&com='+output.com_id+'">in '+output.com+'</a></span></div><script>setTimeout(timeUpdate,20000,\''+output.rawTime+'\',\'tp'+output.id+'\')</script><span id="comments' +output.id+ '"></span><span id="box'+output.id+'"></span></div>';
-                                            $(".posts").html(result+$(".posts").html());
+                            if(c){
+                                if(a.gossout){
+                                    if(c.status=="success"){
+                                        var d='<div class="post" id='+c.id+'><img class="profile_small"src="'+c.imgL+'"/><p class="name"><a href="page.php?view=profile&uid='+c.sender_id+'">'+c.name+'</a></p><p class="status">'+c.text+'</p><p class="time" id="tp'+c.id+'">'+c.time+'</p><div class="post_activities"> <span onclick=\'showGossoutModeldialog("dialog","'+b+"\")'>Gossout</span> . <span onclick=\"showCommentBox('box"+c.id+"','"+c.id+"','"+c.imgS+'\')">comment</span> . <span><a href="page.php?view=community&com='+c.com_id+'">in '+c.com+"</a></span></div><script>setTimeout(timeUpdate,20000,'"+c.rawTime+"','tp"+c.id+"')</script><span id=\"comments"+c.id+'"></span><span id="box'+c.id+'"></span></div>';
+                                        $(".posts").html(d+$(".posts").html());
+                                        $("#gossout_loading").html("Shared with community")
+                                    }else{}
+                                }
+                                if(a.facebook){
+                                    if(c.fbstatus!="success"){
+                                        if(c.fbmsg=="Facebook authentication failed"){
+                                            $("#gossout_loading").html($("#gossout_loading").html()+",<span style='color:red;'>"+c.fbmsg+".</span> <a href='page.php?view=facebook'>Login here</a>")
                                         }else{
-                                            showFlashMessageDialoge(output.message,"messenger","error");
+                                            $("#gossout_loading").html($("#gossout_loading").html()+",<span style='color:red;'>"+c.fbmsg+".</span>")
+                                        }
+                                    }else if(c.fbstatus=="success"){
+                                        if(c.fb_post_id>0||c.fb_post_id!=""){
+                                            $("#gossout_loading").html($("#gossout_loading").html()+", "+c.fbmsg)
+                                        }else{
+                                            $("#gossout_loading").html($("#gossout_loading").html()+", <span style='color:red;'>"+c.fbmsg+".</span> <a href='page.php?view=facebook'>Login here</a>")
                                         }
                                     }
-                                    if(data.facebook){
-                                        if(output.fbstatus!="success"){
-                                            window.location = 'page.php?view=facebook&post='+data.facebook;
-                                        }else{
-                                            $("#gossout_loading").html(output.fbmsg);
-                                        }
-                                    }
-                                    showFlashMessageDialoge(output.message,"messenger","info");
-                                }else{
-                                    //                                    $("#"+dialodId ).dialog( "close" );
-                                    showFlashMessageDialoge(output.message,"messenger","error");
                                 }
                             }
                         },
-                        complete:function(dataxml,status){
-                            var st = $("#gossout_loading").html();
-                            $("#gossout_loading").html(status);
-                            if(st=="<img src='images/load.gif' />"){
-                                $("#gossout_loading").html(status);
-                            }else{
-                                
-                            //                                setTimeout(function(){
-                            //                                    $("#"+dialodId).dialog( "close" );
-                            //                                }, 2000);
-                            }
-                            
-                        }
-                    });
+                        complete:function(a,b){}
+                    })
                 }
             },
-            Cancel: function() {
-                $( this ).dialog( "close" );
+            Cancel:function(){
+                $(this).dialog("close")
             }
-                        
         },
-        open: function() {
-            $("#dialogtext").focus();
+        open:function(){
+            $("#dialogtext").focus()
         },
-        close: function() {
-        //            $form[ 0 ].reset();
-        }
-    });
+        close:function(){}
+    })
 }
-function sendFriendRequest(userid){
-    var val = $("#status_"+userid).html();
-    var alt = $("#sfr").val();
-    var data = {};
-    if(val=="Send Friend Request" || alt == "Send Friend Request"){
-        //        $("#status_"+userid).html("Sending Request");
-        $(".people_loading"+userid).html("<img src='images/load.gif' />");
-        data = {
-            action: '',  
-            frq: userid
-        };
-    }else if(val == "Cancel Request" || alt == "Cancel Request"){
-        data = {
-            action: '',  
-            cfrq: userid
-        }
-    }
-    $.ajax({
-        url: 'exec.php',  
-        data: data, 
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            if(output){
-                //                    alert(output);
-                if(output.status=="success"){
-                    showFlashMessageDialoge(output.message,"messenger","info");
-                    if(val=="Send Friend Request" || alt == "Send Friend Request"){
-                        $("#status_"+userid).html("Cancel Request");
-                        $("#sfr").val("Cancel Request");
-                        $(".people_loading"+userid).html("<img src='images/load.gif' />");
-                        $( "#p_"+userid ).hide( "drop", {}, 1000);
-                    }else if(val == "Cancel Request" || alt == "Cancel Request"){
-                        $("#status_"+userid).html("Send Friend Request");
-                        $("#sfr").val("Send Friend Request");
-                    }
-                    
-                }else{
-                    showFlashMessageDialoge(output.message,"messenger","error");
-                }
-            }
-        },
-        complete:function(dataxml,status){
-            $(".people_loading"+userid).html("");
-        }
-    });
+function sendFriendRequest(a){
+    var b=$("#status_"+a).html();
+    var c=$("#sfr").val();
+    var d={};
     
-}
-function acceptOrDeclineFrq(id,action,key){
-    $.ajax({
-        url: 'exec.php',  
-        data: {
-            action: action,  
-            acceptfrq: id,
-            key:key
-        }, 
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            if(output){
-                if(output.status=="success"){
-                    showFlashMessageDialoge(output.message,"messenger","info");
-                    $("#requestoption"+id).html("<a href='page.php?view=profile&uid="+id+"'>View Profile</a>");
-                }else{
-                    $( "#p_"+userid ).hide( "drop", {}, 1000);
-                    showFlashMessageDialoge(output.message,"messenger","error");
-                }
-            }
+    if(b=="Send Friend Request"||c=="Send Friend Request"){
+        $(".people_loading"+a).html("<img src='images/load.gif' />");
+        d={
+            action:"",
+            frq:a
         }
-    });
-}
-function tweakwink(uid,type){
+    }else if(b=="Cancel Request"||c=="Cancel Request"){
+        d={
+            action:"",
+            cfrq:a
+        }
+    }
     $.ajax({
-        url: 'exec.php',  
-        data: {
-            action: uid,  
-            tweakwink: type
-        }, 
-        cache: false, 
-        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            if(output){
-                if(output.status=="success"){
-                    showFlashMessageDialoge(output.message,"messenger","info");
-                    if(type=="T"){
-                        $("#tweak").attr("disabled", "disabled");
-                    }else{
-                        $("#wink").attr("disabled", "disabled");
+        url:"exec.php",
+        data:d,
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(d){
+            if(d){
+                if(d.status=="success"){
+                    showFlashMessageDialoge(d.message,"messenger","info");
+                    if(b=="Send Friend Request"||c=="Send Friend Request"){
+                        $("#status_"+a).html("Cancel Request");
+                        $("#sfr").val("Cancel Request");
+                        $(".people_loading"+a).html("<img src='images/load.gif' />");
+                        $("#p_"+a).hide("drop",{},1e3)
+                    }else if(b=="Cancel Request"||c=="Cancel Request"){
+                        $("#status_"+a).html("Send Friend Request");
+                        $("#sfr").val("Send Friend Request")
                     }
-                    
                 }else{
-                    showFlashMessageDialoge(output.message,"messenger","error");
-                }
-            }
-        }
-    });
-}
-function ajaxFileUpload(str,source){
-    //    $("#share_loading").ajaxStart(function(){
-    //        $(this).html("<img src='images/load.gif' />");
-    //    }).ajaxComplete(function(){
-    //        $(this).html("");
-    //    });
-    $.ajaxFileUpload({
-        url:'do_ajaxfileupload_post.php',
-        secureuri:false,
-        fileElementId:'fileToUpload',
-        dataType: 'json',
-        data:{
-            posts:str
-        },
-        success: function (data, status){
-            if(typeof(data.status) != 'undefined'){
-                if(data.status == "success"){
-                    $("#status_community").css("display", "none");
-                    $(source).removeAttr('disabled');
-                    $(source).val("");
-                    $("#share_loading").html('');
-                    $(source).removeClass("sending");
-                    var result = '<div class="post" id=' + data.id + '><img class="profile_small"src="' +data.imgL+ '"/><p class="name"><a href="page.php?view=profile&uid='+data.sender_id+'">' +data.name+ '</a></p><p class="status">' +data.text+ '</p><ul class="box"><li><img src="'+data.imgStatus+'" /></li></ul><p class="time" id="tp'+data.id+'">' +data.time+ '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' + data.id + '\');">Gossout</span> . <span onclick="showCommentBox(\'box'+data.id+'\',\''+data.id+'\',\''+data.imgS+'\')">comment</span> . <span><a href="page.php?view=community&com='+data.com_id+'">in '+data.com+'</a></span></div><script>setTimeout(timeUpdate,20000,\''+data.rawTime+'\',\'tp'+data.id+'\')</script><span id="comments' +data.id+ '"></span><span id="box'+data.id+'"></span></div>';
-                    $(".posts").html(result+$(".posts").html());
-                    $( "#status" ).animate({
-                        height:30
-                    }, 1000 );
-                }else{
-                    $(source).removeClass("sending");
-                    $(source).removeAttr('disabled');
-                    $("#share_loading").html('');
-                    showFlashMessageDialoge(data.message,"messenger","error");
+                    showFlashMessageDialoge(d.message,"messenger","error")
                 }
             }
         },
-        error: function (data, status, e)
-        {
-            showFlashMessageDialoge(e,"messenger","error");
+        complete:function(b,c){
+            $(".people_loading"+a).html("")
         }
-    }
-    );
-    $("#statusUpdate").reset();
-		
-//    return false;
-
-}
-function enlargePostPix(imageStr,title){
-    $("#dialog").html("<span id='loader' class='loading'><img src='images/load.gif'/></span>");
-    var img = new Image();
-    $(img)
-    .load(function () {
-        $(this).hide();
-        $('#loader')
-        .html("")
-        .append(this);
-        $(this).fadeIn();
     })
-    .error(function () {
-        $("loader").html("Image cannot be loaded at this time");
-    })
-    .attr('src', imageStr);
-    $("#dialog").dialog({
-        autoOpen: true,
-        modal: true,
-        show: "",
-        title: title,
-        resizable: false,
-        draggable: true,
-        buttons: {
-            Close: function() {
-                $( this ).dialog( "close" );
-            }
-                        
-        },
-        open: function() {
-            $("#dialogtext").focus();
-        },
-        close: function() {
-        //            $form[ 0 ].reset();
-        }
-    });
 }
-var postState = 0;
-function showMorePost(start){
-    if(postState<0){
-        return;
-    }
-    $("#posts_loading").html("<img src='images/load.gif' />");
+function acceptOrDeclineFrq(a,b,c){
     $.ajax({
-        url: 'exec.php',  
-        data: {
-            action: 'morePost',  
-            posts: start
-        }, 
-        cache: false, 
-        //        dataType: "json", 
-        type: "post",
-        success: function(output) {
-            if(output=="No post available at the moment"){
-                postState = -10;
-                return;
-            }else{
-                postState = start;
+        url:"exec.php",
+        data:{
+            action:b,
+            acceptfrq:a,
+            key:c
+        },
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(b){
+            if(b){
+                if(b.status=="success"){
+                    showFlashMessageDialoge(b.message,"messenger","info");
+                    $("#requestoption"+a).html("<a href='page.php?view=profile&uid="+a+"'>View Profile</a>")
+                }else{
+                    $("#p_"+userid).hide("drop",{},1e3);
+                    showFlashMessageDialoge(b.message,"messenger","error")
+                }
             }
-            if(output){
-                $("#posts_loading").html("");
-                var oldC = $(".posts").html();
-                $(".posts").html(oldC+output);
+        }
+    })
+}
+function tweakwink(a,b){
+    $.ajax({
+        url:"exec.php",
+        data:{
+            action:a,
+            tweakwink:b
+        },
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(a){
+            if(a){
+                if(a.status=="success"){
+                    showFlashMessageDialoge(a.message,"messenger","info");
+                    if(b=="T"){
+                        $("#tweak").attr("disabled","disabled")
+                    }else{
+                        $("#wink").attr("disabled","disabled")
+                    }
+                }else{
+                    showFlashMessageDialoge(a.message,"messenger","error")
+                }
+            }
+        }
+    })
+}
+function ajaxFileUpload(a,b){
+    var community_id = $("#community_selected").val();
+    $.ajaxFileUpload({
+        url:"do_ajaxfileupload_post.php",
+        secureuri:false,
+        fileElementId:"fileToUpload",
+        dataType:"json",
+        data:{
+            posts:a,
+            com:community_id
+        },
+        success:function(a,c){
+            if(typeof a.status!="undefined"){
+                if(a.status=="success"){
+//                    $("#status_community").css("display","none");
+                    $(b).removeAttr("disabled");
+                    $(b).val("");
+                    $("#share_loading").html("");
+                    $(b).removeClass("sending");
+//                    var d='<div class="post" id='+a.id+'><img class="profile_small"src="'+a.imgL+'"/><p class="name"><a href="page.php?view=profile&uid='+a.sender_id+'">'+a.name+'</a></p><p class="status">'+a.text+'</p><ul class="box"><li><img src="'+a.imgStatus+'" /></li></ul><p class="time" id="tp'+a.id+'">'+a.time+"</p><div class=\"post_activities\"> <span onclick=\"showGossoutModeldialog('dialog','"+a.id+"');\">Gossout</span> . <span onclick=\"showCommentBox('box"+a.id+"','"+a.id+"','"+a.imgS+'\')">comment</span> . <span><a href="page.php?view=community&com='+a.com_id+'">in '+a.com+"</a></span></div><script>setTimeout(timeUpdate,20000,'"+a.rawTime+"','tp"+a.id+"')</script><span id=\"comments"+a.id+'"></span><span id="box'+a.id+'"></span></div>';
+//                    $(".posts").html(d+$(".posts").html());
+                    $("#status").animate({
+                        height:30
+                    },1e3)
+                }else{
+                    $(b).removeClass("sending");
+                    $(b).removeAttr("disabled");
+                    $("#share_loading").html("");
+//                    showFlashMessageDialoge(a.message,"messenger","error")
+                }
             }
         },
         complete:function(dataXml,status){
-            $("#posts_loading").html("");
-        //            alert(status);
         }
     });
+
 }
-function lookup(inputString) {
-    if(inputString.length == 0) {
-        $('#suggestions').fadeOut(); // Hide the suggestions box
-    } else {
+function enlargePostPix(a,b){
+    $("#dialog").html("<span id='loader' class='loading'><img src='images/load.gif'/></span>");
+    var c=new Image;
+    $(c).load(function(){
+        $(this).hide();
+        $("#loader").html("").append(this);
+        $(this).fadeIn()
+    }).error(function(){
+        $("loader").html("Image cannot be loaded at this time")
+    }).attr("src",a);
+    $("#dialog").dialog(
+    {
+        autoOpen:true,
+        modal:true,
+        show:"",
+        title:b,
+        resizable:false,
+        draggable:true,
+        buttons:{
+            Close:function(){
+                $(this).dialog("close")
+            }
+        },
+        open:function(){
+            $("#dialogtext").focus()
+        },
+        close:function(){}
+    })
+}
+function showMorePost(a){
+    if(postState<0){
+        return
+    }
+    $("#posts_loading").html("<img src='images/load.gif' />");
+    $.ajax({
+        url:"exec.php",
+        data:{
+            action:"morePost",
+            posts:a
+        },
+        cache:false,
+        type:"post",
+        success:function(b){
+            if(b=="No post available at the moment"){
+                postState=-10;
+                return
+            }else{
+                postState=a
+            }
+            if(b){
+                $("#posts_loading").html("");
+                var c=$(".posts").html();
+                $(".posts").html(c+b)
+            }
+        },
+        complete:function(a,b){
+            $("#posts_loading").html("")
+        }
+    })
+}
+function lookup(a){
+    if(a.length==0){
+        $("#suggestions").fadeOut()
+    }else{
         $("#s_loading").html("<img src='images/load.gif' />");
         $.ajax({
-            url: 'exec.php',  
-            data: {
-                action: '',
-                search: inputString
-            }, 
-            cache: false, 
-            dataType: "json", 
-            type: "post",
-            success: function(output) {
-                if(output){
-                    var result = "";
-                    $('#suggestions').fadeIn();
-                    if(output.people.status=="success"){
-                        result +='<div class="heading">PEOPLE</div>';
-                        $.each(output.people, function(i,output){
-                            if(output.id)
-                                result += '<div class="post"><img src="'+output.img+'" alt=""/><p class="name"><a href="page.php?view=profile&uid='+output.id+'">'+output.fullname+'</a></p><p class="status">'+output.location+'</p></div>';
-                        });
-                        
+            url:"exec.php",
+            data:{
+                action:"",
+                search:a
+            },
+            cache:false,
+            dataType:"json",
+            type:"post",
+            success:function(a){
+                if(a){
+                    var b="";
+                    $("#suggestions").fadeIn();
+                    if(a.people.status=="success"){
+                        b+='<div class="heading">PEOPLE</div>';
+                        $.each(a.people,function(a,c){
+                            if(c.id)b+='<div class="post"><img src="'+c.img+'" alt=""/><p class="name"><a href="page.php?view=profile&uid='+c.id+'">'+c.fullname+'</a></p><p class="status">'+c.location+"</p></div>"
+                        })
                     }
-                    if(output.community.status=="success"){
-                        var img = output.community.img;
-                        result +='<div class="heading">COMMUNITIES</div>';
-                        $.each(output.community, function(i,output){
-                            if(output.id)
-                                result += '<div class="post"><img src="'+img+'" alt=""/><p class="name"><a href="page.php?view=community&com='+output.id+'">'+output.fullname+'</a></p><p class="status">Subscribers '+output.subscriber+'</p></div>';
-                        });
-                        
+                    if(a.community.status=="success"){
+                        var c=a.community.img;
+                        b+='<div class="heading">COMMUNITIES</div>';
+                        $.each(a.community,function(a,d){
+                            if(d.id)b+='<div class="post"><img src="'+c+'" alt=""/><p class="name"><a href="page.php?view=community&com='+d.id+'">'+d.fullname+'</a></p><p class="status">Subscribers '+d.subscriber+"</p></div>"
+                        })
                     }
-                    result +='<div class="heading">&nbsp;</div>';
-                    $('#suggestions').html(result);
+                    b+='<div class="heading"> </div>';
+                    $("#suggestions").html(b)
                 }
             },
-            complete: function(dataXML,status){
-                $("#s_loading").html("");
+            complete:function(a,b){
+                $("#s_loading").html("")
             }
-        });
-    
+        })
     }
 }
-function refreshCommunityChat(){
-    
-}
+function refreshCommunityChat(){}
+var postState=0

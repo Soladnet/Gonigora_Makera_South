@@ -24,12 +24,12 @@ if (isset($_POST['action'])) {
             $text = $_POST['posts'];
             $senderFullname = $_SESSION['auth']['fullname'];
             $userId = $_SESSION['auth']['id'];
-            $communityId = $_SESSION['auth']['community']['id'];
+            $communityId = $_POST['com'];
             if ($communityId == NULL) {
                 $arr['status'] = "failed";
                 $arr['message'] = "Please join a community before you can send a post";
             } else {
-                $arr = sendPost($userId, $_SESSION['auth']['community']['id'], $_SESSION['auth']['community']['name'], $text, $senderFullname);
+                $arr = sendPost($userId, $communityId, $text, $senderFullname);
             }
             echo json_encode($arr);
         } else if ($_POST['action'] == "commentsPost") {

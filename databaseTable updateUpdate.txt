@@ -1,27 +1,37 @@
-CREATE TABLE IF NOT EXISTS `community_pix` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `community_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `post_id` int(11) NOT NULL,
-  `original` text NOT NULL,
-  `250x250` text NOT NULL,
-  `100x100` text NOT NULL,
-  `50x50` text NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`,`community_id`,`user_id`,`post_id`),
-  KEY `community_id` (`community_id`),
-  KEY `user_id` (`user_id`),
-  KEY `post_id` (`post_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
+-- phpMyAdmin SQL Dump
+-- version 3.4.10.1
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Sep 14, 2012 at 08:16 PM
+-- Server version: 5.5.20
+-- PHP Version: 5.3.10
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `gossout`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_role`
+--
+
+CREATE TABLE IF NOT EXISTS `admin_role` (
+  `admin_user_id` int(11) NOT NULL,
+  `role` varchar(2) NOT NULL DEFAULT 'S',
+  PRIMARY KEY (`admin_user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `community_pix`
+-- Constraints for table `admin_role`
 --
-ALTER TABLE `community_pix`
-  ADD CONSTRAINT `community_pix_ibfk_1` FOREIGN KEY (`community_id`) REFERENCES `community` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `community_pix_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user_personal_info` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `community_pix_ibfk_3` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `admin_role`
+  ADD CONSTRAINT `admin_role_ibfk_1` FOREIGN KEY (`admin_user_id`) REFERENCES `user_login_details` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -51,8 +51,8 @@ function registerUser($firstname, $lastname, $gender, $dob, $email, $password) {
         $sql2 = "INSERT INTO `user_login_details`(`id`,`email`, `password`,`token`) VALUES ('$id','$email','$password','$token')";
         mysql_query($sql2);
         if (mysql_affected_rows() > 0) {
-//            $sql3 = "INSERT INTO `community_subscribers`(`user`, `community_id`) VALUES ($id,2)";
-//            mysql_query($sql3);
+            $sql3 = "INSERT INTO `community_subscribers`(`user`, `community_id`) VALUES ($id,'80')";
+            mysql_query($sql3);
             if (mysql_affected_rows() > 0) {
 //                $sql3 = "INSERT INTO `post`(`post`, `community_id`, `sender_id`) VALUES ('$lastname $firstname joined Gossout!',2,1)";
 //                mysql_query($sql3);
@@ -139,7 +139,7 @@ function login($username, $password, $rem = false) {
     $pass = md5($pass);
 
     // check if the user id and password combination exist in database
-    $sql = "SELECT l.id, l.email, l.activated,p.dateJoined,  p.firstname, p.lastname, p.gender, p.dob,p.relationship_status,p.phone,p.url,p.bio,p.favquote,p.location,p.likes,p.dislikes,p.works,uc.community_id,c.name,c.category FROM user_login_details AS l JOIN user_personal_info AS p ON p.email = l.email LEFT JOIN user_comm as uc on l.id = uc.user_id LEFT JOIN community as c on c.id = uc.community_id WHERE l.email = '$user' AND l.password = '$pass'";
+    $sql = "SELECT l.id, l.email, l.activated,p.dateJoined,  p.firstname, p.lastname, p.gender, p.dob,p.relationship_status,p.phone,p.url,p.bio,p.favquote,p.location,p.likes,p.dislikes,p.works,uc.community_id,c.name,c.category,ar.role FROM user_login_details AS l JOIN user_personal_info AS p ON p.email = l.email LEFT JOIN user_comm as uc on l.id = uc.user_id LEFT JOIN community as c on c.id = uc.community_id LEFT JOIN admin_role as ar ON l.id = ar.admin_user_id WHERE l.email = '$user' AND l.password = '$pass'";
     $result = mysql_query($sql);
     $arr = array();
     //if match is equal to 1 there is a match
@@ -163,7 +163,9 @@ function login($username, $password, $rem = false) {
         $arr['likes'] = $row['likes'];
         $arr['dislikes'] = $row['dislikes'];
         $arr['works'] = $row['works'];
-
+        if($row['role']!=""){
+            $arr['admin']=$row['role'];
+        }
         if ($rem) {
             $time['updateTime'] = time();
             $time['maxTime'] = 31536000;
@@ -519,11 +521,22 @@ function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0, $low
             if ($postRow['250x250'] == NULL) {
                 $postValue .= '<div class="post" id=' . $postRow['id'] . '>
                 <img class="profile_small"src="' . $image['image50x50'] . '"/>
-                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . toSentenceCase($postRow['firstname'] . ' ' . $postRow['lastname']) . '</a></p><p class="status">' . make_links_clickable($postRow['post']) . '</p><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span> . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . toSentenceCase($postRow['firstname'] . ' ' . $postRow['lastname']) . '</a></p><p class="status">' . make_links_clickable($postRow['post']) . '</p><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
+                //.' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>'
+                if($postRow['name']!="Zuma Broadcast"){
+                    $postValue .= ' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                }else{
+                    $postValue .= '</div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                }
             } else {
                 $postValue .= '<div class="post" id=' . $postRow['id'] . '>
                 <img class="profile_small"src="' . $image['image50x50'] . '"/>
-                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . toSentenceCase($postRow['firstname'] . ' ' . $postRow['lastname']) . '</a></p><p class="status">' . make_links_clickable($postRow['post']) . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '" alt="' . $postRow['name'] . '" onclick="enlargePostPix(\'' . $postRow['250x250'] . '\',\'Shared with ' . $postRow['name'] . '\');"/></li></ul><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span> . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . toSentenceCase($postRow['firstname'] . ' ' . $postRow['lastname']) . '</a></p><p class="status">' . make_links_clickable($postRow['post']) . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '" alt="' . $postRow['name'] . '" onclick="enlargePostPix(\'' . $postRow['250x250'] . '\',\'Shared with ' . $postRow['name'] . '\');"/></li></ul><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
+                if($postRow['name']!="Zuma Broadcast"){
+                    $postValue .= ' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                }else{
+                    $postValue .= '</div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                }
             }
             $commentSql = "SELECT c.`id`,c.`comment`,c.`sender_id`,u.`lastname`,u.`firstname`,c.`time` FROM `comments` as c JOIN user_personal_info as u on c.`sender_id` = u.`id` where c.post_id = " . $postRow['id'] . " order by c.time asc";
             $commentResult = mysql_query($commentSql);
@@ -960,7 +973,7 @@ function getInboxMessage($contactId, $userId, $limit = 10) {
 }
 
 function showMyComm($userId) {
-    $sqlSub = "SELECT cs.`user`,cs.`community_id`,c.`name` FROM community_subscribers AS cs JOIN community AS c ON c.id=cs.`community_id` WHERE cs.`user` = $userId";
+    $sqlSub = "SELECT cs.`user`,cs.`community_id`,c.`name` FROM community_subscribers AS cs JOIN community AS c ON c.id=cs.`community_id` WHERE cs.`user` = $userId AND c.`name`<>'Zuma Broadcast'";
     $result = mysql_query($sqlSub);
     $sqlMy = "SELECT community_id FROM user_comm WHERE user_id = $userId";
     $resultMy = mysql_query($sqlMy);
@@ -989,7 +1002,7 @@ function getSugestedComm($userId) {
         }
     }
 
-    $sql = "SELECT * FROM community";
+    $sql = "SELECT * FROM community WHERE `name`<>'Zuma Broadcast'";
     $resultComm = mysql_query($sql);
     $responseArr = array();
     if (mysql_num_rows($resultComm) > 0) {
@@ -1018,7 +1031,7 @@ function getCommunityInfo($commId) {
 }
 
 function getAllCommunity() {
-    $sqlSub = "SELECT c.*,count(cs.user) as subscriber FROM community as c LEFT JOIN community_subscribers as cs on cs.community_id=c.id group by(c.id) order by subscriber desc"; //subscriber count
+    $sqlSub = "SELECT c.*,count(cs.user) as subscriber FROM community as c LEFT JOIN community_subscribers as cs on cs.community_id=c.id WHERE `name`<>'Zuma Broadcast' group by(c.id) order by subscriber desc"; //subscriber count
     $sqlPost = "SELECT community_id,count(community_id) as count FROM `post` group by community_id"; //post count in community
     $sqlComm = "SELECT p.community_id ,count(c.`id`)as commentCount FROM `comments` as c RIGHT JOIN post as p on p.id=c.post_id group by p.community_id"; //comment count
     $sqlLastSender = "SELECT p.id,p.community_id,p.`sender_id`,u.`firstname`,u.`lastname` FROM `post` as p JOIN user_personal_info as u on u.id=p.sender_id order by p.id"; //post sender

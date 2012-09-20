@@ -139,7 +139,7 @@ function login($username, $password, $rem = false) {
     $pass = md5($pass);
 
     // check if the user id and password combination exist in database
-    $sql = "SELECT l.id, l.email, l.activated,p.dateJoined,  p.firstname, p.lastname, p.gender, p.dob,p.relationship_status,p.phone,p.url,p.bio,p.favquote,p.location,p.likes,p.dislikes,p.works,uc.community_id,c.name,c.category FROM user_login_details AS l JOIN user_personal_info AS p ON p.email = l.email LEFT JOIN user_comm as uc on l.id = uc.user_id LEFT JOIN community as c on c.id = uc.community_id WHERE l.email = '$user' AND l.password = '$pass'";
+    $sql = "SELECT l.id, l.email, l.activated,p.dateJoined,  p.firstname, p.lastname, p.gender, p.dob,p.relationship_status,p.phone,p.url,p.bio,p.favquote,p.location,p.likes,p.dislikes,p.works,uc.community_id,c.name,c.category,ar.role FROM user_login_details AS l JOIN user_personal_info AS p ON p.email = l.email LEFT JOIN user_comm as uc on l.id = uc.user_id LEFT JOIN community as c on c.id = uc.community_id LEFT JOIN admin_role as ar ON l.id = ar.admin_user_id WHERE l.email = '$user' AND l.password = '$pass'";
     $result = mysql_query($sql);
     $arr = array();
     //if match is equal to 1 there is a match
@@ -163,7 +163,9 @@ function login($username, $password, $rem = false) {
         $arr['likes'] = $row['likes'];
         $arr['dislikes'] = $row['dislikes'];
         $arr['works'] = $row['works'];
-
+        if($row['role']!=""){
+            $arr['admin']=$row['role'];
+        }
         if ($rem) {
             $time['updateTime'] = time();
             $time['maxTime'] = 31536000;
@@ -200,15 +202,15 @@ function login($username, $password, $rem = false) {
         }
 
         $_SESSION['auth'] = $arr;
+        
         header('Location: page.php?view=home');
         exit;
     } else {
         // login failed save error to a session
         $_SESSION['err']['status'] = 'Sorry, wrong username or password';
-        header('Location: login.php');
+        header('Location: index.php');
         exit;
     }
-    mysql_close($link);
 }
 
 function subscribeToCommunity($userId, $com, $comcat) {
@@ -290,7 +292,7 @@ function dateToString($date, $withYear = false) {
 function logout() {
     session_destroy();
     session_unset();
-    header("Location: login.php");
+    header("Location: index.php");
     exit();
 }
 
@@ -488,41 +490,16 @@ function getUserPixSet($userId) {
     return $arr;
 }
 
-function getPosts($userId=0, $all = 0, $from = 0, $withPost_id = 0, $lowlimit = 0) {
-    $where = "";
-    if ($all) {
-        $where = "where p.sender_id = $userId";
-    }
-    if ($from) {
-        if ($where) {
-            $where .= " AND p.community_id=$from";
-        } else {
-            $where .= "where p.community_id=$from";
-        }
-    }
-    if ($withPost_id) {
-        if ($where) {
-            $where .=" AND p.id=$withPost_id";
-        } else {
-            $where .="where p.id=$withPost_id";
-        }
-    }
-
-    $limit = "Limit $lowlimit,5";
-    $postSql = "SELECT p.id,p.post,c.name,p.community_id,p.sender_id,p.time,s.`lastname`,s.`firstname`,cp.`250x250`,cp.`original` FROM `post` as p JOIN user_personal_info as s on p.sender_id=s.id JOIN community as c on p.`community_id`=c.id LEFT JOIN community_pix AS cp ON p.id = cp.post_id $where order by p.id desc $limit";
+function getRecentUsers() {
+    $postSql = "select u.id,concat(u.firstname,' ',u.lastname) as fullname,u.location,c.community_id,com.`name`,u.`dateJoined` FROM user_personal_info as u LEFT JOIN user_comm as c ON u.id = c.user_id LEFT JOIN community as com ON c.community_id = com.id order by u.`dateJoined` desc LIMIT 10";
     $postResult = mysql_query($postSql);
     $arr = array();
     if (mysql_num_rows($postResult) > 0) {
         while ($postRow = mysql_fetch_array($postResult)) {
-            $image = getUserPixSet($postRow['sender_id']);
-            if ($postRow['250x250'] == NULL) {
-                $arr["data"][] = array("id" => $postRow['id'],"img"=>$image['image50x50'],"sender_id"=>$postRow['sender_id'],"sender"=>toSentenceCase($postRow['firstname'] . ' ' . $postRow['lastname']),"post"=>make_links_clickable($postRow['post']),"time"=>$postRow['time'],"post_img"=>"","community"=>$postRow['name']);
-            } else {
-                $arr["data"][] = array("id" => $postRow['id'],"img"=>$image['image50x50'],"sender_id"=>$postRow['sender_id'],"sender"=>toSentenceCase($postRow['firstname'] . ' ' . $postRow['lastname']),"post"=>make_links_clickable($postRow['post']),"time"=>$postRow['time'],"post_img"=>$postRow['250x250'],"community"=>$postRow['name']);
-            }
+            $arr["data"][] = array("id" => $postRow['id'], "fullname" => toSentenceCase($postRow['fullname']), "location" =>$postRow['location'], "joined" => $postRow['dateJoined'], "comm_id" => $postRow['community_id'], "community" => $postRow['name']);
         }
         $arr['status'] = "success";
-    }else{
+    } else {
         $arr['status'] = "failed";
     }
     return $arr;
@@ -613,28 +590,28 @@ function alertGossbag($sender_id, $post_id, $community_id, $caption) {
  * 
  * Insert user's post in the post table and also alerts the gossbag table
  */
-function sendPost($userId, $community, $comm, $text, $senderFullname) {
+function sendPost($userId, $community,$text, $senderFullname) {
     $sql = "INSERT INTO `post`(`post`, `community_id`, `sender_id`) VALUES ('" . clean(htmlspecialchars($text)) . "','$community','$userId')";
     mysql_query($sql);
     $arr = array();
     if (mysql_affected_rows() > 0) {
         $id = mysql_insert_id();
-        alertGossbag($userId, $id, $community, "$senderFullname post to " . $comm);
+//        alertGossbag($userId, $id, $community, "$senderFullname post to " . $comm);
         $arr['id'] = $id;
-        $arr['sender_id'] = $userId;
-        $arr['imgL'] = $_SESSION['auth']['image50x50'];
-        $arr['imgS'] = $_SESSION['auth']['image35x35'];
-        $arr['name'] = toSentenceCase($senderFullname);
-        $arr['text'] = make_links_clickable(htmlspecialchars($text));
-        $arr['com_id'] = $community;
-        $arr['com'] = $comm;
-        $arr['time'] = "now";
-        $row = mysql_fetch_array(mysql_query("SELECT NOW() as rawTime"));
-        $arr['rawTime'] = $row['rawTime'];
+//        $arr['sender_id'] = $userId;
+//        $arr['imgL'] = $_SESSION['auth']['image50x50'];
+//        $arr['imgS'] = $_SESSION['auth']['image35x35'];
+//        $arr['name'] = toSentenceCase($senderFullname);
+//        $arr['text'] = make_links_clickable(htmlspecialchars($text));
+//        $arr['com_id'] = $community;
+//        $arr['com'] = $comm;
+//        $arr['time'] = "now";
+//        $row = mysql_fetch_array(mysql_query("SELECT NOW() as rawTime"));
+//        $arr['rawTime'] = $row['rawTime'];
         $arr['status'] = "success";
         $arr['message'] = "Post sent successfully!";
     } else {
-        $arr['message'] = "Failt to send your post at this time";
+        $arr['message'] = "Failt to send your post at this time ".  $sql;
         $arr['status'] = "failed";
     }
     return $arr;
