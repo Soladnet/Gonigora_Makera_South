@@ -159,6 +159,9 @@
                             </div>
                             <span id="posts_loading"></span>
                         </div>
+                        <div class="view-more ">
+                            <p class="notice" style="text-align: center;"><a href="#" >Load more ...</a></p>
+                        </div>
 
                     </div>					
                     <div class="clear"></div>

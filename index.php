@@ -60,7 +60,7 @@ if (isset($_POST['saveForm'])) {
             if ($done == "") {
                 header("Location: page.php?view=join");
             } else {
-                $arr["status"] = "Opps! something went wrong...we will fix these as soon as possible.";
+                $arr["status"] = "Opps! something went wrong... We will fix these as soon as possible.".$done;
                 $_SESSION['err'] = $arr;
                 header("Location: index.php");
             }
@@ -163,11 +163,8 @@ if (isset($_POST['login'])) {
 
                     <?php
                     if (isset($_SESSION['err']) && isset($_SESSION['err']["status"])) {
-                        echo '<div class="ui-widget">
-                        <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
-                        <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
-                        ' . $_SESSION['err']['status'] . '</p>
-                        </div>
+                        echo '<div class="error">                        
+                        <p>' . $_SESSION['err']['status'] . '</p>                        
                         </div>';
                     }
                     ?>
