@@ -163,8 +163,8 @@ function login($username, $password, $rem = false) {
         $arr['likes'] = $row['likes'];
         $arr['dislikes'] = $row['dislikes'];
         $arr['works'] = $row['works'];
-        if($row['role']!=""){
-            $arr['admin']=$row['role'];
+        if ($row['role'] != "") {
+            $arr['admin'] = $row['role'];
         }
         if ($rem) {
             $time['updateTime'] = time();
@@ -405,6 +405,7 @@ function agoServer($timestamp) {
         }
     } else if ($row['day'] > 0) {
         if ($row['day'] > 1) {
+
             $time = $row['day'] . " days ago";
         } else {
             $time = "Yesterday";
@@ -523,18 +524,18 @@ function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0, $low
                 <img class="profile_small"src="' . $image['image50x50'] . '"/>
                 <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . toSentenceCase($postRow['firstname'] . ' ' . $postRow['lastname']) . '</a></p><p class="status">' . make_links_clickable($postRow['post']) . '</p><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
                 //.' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>'
-                if($postRow['name']!="Zuma Broadcast"){
+                if ($postRow['name'] != "Zuma Broadcast") {
                     $postValue .= ' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
-                }else{
+                } else {
                     $postValue .= '</div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
                 }
             } else {
                 $postValue .= '<div class="post" id=' . $postRow['id'] . '>
                 <img class="profile_small"src="' . $image['image50x50'] . '"/>
                 <p class="name"><a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . toSentenceCase($postRow['firstname'] . ' ' . $postRow['lastname']) . '</a></p><p class="status">' . make_links_clickable($postRow['post']) . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '" alt="' . $postRow['name'] . '" onclick="enlargePostPix(\'' . $postRow['250x250'] . '\',\'Shared with ' . $postRow['name'] . '\');"/></li></ul><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
-                if($postRow['name']!="Zuma Broadcast"){
+                if ($postRow['name'] != "Zuma Broadcast") {
                     $postValue .= ' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
-                }else{
+                } else {
                     $postValue .= '</div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
                 }
             }
@@ -1089,9 +1090,9 @@ function toSentenceCase($str) {
         if (strtolower($x) == "of") {
             $exp[] = strtolower($x);
         } else {
-            if(strlen($x)>0){
-            $exp[] = strtoupper($x[0]) . substr($x, 1);
-            }else{
+            if (strlen($x) > 0) {
+                $exp[] = strtoupper($x[0]) . substr($x, 1);
+            } else {
                 $exp[] = strtoupper($x);
             }
         }
@@ -1256,7 +1257,7 @@ function search($term) {
             $image['image3535'] = $img['image35x35'];
             $image['image5050'] = $img['image50x50'];
             $image['image100100'] = $img['image100x100'];
-            $val['people'][] = array("id" => $row['id'], "fullname" => toSentenceCase($row['firstname'] . ' ' . $row['lastname']), "location" => $row['location']?$row['location']:"N/A", "img" => $img['image50x50']);
+            $val['people'][] = array("id" => $row['id'], "fullname" => toSentenceCase($row['firstname'] . ' ' . $row['lastname']), "location" => $row['location'] ? $row['location'] : "N/A", "img" => $img['image50x50']);
         }
         $val['people']['status'] = "success";
     } else {

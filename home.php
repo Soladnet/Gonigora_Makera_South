@@ -29,7 +29,7 @@
                             //alert(laststate);
                             laststate += 5;
                             showMorePost(laststate);
-//                            alert(res);
+                            //                            alert(res);
                         }
                     })
                 }
@@ -81,81 +81,6 @@
 //connect();
                                 echo showPostAndComment($_SESSION['auth']['id']);
                                 ?>
-
-                                <!--                                <div class="post">
-                                                                    <img class="profile_small"src="upload/thumbnails/1345716972_48_1749_50x50.jpeg"/>
-                                                                        <p class="name">
-                                                                            Faridah Idriss
-                                                                        </p>
-                                                                        <span class="notBold">Shared</span>
-                                                                    <div class="post">
-                                                                        <img class="profile_small"src="upload/thumbnails/1345716972_48_1749_50x50.jpeg"/>
-                                                                        <p class="name">
-                                                                            Soladoye Abdulrasheed
-                                                                        </p>
-                                                                        <p class="status">
-                                                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                                                        </p>
-                                                                        
-                                
-                                                                    </div>
-                                                                        <p class="time">
-                                                                            4 minutes ago
-                                                                        </p>
-                                                                </div>-->
-                                <!--                                                            <div class="post">
-                                                                                                <img class="profile_small" src="images/black.jpg"/>
-                                                                                                <p class="name">
-                                                                                                    Alkali Ibrahim
-                                                                                                </p>
-                                                                                                <p class="status">
-                                                                                                    This is a sample picture update
-                                                                                                </p>
-                                                                                                <ul class="box">
-                                                                                                    <li><img src="images/hero.jpg"/></li>
-                                                                                                </ul>
-                                                                                                <p class="time">
-                                                                                                    8:07 PM Today
-                                                                                                </p>
-                                                                
-                                                                                            </div>-->
-                                <!--                            <div class="post">
-                                                                <img class="profile_small"src="images/black_1.jpg"/>
-                                                                <p class="name">
-                                                                    Aminu Alkali
-                                                                </p>
-                                                                <p class="status">
-                                                                    This is a sample Video update
-                                                                </p>
-                                                                <iframe id="ytplayer" type="text/html" width="640" height="360" src="http://www.youtube.com/embed/Zhawgd0REhA" frameborder="0" allowfullscreen>
-                                
-                                                                     http://www.youtube.com/dev 
-                                
-                                                                </iframe>
-                                
-                                                                <p class="time">
-                                                                    12:24 PM Yesterday
-                                                                </p>
-                                
-                                                            </div>-->
-                                <!--                            <div class="post">
-                                                                <img class="profile_small" src="images/black_2.jpg"/>
-                                                                <p class="name">
-                                                                    Damilola Oyekanmi
-                                                                </p>
-                                                                <p class="status">
-                                                                    This is a sample Multiple pic update
-                                                                </p>
-                                                                <ul class="box_small">
-                                                                    <li><img src="images/p.jpg"/></li>
-                                                                    <li><img src="images/t.jpg"/></li>
-                                                                    <li><img src="images/p.jpg"/></li>
-                                                                </ul>
-                                                                <p class="time">
-                                                                    7:50 PM Today
-                                                                </p>
-                                                            </div>-->
-                                
                             </div>
                             <span id="posts_loading"></span>
                         </div>
