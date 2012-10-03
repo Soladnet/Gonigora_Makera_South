@@ -60,7 +60,7 @@ if (isset($_POST['saveForm'])) {
             if ($done == "") {
                 header("Location: page.php?view=join");
             } else {
-                $arr["status"] = "Opps! something went wrong... We will fix these as soon as possible.".$done;
+                $arr["status"] = "Opps! something went wrong... We will fix these as soon as possible.";
                 $_SESSION['err'] = $arr;
                 header("Location: index.php");
             }

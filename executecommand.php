@@ -593,6 +593,13 @@ function sendPost($userId, $community, $comm, $text, $senderFullname) {
     $arr = array();
     if (mysql_affected_rows() > 0) {
         $id = mysql_insert_id();
+        $sql = "SELECT c.`community_id`, concat(u.`firstname`,' ',u.lastname) as fullname,u.email FROM `community_subscribers` as c JOIN user_personal_info as u ON c.user=u.id WHERE c.`community_id`=$community";
+        $result = mysql_query($sql);
+        if(mysql_num_rows($result)>0){
+            while($row = mysql_fetch_array($result)){
+                
+            }
+        }
         alertGossbag($userId, $id, $community, "$senderFullname post to " . $comm);
         $arr['id'] = $id;
         $arr['sender_id'] = $userId;
