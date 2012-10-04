@@ -979,3 +979,14 @@ body:before {
 .footer_links a{    color:#333; padding-right: 5px;}
 .footer_links a:hover{    color:#A6CC8B;}
 .footer_links {    float: right ;   font-size: 14px; }
+.not_found{
+	width:100%;
+	min-height:500px;
+	background: url(../images/404.png) 50% 50px no-repeat;	
+	}
+.not_found_msg{
+	max-width:350px;
+	margin: 0px auto;
+	text-align: justify;
+	padding-top: 250px;
+	}
