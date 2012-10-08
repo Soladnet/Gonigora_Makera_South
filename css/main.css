@@ -8,7 +8,7 @@
     box-sizing                        : border-box;
     -ms-box-sizing                    : border-box;
 }
-body {    font-family: 'Segoe UI',sans-serif;    color: #333333;    background: url(../images/noise.png) repeat;}
+body {    font-family: 'Segoe UI',sans-serif;    color: #333333;    background: url(../images/bg-tile.png) repeat;}
 a {    text-decoration: none;}
 ol,ul {    list-style: none;}
 h1,h2,h3,h4,h5,h6 {        font-weight: normal;    color: #333;    font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;}
@@ -27,13 +27,11 @@ button {
     padding: 3px 6px;
     font-family: 'Segoe UI',sans-serif;
     margin: 3px;
-    border: 1px solid #d2d2d2;
+    border: 1px solid #717171;
+    font-size: 1em;
     -webkit-border-radius: 2px;
     border-radius: 2px;
     text-decoration: none;
-    -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-    -moz-background-clip: padding;
 }
 input[type=submit]:hover,
 input[type=button]:hover,
@@ -170,14 +168,17 @@ textarea {
 .nav_new{
     background-color: #1F1F1F;
 }
-.nav_gradient {
-    background-color: #cbe3ba;
-    background-image: -webkit-gradient(linear,left top,left bottom,from(#cbe3ba),to(#a6cc8b));
-    background-image: -webkit-linear-gradient(top,#cbe3ba,#a6cc8b);
-    background-image: -moz-linear-gradient(top,#cbe3ba,#a6cc8b);
-    background-image: -ms-linear-gradient(top,#cbe3ba,#a6cc8b);
-    background-image: -o-linear-gradient(top,#cbe3ba,#a6cc8b);
-    background-image: linear-gradient(to bottom,#cbe3ba,#a6cc8b);
+.nav_gradient {   
+    background-color: #99c53d;
+  /*   background-image: -webkit-gradient(linear,left top,left bottom,from(#99c53d),to(#99c53d));
+    background-image: -webkit-linear-gradient(top,#99c53d,#99c53d);
+    background-image: -moz-linear-gradient(top,#99c53d,#99c53d);
+    background-image: -ms-linear-gradient(top,#99c53d,#99c53d);
+    background-image: -o-linear-gradient(top,#99c53d,#99c53d);
+    background-image: linear-gradient(to bottom,#99c53d,#99c53d);
+
+   
+   background: url(../images/noisey.png) repeat;  */
 }
 .nav2_gradient {
     background-color: #f3f3f3;
@@ -263,8 +264,7 @@ the Terms & Conditions Ish
 .notice{    background: #FFF6BF;    color: #514721;}
 .info{    background: #ddd;    color: #264409;}
 .success{    background: #E6EFC2;    color: #264409;}
-.view-more{display: none;}
-
+-.view-more{display: none;}
 /*  navs    *********************************************************************************/
 .login-box{
     padding: .3em;    
@@ -352,8 +352,6 @@ input[type=password]:focus {
     width: 12em;
     margin: 2px;
     padding: 2px 2px 2px 28px;
-    /*    height: 100%;
-        font-size: .9em;*/
     border: none;
     background: url(../images/icon_search.png) no-repeat 5% 50%;
     background-color: #f0f0f0;
@@ -462,7 +460,7 @@ form#signup label.desc {
 
 /*  body    **********************************************************************************/
 /*  gossbox styling     ---------------------------------*/
-.gossbox-list   {    padding: .2em 2em;}
+.gossbox-list   {    font-size: .9em;   padding: .2em 2em;}
 
 #gossbag        {    cursor: pointer;   background: url(../images/icon_gossbag.png) no-repeat 2% 50%;}
 #messages       {    cursor: pointer;   background: url(../images/icon_message.png) no-repeat 2% 50%; }
@@ -513,7 +511,6 @@ form#signup label.desc {
     -webkit-box-shadow: 0px 0px 3px rgba(0,0,0,.5);
     -moz-box-shadow: 0px 0px 3px rgba(0,0,0,.5);
     box-shadow: 0px 0px 3px rgba(0,0,0,.5);
-    padding: 2px;
 }
 #tooltip_menu1 div,#tooltip_menu2 div,#tooltip_menu3 div,#tooltip_menu4 div {/*important*/
     z-index: 2;
@@ -546,13 +543,14 @@ form#signup label.desc {
 /*----------------------------------------------------------------------*/
 .heading {
     position: relative;
-    padding: .2em .5em;
+    padding: .3em;
     border: 1px solid #aaa;
     font-size: 1em;
-    background: #E0E0E0;
+    color: #fff;
+    background: #717171;
 }
 .heading a{
-    color: #999;
+    color: #fff;
 }
 .inner-container {  /* This is a container just below the .nav serving as a container for .left .content & .right*/
     position: absolute;
@@ -575,15 +573,14 @@ form#signup label.desc {
 }
 .left-boxes {
     margin: .6em;
-    font-size: .8em;
     background-color: #fff;
     overflow: auto;
 }
 /*  profile styling     *************************************************************************************/
-.person{    margin: 0px auto 0;    background:  #FAFAFA;    border: 1px solid   #F5F5F5;    margin: 2px;    -webkit-border-radius: 3px 3px 3px 3px;    cursor:pointer; }
-.person:hover{    background:#A6CC8B;}
+.person{    margin: 0px auto 0;    background:  #FAFAFA;    border: 2px solid   #F5F5F5;    margin: 2px;  cursor:pointer; }
+.person:hover{border: 2px solid #99c53d;}
 .details{    display: inline-block;    margin: 0px auto 0;}
-.details a{    color: #999;}
+.details a{  color: #008299;}
 .details span{    display: block;    margin: 0px auto 0;}
 .p_name{    font-size: .9em;    word-wrap: normal;    overflow: hidden;}
 .p_location{    font-size: .8em;}   
@@ -683,7 +680,7 @@ form#signup label.desc {
     -moz-box-shadow   : 0 0 3px #666;
     box-shadow        : 0 0 3px #666;  
 }
-.lefttab{
+/* .lefttab{
     margin:0px;
     -moz-border-radius:5px 0px 0px 5px;
     -webkit-border-radius: 5px 0px 0px 5px;
@@ -693,20 +690,20 @@ form#signup label.desc {
     -moz-border-radius:0px 5px 5px 0px;
     -webkit-border-radius: 0px 5px 5px 0px;
     -khtml-border-radius: 0px 5px 5px 0px;
-}
+} */
 #tabs       {     background: white; }
 #tabs ul    {     background: white; }
-#tabs ul li {     display: inline;    font-size: .8em;    float: left; }
+#tabs ul li {     display: inline;  /*  font-size: .8em;  */  float: left; }
 #tabs ul li:hover   {     background: #f2f2f2; }
 #tabs ul:after      {     background: red; }
-#tabs a             {   text-align: center; text-decoration: none;  color: #717373; cursor: pointer; }
+#tabs a             {   text-align: center; text-decoration: none;  color: #008299; cursor: pointer; }
 
 #timeline    {    z-index: 3;}
 
 /*  posts and timeline  **********************************************************************/
 #postbox {
     padding: 5px;
-    border: solid 1px #ccc;
+    border: 2px solid #717171;
     background-color: #ffffff;
     background-image: -webkit-gradient(linear,left top,left bottom,from(#ffffff),to(#f2f2f2));
     background-image: -webkit-linear-gradient(top,#ffffff,#f2f2f2);
@@ -714,14 +711,13 @@ form#signup label.desc {
     background-image: -ms-linear-gradient(top,#ffffff,#f2f2f2);
     background-image: -o-linear-gradient(top,#ffffff,#f2f2f2);
     background-image: linear-gradient(to bottom,#ffffff,#f2f2f2);
-    font-size: 90%;
 }
-.update_textarea {   float: left;     width: 99.2%;    padding: 3px;     overflow: auto;    height: 30px; }
-#statusUpdate input[type=submit] {     float: right;     margin-right: 8px;     position: relative; }
-.posts {    position: relative;    padding: .8em;    overflow: auto;    font-size: .8em;}
-.post {    position: relative;    margin: 0 auto;    padding: 4px;    border-top: solid #CCC 1px;    overflow: hidden;    text-align: left; }
+.update_textarea {   float: left;     width: 99.2%;    padding: 3px;     overflow: auto;    border: 1px solid #717171;}
+#statusUpdate input[type=submit] {     float: right;     margin-right: 8px; }
+.posts {    position: relative;    padding: .8em;    overflow: auto;   }
+.post {    position: relative;    margin: 0 auto;    padding: 4px;    border-top: solid #CCC 1px;    overflow: hidden;    text-align: left;  font-size: .9em; }
 .post img {     float: left; }
-.post .status {    padding: 4px;    font-size: .9em;    color: #333; }
+.post .status {    padding: 4px;  color: #333; }
 .post .time {    position: absolute;    top: 0;    right: 0;    margin-bottom: 5px;    margin-left  : 100px;    padding    : 4px;    padding-top: 15px;    font-size: 70%; }
 .post_activities span{    font-size: .8em; }
 .post_activities span:hover{   color: black; text-decoration: underline;    cursor: pointer; }
@@ -741,8 +737,8 @@ form#signup label.desc {
 #profile_pic{    float:left; }  
 #profile_details{     float:left; }
 #profile_actions{    padding-top: .3em;    float:right; }
-#profile_actions input[type=submit], #profile_actions input[type=button] {    min-width: 150px;    background: #FAFAFA;    color: #404040;    margin: .15em; }
-#profile_actions input[type=submit]:hover , #profile_actions input[type=button]:hover {        background: #A6CC8B;}
+#profile_actions input[type=submit], #profile_actions input[type=button] {    min-width: 180px;    background: #FAFAFA;    color: #404040;    margin: .15em; }
+#profile_actions input[type=submit]:hover , #profile_actions input[type=button]:hover {        background: #99C53D;}
 #profile_actions input[type=submit]:active , #profile_actions input[type=button]:active {        background: #fff; }
 #profile_actions input[type=submit]:disabled , #profile_actions input[type=button]:disabled {        background: #ccc; }
 
@@ -775,15 +771,15 @@ form#signup label.desc {
 .ui-state-hover a, .ui-state-hover a:hover { color: #212121; text-decoration: none;*/ }
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active { 
     color: black;
-    background-image: -webkit-linear-gradient(top,#cbe3ba,#a6cc8b);
-    background-image:    -moz-linear-gradient(top, #cbe3ba, #a6cc8b); /* FF3.6+ */
-    background-image:     -ms-linear-gradient(top, #cbe3ba, #a6cc8b); /* IE10 */
-    background-image:      -o-linear-gradient(top, #cbe3ba, #a6cc8b); /* Opera 11.10+ */
-    background-image:         linear-gradient(to bottom, #cbe3ba, #a6cc8b);
+    background-image: -webkit-linear-gradient(top,#99c53d,#99c53d);
+    background-image:    -moz-linear-gradient(top, #99c53d, #99c53d); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #99c53d, #99c53d); /* IE10 */
+    background-image:      -o-linear-gradient(top, #99c53d, #99c53d); /* Opera 11.10+ */
+    background-image:         linear-gradient(to bottom, #99c53d, #99c53d);
     /*border: 1px solid #aaaaaa; background: #ffffff url(images/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x; font-weight: normal; color: #212121; }
    .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited { color: #212121; text-decoration: none;*/ }
 
-.ui-widget { font-size: .9em; }
+.ui-widget {/* font-size: .9em; */} /* Causes Inconistency at http://.../page.php?view=profile&uid=56#ui-tabs-3 */
 .ui-widget .ui-widget { font-size: .9em; }
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif; font-size: .9em; }
 .ui-widget-content { border: none; background: #eeeeee url(images/ui-bg_highlight-soft_100_eeeeee_1x100.png) 50% top repeat-x; color: #333333; }
@@ -791,7 +787,7 @@ form#signup label.desc {
 .ui-widget-header {border:none; background: #A6CC8B url(images/ui-bg_gloss-wave_35_f6a828_500x100.png) 50% 50% repeat-x; color: #ffffff; font-weight: bold; }
 .ui-widget-header a { color: #ffffff; }
 
-.ui-tabs { position: relative; padding: .2em; zoom: 1; font-size: 1em} /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
+.ui-tabs { position: relative; padding: .2em; zoom: 1; } /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
 .ui-tabs .ui-tabs-nav { margin-bottom: 2px; padding: .2em .2em 0; }
 .ui-tabs .ui-tabs-nav li { list-style: none; float: left; position: relative; top: 1px; margin: 0; border-bottom: 1px !important; padding: 0; white-space: nowrap; }
 .ui-tabs .ui-tabs-nav li a { float: left; padding: .5em 1em; text-decoration: none; }
@@ -950,7 +946,7 @@ form#signup label.desc {
 }
 .gossip_index{
     background: url(../images/image-gossip.png) no-repeat left top!important;
-}	
+}   
 .index_fnx span{
     padding-right:20px;
     padding-left: 150px;
@@ -980,13 +976,13 @@ body:before {
 .footer_links a:hover{    color:#A6CC8B;}
 .footer_links {    float: right ;   font-size: 14px; }
 .not_found{
-	width:100%;
-	min-height:500px;
-	background: url(../images/404.png) 50% 50px no-repeat;	
-	}
+   width:100%;
+   min-height:500px;
+   background: url(../images/404.png) 50% 50px no-repeat;  
+   }
 .not_found_msg{
-	max-width:350px;
-	margin: 0px auto;
-	text-align: justify;
-	padding-top: 250px;
-	}
+   max-width:350px;
+   margin: 0px auto;
+   text-align: justify;
+   padding-top: 250px;
+   }
