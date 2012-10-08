@@ -304,7 +304,7 @@ input[type=password]:focus {
     background: transparent url(../images/icon_communities.png) no-repeat 5% 50%;
 }
 .nav form{
-    float: right;
+   /* float: right; */ /*causes Nav to Collapse on mobile */
     margin: 0;
     color: #543623;
 }
