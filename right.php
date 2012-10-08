@@ -26,7 +26,7 @@
                     <?php
                     $sugComm = getSugestedComm($_SESSION['auth']['id']);
                     if (count($sugComm)) {
-                        echo '<div class="heading">Suggested Community</div><div class="dropMenu">';
+                        echo '<div class="heading">Suggested Communities</div><div class="dropMenu">';
                         shuffle($sugComm['data']);
                         $count = 0;
                         foreach ($sugComm['data'] as $value) {

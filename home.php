@@ -12,11 +12,11 @@
             $(function() {
                 $( "#status" ).toggle(
                 function() {
-                    $( "#status" ).animate({  height: 60  }, 500 );
+                    $( "#status" ).animate({  height: 60  }, 300 );
                     $("#status_community").css("display", "inline");
                 },
                 function() {
-                    $( "#status" ).animate({ height:30 }, 500 );
+                    $( "#status" ).animate({ height:30 }, 300 );
                     $("#status_community").css("display", "none");
                 }
             );
@@ -55,10 +55,9 @@
                         </ul>
                         <div id="timeline">
                             <div id="postbox">
-<!--                                <input type="button" value="Share"/> <input type="button" value="Share with image"/>-->
                                 <form method="get" id="statusUpdate" onSubmit="return false">
                                     <textarea placeholder="What's happening right now!" class="update_textarea" id="status" ></textarea>
-                                    <span id="status_community"><?php
+                                    <span class="name" id="status_community"><?php
                 if ($_SESSION['auth']['community']['name'] != "") {
                     echo "Share with " . $_SESSION['auth']['community']['name'];
                 } else {
@@ -66,15 +65,11 @@
                 }
                 ?></span><span id="share_loading"></span>
                                     <br/><input id="fileToUpload" type="file" size="45" name="fileToUpload" class="input" ><input type="submit" class="submit" value="Share" id ='postsubmit' onClick="getValue('#status','posts');"/>
-                        <!--                                <input type="button" value="Button"/>
-                                                        <input type="reset" value="Clear"/>-->
+                     
                                 </form>
                                 <div class="clear">
                                 </div>
                             </div>
-
-                            <!--                            Ola, just cut the code below and put it in the appropriate plac then i'll finish the styling
-                                                        <div class="post_activities"> Gossout | Share | Comment</div>-->
 
                             <div class="posts">
                                 <?php

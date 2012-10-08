@@ -37,19 +37,7 @@
                         if($count>2){
                             break;
                         }
-                    }
-                  /*  echo '<div class="p_search"> 
-                    <form >
-                        <table>
-                            <tr>
-                                <td><input class="searchbox" type="text" placeholder="Search People" /></td>
-        <!--                        <td><input class="searchbutton" type="submit" value="Search"/></td>-->
-                            </tr>
-                        </table>
-                    </form>
-                </div>
-            
-            <div class="clear"></div>'; */
+                    }                
                 }
                 ?>
             </div>

@@ -17,7 +17,7 @@
                 <div id="popGossbag">
                     <div id="triangle"></div>
                     <div id="tooltip_menu1">
-                        <div class="heading">
+                        <div class="heading box_round_5_tl-tr">
                             GossBag
                         </div>
                         <span id="tooltip_menu1_content"><div><img src='images/load.gif' id='messagesgloading' /></div></span>
@@ -32,7 +32,7 @@
                 <div id="popMessage">
                     <div id="triangle"></div>
                     <div id="tooltip_menu2">
-                        <div class="heading">
+                        <div class="heading box_round_5_tl-tr">
                             Messages
                         </div>
                         <span id="tooltip_menu2_content"><div><img src='images/load.gif' id='messagesgloading' /></div></span>
@@ -48,7 +48,7 @@
                 <div id="popFriend_Request">
                     <div id="triangle"></div>
                     <div id="tooltip_menu3">
-                        <div class="heading">
+                        <div class="heading box_round_5_tl-tr">
                             Friend Request
                         </div>
                         <span id="tooltip_menu3_content"><img src='images/load.gif' id='messagesgloading' /></span>
@@ -62,7 +62,7 @@
                 <div id="popSettings">
                     <div id="triangle"></div>
                     <div id="tooltip_menu4">
-                        <div class="heading" style="padding: 3px;">
+                        <div class="heading box_round_5_tl-tr" style="padding: 3px;">
                             User Option
                         </div>
                         <div class="profile"><a href="page.php?view=profile" ><span>My Profile</span></a></div>
@@ -80,7 +80,7 @@
     <span id="community_chat">
         <?php
         if (isset($_SESSION['auth']['community']['id'])) {
-//            include("community-chat.php");
+           include("community-chat.php");
         }
         ?>
     </span>
