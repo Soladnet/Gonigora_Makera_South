@@ -1,0 +1,329 @@
+body {font-family: 'Segoe UI',sans-serif;    color: #333333;    background: url(../images/bg/1-brown.jpg) repeat;}
+h1,h2,h3,h4,h5,h6 { font-weight: normal;    color: #333;    font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;}
+input[type=submit],
+input[type=button],
+input[type=file],
+input[type=reset],
+button { 
+    font-family: 'Segoe UI',sans-serif;
+    border: 1px solid #717171;
+    font-size: 1em;
+ }
+input[type=submit]:hover,
+input[type=button]:hover,
+input[type=file]:hover,
+input[type=reset]:hover,
+button:hover {
+    border: 1px solid #99c53d;
+}
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=number],
+textarea,select {
+    border: 1px solid #ddd;
+    color: #717373;
+}
+input[type=text]:focus,
+input[type=number]:focus,
+input[type=email]:focus,
+input[type=password]:focus,
+textarea:focus {
+    border: 1px solid #91ce4f;
+    color: #717171;
+}
+.ash_gradient{
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#f2f2f2)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2); /* Chrome 10+, Saf5.1+, iOS 5+ */
+    background-image:    -moz-linear-gradient(top, #ffffff, #f2f2f2); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #ffffff, #f2f2f2); /* IE10 */
+    background-image:      -o-linear-gradient(top, #ffffff, #f2f2f2); /* Opera 11.10+ */
+    background-image:         linear-gradient(to bottom, #ffffff, #f2f2f2);
+}
+.box_gradient {
+    background-color: #f2f2f2;
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#f2f2f2),to(#fff));
+    background-image: -webkit-linear-gradient(top,#f2f2f2,#fff);
+    background-image: -moz-linear-gradient(top,#f2f2f2,#fff);
+    background-image: -o-linear-gradient(top,#f2f2f2,#fff);
+    background-image: linear-gradient(to bottom,#f2f2f2,#fff);
+}
+.nav_new{
+    background-color: #1F1F1F;
+}
+.nav_gradient {   
+    background-color: #99c53d;
+  /*   background-image: -webkit-gradient(linear,left top,left bottom,from(#99c53d),to(#99c53d));
+    background-image: -webkit-linear-gradient(top,#99c53d,#99c53d);
+    background-image: -moz-linear-gradient(top,#99c53d,#99c53d);
+    background-image: -ms-linear-gradient(top,#99c53d,#99c53d);
+    background-image: -o-linear-gradient(top,#99c53d,#99c53d);
+    background-image: linear-gradient(to bottom,#99c53d,#99c53d);
+
+   
+   background: url(../images/noisey.png) repeat;  */
+}
+.nav2_gradient {
+    background-color: #f3f3f3;
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));
+    background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);
+    background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);
+    background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);
+    background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);
+    background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);
+}
+#nav2 {
+    border-bottom: 1px solid #717373;
+}
+.nav {
+    border-top: .2em solid #99c53d;
+    border-bottom: 0.1em solid #99c53d;
+}
+.nav a{
+    color: #717373;
+}
+.nav a:hover {
+    color: #000 !important;
+}
+.nav a:active {
+    color: #fff !important;
+}
+.nav div.home {
+    background: transparent url(../images/icon_home.png) no-repeat 5% 50%;
+}
+.nav div.gossforums {
+    background: transparent url(../images/icon_communities.png) no-repeat 5% 50%;
+}
+.nav div.logout {
+    background: transparent url(../images/icon_logout.png) no-repeat 5% 50%;
+}
+.nav form{
+    color: #543623;
+}
+#s {	
+    border: none;
+    background: url(../images/icon_search.png) no-repeat 5% 50%;
+    background-color: #f0f0f0;
+}
+#s:focus {
+    background-color: #fff;
+}
+#suggestions{ 
+    background-color: #fff;
+    border: 1px solid;
+}
+#suggestions .heading{
+    color: #ffffff;
+}
+#suggestions .heading:hover{
+    background-color: #E0E0E0;
+}
+#suggestions .post:hover{
+    background-color: #99C53D;
+}
+.login-page-column{
+    background: url(../images/logo_image_text.png) no-repeat center top!important;
+}
+
+#gossbag        {    cursor: pointer;   background: url(../images/icon_gossbag.png) no-repeat 2% 50%;}
+#messages       {    cursor: pointer;   background: url(../images/icon_message.png) no-repeat 2% 50%; }
+#friend_requests{    cursor: pointer;   background: url(../images/icon_frq.png) no-repeat 2% 50%; }
+#settings       {    cursor: pointer;   background: url(../images/icon_settings.png) no-repeat 2% 50%; }
+
+#gossbag:hover  {    background: url(../images/icon_gossbag.png) no-repeat 2% 50% #def4b6; }
+#messages:hover {    background: url(../images/icon_message.png) no-repeat 2% 50% #def4b6; }
+#friend_requests:hover{    background: url(../images/icon_frq.png) no-repeat 2% 50% #def4b6; }
+#settings:hover {    background: url(../images/icon_settings.png) no-repeat 2% 50% #def4b6; }
+
+.heading {
+    border: 1px solid #aaa;
+    font-size: 1em;
+    color: #fff;
+    background: #717171;
+}
+.heading a{
+    color: #fff;
+}
+.left-boxes {
+    background-color: #fff;
+}
+/*  profile styling     *************************************************************************************/
+.person{ background:  #FAFAFA; border: 2px solid #F5F5F5;}
+.person:hover{border: 2px solid #99c53d;}
+.details a{  color: #008299;}
+.p_name{ font-size: .9em;    word-wrap: normal;}
+.p_location{    font-size: .8em;}
+
+.right{	
+    background:#FFF;
+}
+.community{
+    border:1px solid #E8E8E8;
+    background: #F8F8F8;
+    font-size: .8em;
+}
+.community_selected{
+    border:1px solid #ddd;
+    background: #F0F0F0;
+}
+#tabs       {     background: white; }
+#tabs ul    {     background: white; }
+#tabs ul li:hover   { background: #f2f2f2; }
+#tabs ul:after      { background: red; }
+#tabs a             { color: #008299; }
+#postbox {
+    border: 2px solid #717171;
+    background-color: #ffffff;
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#ffffff),to(#f2f2f2));
+    background-image: -webkit-linear-gradient(top,#ffffff,#f2f2f2);
+    background-image: -moz-linear-gradient(top,#ffffff,#f2f2f2);
+    background-image: -ms-linear-gradient(top,#ffffff,#f2f2f2);
+    background-image: -o-linear-gradient(top,#ffffff,#f2f2f2);
+    background-image: linear-gradient(to bottom,#ffffff,#f2f2f2);
+}
+.update_textarea { border: 1px solid #717171;}
+
+#statusUpdate input[type=submit] {     float: right;     margin-right: 8px; }
+.post { border-top: solid #CCC 1px; font-size: .9em; }
+.post .status { color: #333; }
+.post .time { font-size: 70%; }
+.post_activities span{    font-size: .8em; }
+.post_activities span:hover{   color: black; }
+.name {    font-size: .9em;    font-weight: bold;}
+.notBold{     font-weight: normal; }
+#comment { border : 1px solid #E8E8E8 ; background-color: #f8f8f8;}
+#comment .time { font-size: 70%; }
+#commentbox { background-color: #F0F0F0;   border: 1px solid #E0E0E0 ;}
+.commenttext { border: #fefefe;}
+
+/*  profile *********************************************************************************************/
+#profile_actions input[type=submit], #profile_actions input[type=button] { background: #FAFAFA;    color: #404040; }
+#profile_actions input[type=submit]:hover , #profile_actions input[type=button]:hover {        background: #99C53D;}
+#profile_actions input[type=submit]:active , #profile_actions input[type=button]:active {        background: #fff; }
+#profile_actions input[type=submit]:disabled , #profile_actions input[type=button]:disabled {        background: #ccc; }
+
+
+/** JQuery Overrides **/
+/* Interaction states
+----------------------------------*/
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    /*border:1px solid #ccc;*/
+    background-image: -webkit-linear-gradient(top,#fff,#f2f2f2);
+    background-image:    -moz-linear-gradient(top,#fff,#f2f2f2); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top,#fff,#f2f2f2); /* IE10 */
+    background-image:      -o-linear-gradient(top,#fff,#f2f2f2); /* Opera 11.10+ */
+    background-image:         linear-gradient(top,#fff,#f2f2f2);
+
+    /*border: 1px solid #d3d3d3; background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x; font-weight: normal; color: #555555; */}
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited { /*color: #555555; text-decoration: none;*/ }
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { /*border: 1px solid #999999; background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x; font-weight: normal; color: #212121; }
+.ui-state-hover a, .ui-state-hover a:hover { color: #212121; text-decoration: none;*/ }
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active { 
+    color: black;
+    background-image: -webkit-linear-gradient(top,#99c53d,#99c53d);
+    background-image:    -moz-linear-gradient(top, #99c53d, #99c53d); /* FF3.6+ */
+    background-image:     -ms-linear-gradient(top, #99c53d, #99c53d); /* IE10 */
+    background-image:      -o-linear-gradient(top, #99c53d, #99c53d); /* Opera 11.10+ */
+    background-image:         linear-gradient(to bottom, #99c53d, #99c53d);
+    /*border: 1px solid #aaaaaa; background: #ffffff url(images/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x; font-weight: normal; color: #212121; }
+   .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited { color: #212121; text-decoration: none;*/ }
+
+.ui-widget {/* font-size: .9em; */} /* Causes Inconistency at http://.../page.php?view=profile&uid=56#ui-tabs-3 */
+.ui-widget .ui-widget { font-size: .9em; }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif; font-size: .9em; }
+.ui-widget-content { border: none; background: #eeeeee url(images/ui-bg_highlight-soft_100_eeeeee_1x100.png) 50% top repeat-x; color: #333333; }
+.ui-widget-content a { color: #333333; }
+.ui-widget-header {border:none; background: #A6CC8B url(images/ui-bg_gloss-wave_35_f6a828_500x100.png) 50% 50% repeat-x; color: #ffffff; font-weight: bold; }
+.ui-widget-header a { color: #ffffff; }
+
+.ui-tabs { position: relative; padding: .2em; zoom: 1; } /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
+.ui-tabs .ui-tabs-nav { margin-bottom: 2px; padding: .2em .2em 0; }
+.ui-tabs .ui-tabs-nav li { list-style: none; float: left; position: relative; top: 1px; margin: 0; border-bottom: 1px !important; padding: 0; white-space: nowrap; }
+.ui-tabs .ui-tabs-nav li a { float: left; padding: .5em 1em; text-decoration: none; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected { margin-bottom: 0; padding-bottom: 0px; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; }
+.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+.ui-tabs .ui-tabs-panel { display: block; border-width: 0; padding: .2em; background: none; }
+.ui-tabs .ui-tabs-hide { display: none !important; }
+
+/* Corner radius */
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl { -moz-border-radius-topleft: 0px; -webkit-border-top-left-radius: 0px; -khtml-border-top-left-radius: 0px; border-top-left-radius: 0px; }
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr { -moz-border-radius-topright: 0px; -webkit-border-top-right-radius: 0px; -khtml-border-top-right-radius: 0px; border-top-right-radius: 0px; }
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl { -moz-border-radius-bottomleft: 0px; -webkit-border-bottom-left-radius: 0px; -khtml-border-bottom-left-radius: 0px; border-bottom-left-radius: 0px; }
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br { -moz-border-radius-bottomright: 0px; -webkit-border-bottom-right-radius: 0px; -khtml-border-bottom-right-radius:0px; border-bottom-right-radius: 0px; }
+
+.ui-autocomplete {
+    max-height: 100px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+    /* add padding to account for vertical scrollbar */
+    padding-right: 20px;
+}
+/* IE 6 doesn't support max-height
+ * we use height instead, but this forces the menu to always be this tall
+*/
+* html .ui-autocomplete {
+    height: 100px;
+}
+
+/*************************************************************************************************************/
+/* misc     **************************************************************************************************/
+#info{    font-size: .8em;}
+
+#messenger { 
+    font-size: .8em;
+}
+
+.shade{     background: #A6CC8B; }
+.shade:hover{    background: white;}
+
+
+/** About, privacy page tab css stuff**/
+#tabs-left {
+    background-color:transparent;
+}
+#tabs-left .ui-tabs-nav {
+	background-color:transparent;
+}
+#tabs-left .ui-tabs-nav li {
+    background-color:transparent;
+}
+#tabs-left .ui-tabs-nav li.ui-tabs-selected {
+    border-right: 1px solid transparent;
+}
+#tabs-left .ui-tabs-nav li a {
+    background-color:transparent;
+}
+#tabs-left > div {
+    min-height: 30em;
+}
+.about_fnx{
+    font-size:16px;
+}
+.about_fnx span{
+    font-size:14px;
+}
+.fnx_detail{
+    font-size: .85em;
+}
+.index_fnx{
+    background-color:#FAFAFA;
+    border: 1px solid #F4F4F4;
+}
+.friend_index{
+    background: url(../images/image-friend.png) no-repeat left top!important;
+}
+.community_index{
+    background: url(../images/image-community.png) no-repeat left top!important;
+}
+.gossip_index{
+    background: url(../images/image-gossip.png) no-repeat left top!important;
+} 
+.index_fnx .fnx{
+    font-size: 1em;
+    font-weight: bold;
+}
+.not_found {
+   background: url(../images/404.png) 50% 50px no-repeat;  
+}

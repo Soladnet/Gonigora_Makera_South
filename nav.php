@@ -8,4 +8,5 @@
         <div id="suggestions"></div>
     </form>
     
+    <div class="logout"><span><a href="#" >Logout</a></span></div>
 </div>

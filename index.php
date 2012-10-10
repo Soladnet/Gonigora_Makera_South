@@ -87,19 +87,8 @@ if (isset($_POST['saveForm'])) {
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Gossout</title>
-        <link rel="shortcut icon" href="favicon.ico" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />  
-        <!--- http://bit.ly/NfpVMY -->
-        <!--[if IE]>
-        <link rel="stylesheet" href="css/main.css" />
-        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-        <link rel="stylesheet" media="screen and (min-device-width: 1024px)" href="css/main.css" />
-        <link rel='stylesheet' media="screen and (max-device-width: 1023px)" href="css/medium.css" />
-
-
-
+        <title>Gossout</title>        
+        <?php include_once("head-noScripts.php"); ?>
     </head>
     <body>
 
