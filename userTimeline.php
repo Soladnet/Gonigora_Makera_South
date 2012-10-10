@@ -16,5 +16,5 @@ if (trim($str) != "") {
     $id = $_SESSION['auth']['id'];
 }
 
-echo '<div class="posts">' . showPostAndComment($id,1) . '</div>';
+echo '<div class="posts">' . showPostAndComment($id,1, 0, 0, 0, 1) . '</div>';
 ?>

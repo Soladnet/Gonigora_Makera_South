@@ -25,11 +25,12 @@ if (isset($_POST['action'])) {
             $senderFullname = $_SESSION['auth']['fullname'];
             $userId = $_SESSION['auth']['id'];
             $communityId = $_SESSION['auth']['community']['id'];
+            $status = $_POST['status'];
             if ($communityId == NULL) {
                 $arr['status'] = "failed";
                 $arr['message'] = "Please join a community before you can send a post";
             } else {
-                $arr = sendPost($userId, $_SESSION['auth']['community']['id'], $_SESSION['auth']['community']['name'], $text, $senderFullname);
+                $arr = sendPost($userId, $_SESSION['auth']['community']['id'], $_SESSION['auth']['community']['name'], $text, $senderFullname,$status);
             }
             echo json_encode($arr);
         } else if ($_POST['action'] == "commentsPost") {
@@ -205,7 +206,7 @@ if (isset($_POST['action'])) {
         $arr['time'] = agoServer($_POST['timeUpdate']);
         echo json_encode($arr);
     } else if (isset($_POST['frq'])) {
-        $arr = sendFrq($_SESSION['auth']['id'], $_POST['frq']);
+        $arr = sendFrq($_SESSION['auth']['id'], $_POST['frq'],$_SESSION['auth']['fullname']);
         echo json_encode($arr);
     } else if (isset($_POST['cfrq'])) {
         $arr = cancelFrq($_SESSION['auth']['id'], $_POST['cfrq']);

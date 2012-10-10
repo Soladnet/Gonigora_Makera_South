@@ -1,8 +1,13 @@
 <?php
 
+//if (!isset($_GET['debug'])) {
+//    echo "Site down for maintenance...will be back shortly";
+//    exit;
+//}
+
 if (isset($_GET['view'])) {
     if (strtolower($_GET['view']) == "terms") {
-        include  'terms.php';
+        include 'terms.php';
     } else if (strtolower($_GET['view']) == "about") {
         include 'about.php';
     } else if (strtolower($_GET['view']) == "privacy") {

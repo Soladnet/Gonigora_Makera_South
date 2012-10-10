@@ -40,14 +40,14 @@
         </script>
 
     </head>
-    <body id="#style">
+    <body>
 
         <div id="page">
             <?php include_once("nav.php") ?>
             <div class="inner-container" >
                 <?php include_once("left.php"); ?>
 
-                <div class="content" id="#style">
+                <div class="content">
                     <div id="tabs">
                         <ul>
                             <li class="lefttab"><a href="#timeline" >Timeline </a></li>
@@ -59,7 +59,7 @@
                                     <textarea placeholder="What's happening right now!" class="update_textarea" id="status" ></textarea>
                                     <span class="name" id="status_community"><?php
                 if ($_SESSION['auth']['community']['name'] != "") {
-                    echo "Share with " . $_SESSION['auth']['community']['name'];
+                    echo "<input type=\"checkbox\" name=\"post_status\" id=\"post_status\" />Post anonymously to " . $_SESSION['auth']['community']['name'];
                 } else {
                     echo "<span class='req'>Join a community before you can share information</span>";
                 }
