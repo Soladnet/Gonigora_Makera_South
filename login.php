@@ -91,11 +91,8 @@ if (isset($_POST['login'])) {
                             <label for="checkbox"><input type="checkbox" id="checkbox" name="rem"/>Remember me</label>
                         </ul>
                         <span><a href="#">Forgot your password?</a></span>
-                    </form>
-                    <p  class="info">By clicking Sign Up, you agree to our Terms and that you have read and understand our Data Use Policy.</p>
-                    
+                    </form>                    
                 </div>
-
             </div>
             <?php include_once("footer.php"); ?>
         </div>

@@ -567,7 +567,7 @@ form#signup label.desc {
 #postbox {
     padding: 5px;
 }
-.update_textarea {   float: left;     width: 99.2%;    padding: 3px;     overflow: auto; }
+.update_textarea {   float: left;     width: 99.2%;    padding: 3px;     overflow: auto; margin-bottom: 5px; }
 #statusUpdate input[type=submit] {     float: right;     margin-right: 8px; }
 .posts {    position: relative;    padding: .8em;    overflow: auto;   }
 .post {    position: relative;    margin: 0 auto;    padding: 4px;  overflow: hidden;    text-align: left; }
