@@ -22,6 +22,7 @@ function parseURLParams(a,b){
         document.title=t
     }
 }
+
 function getValue(a,b){
     if($(a).hasClass("sending")){
         return
@@ -1088,6 +1089,7 @@ function sendFriendRequest(a){
         },
         complete:function(b,c){
             $(".people_loading"+a).html("")
+            alert(c);
         }
     })
 }
