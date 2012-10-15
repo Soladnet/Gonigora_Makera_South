@@ -213,7 +213,7 @@ the Terms & Conditions Ish
 .notice{    background: #FFF6BF;    color: #514721;}
 .info{    background: #ddd;    color: #264409;}
 .success{    background: #E6EFC2;    color: #264409;}
--.view-more{display: none;}
+.view-more{display: none;}
 /*  navs    *********************************************************************************/
 .login-box{
     padding: .3em;    
@@ -467,7 +467,7 @@ form#signup label.desc {
 #gossforum table td{    padding:3px;}
 #gossforum table th{    padding-top: 5px;    padding-bottom: 5px;    font-size:12px;    font-weight:bold;    border:1px solid #CCC;    background-color:#f2f2f2;}
 #gossforum table .catg_name{    border-bottom: 2px solid #f2f2f2;    padding:5px;     background-color:#f2f2f2;}
-#gossforum table .catg_desc{    padding:5px; }
+#gossforum table .catg_desc{    padding:5px;}
 #gossforum table a{color: #717171; font-size: 0.8em;}
 
 

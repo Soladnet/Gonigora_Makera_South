@@ -249,6 +249,11 @@ if (isset($_POST['saveForm'])) {
 
                                     </li>
                                     <li >
+                                        <script type="text/javascript">
+                                            var RecaptchaOptions = {
+                                                theme : 'white'
+                                            };
+                                        </script>
                                         <?php
                                         echo recaptcha_get_html($publickey, $error);
                                         ?>

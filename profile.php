@@ -19,12 +19,18 @@ if (isset($_GET['uid'])) {
 $result = mysql_query($sql);
 if (mysql_num_rows($result) > 0) {
     $row = mysql_fetch_array($result);
+    $fullname = $row['firstname'] . " " . $row['lastname'];
+    $location = $row['location'];
+    $gender = $row['gender'];
+    $id = $row['id'];
+}else{
+    $fullname = "Anonymous";
+    $location = "Anonymous";
+    $gender = "Anonymous";
+    $id = 0;
 }
 $image = getUserPixSet($id);
-$fullname = $row['firstname'] . " " . $row['lastname'];
-$location = $row['location'];
-$gender = $row['gender'];
-$id = $row['id'];
+
 $my_friends = getUserFriends($_SESSION['auth']['id'], true);
 $userFriends = getUserFriends($id, true);
 ?>
@@ -86,7 +92,12 @@ $userFriends = getUserFriends($id, true);
                                                     <?php
                                                 } else {
                                                     ?>
-                                                    <input type="submit" value="<?php $frqstatus = checkFrqStatus($_SESSION['auth']['id'],$id); if($frqstatus['status']=="pending"){echo "Cancel Request";}else{echo "Send Friend Request";}?>" onclick="sendFriendRequest('<?php echo $id ?>')" id="sfr"/>
+                                                    <input type="submit" value="<?php $frqstatus = checkFrqStatus($_SESSION['auth']['id'], $id);
+                                        if ($frqstatus['status'] == "pending") {
+                                            echo "Cancel Request";
+                                        } else {
+                                            echo "Send Friend Request";
+                                        } ?>" onclick="sendFriendRequest('<?php echo $id ?>')" id="sfr"/>
                                                     <br />
                                                     <?php
                                                 }
@@ -94,9 +105,9 @@ $userFriends = getUserFriends($id, true);
                                             ?>
                                             </div>
                                             <div class="clear"></div>
-                                            <?php
-                                        } else {//This is suspecious...it should be a rare case but precaution
-                                            ?>
+    <?php
+} else {//This is suspecious...it should be a rare case but precaution
+    ?>
                                             <div id="profile_pic">
                                                 <img src="<?php echo $_SESSION['auth']['image100x100'] ?>"/>
                                             </div>
@@ -104,12 +115,12 @@ $userFriends = getUserFriends($id, true);
                                                 <p><?php echo "Name: $fullname" ?></p>
                                                 <p><?php echo "Location: $location" ?> </p>
                                                 <p><?php
-                                        if ($gender == "M") {
-                                            echo "Gender: Male";
-                                        } else {
-                                            echo "Gender: Female";
-                                        }
-                                            ?></p> 
+                                                if ($gender == "M") {
+                                                    echo "Gender: Male";
+                                                } else {
+                                                    echo "Gender: Female";
+                                                }
+                                                ?></p> 
                         <!--                         <p>Gossips: 20</p> -->
                                             </div>                                       
                                             <div id="profile_actions">
@@ -122,9 +133,9 @@ $userFriends = getUserFriends($id, true);
                                                 <input type="submit" value="See Friends" class="ash_gradient" />-->
                                             </div>
                                             <div class="clear"></div>
-                                            <?php
-                                        }
-                                        ?>
+    <?php
+}
+?>
                                         </div>
                                         <div class="p">
                                             <div id="tabs">
@@ -134,16 +145,16 @@ $userFriends = getUserFriends($id, true);
                                                         <li><a href="userPhotos.php"> Photos </a></li>
                                                         <!--                                                <li><a href="gossoutpages/userVideos.php"> Videos </a></li>-->
                                                         <li ><a href="userPersonalInfo.php"> Info </a></li>
-                                                        <li class="righttab"><a href="friends.php"> Friends (<?php echo count($userFriends);?>)</a></li>
-                                                    <?php } ?>
+                                                        <li class="righttab"><a href="friends.php"> Friends (<?php echo count($userFriends); ?>)</a></li>
+                                        <?php } ?>
                                                 </ul>
                                             </div>
 
                                         </div>
-                                        <?php ?>
+<?php ?>
                                         </div>
 
-                                        <?php include_once("right.php"); ?>
+<?php include_once("right.php"); ?>
                                         </div>
                                         <div id="dialog"></div>
                                         </body>

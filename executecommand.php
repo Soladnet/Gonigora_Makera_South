@@ -104,21 +104,19 @@ function registerUser($firstname, $lastname, $gender, $dob, $email, $password) {
                 $headers = "Reply-To: $from_mail2 \r\n" . "From:" . $from_mail . "\r\n" . "X-Mailer: PHP/" . phpversion();
                 $headers .= 'MIME-Version: 1.0' . "\r\n";
                 $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-                if (mysql_num_rows($result) > 0) {
-                    while ($row = mysql_fetch_array($result)) {
-                        $to = $arr['email'];
-                        $html = '<!doctype html>
+
+                $to = $arr['email'];
+                $html = '<!doctype html>
 <html>
     <head>
         <meta charset="utf-8">
         <!--        <link rel="stylesheet" media="screen and (min-device-width: 1024px)" href="css/main.css" />-->
         <style> a {text-decoration: none;} ol,ul {    list-style: none;} h1,h2,h3,h4,h5,h6 {font-weight: normal; color: #333;font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;} hr {margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;background-color: #ddd;} span {} img {border: none;padding: .2em;    max-width: 100%;} .inner_wrappper {display: inline-block;padding: .5em;background: #fafafa;width: 100%;}
-            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA; height: 140px; border: 1px solid #F4F4F4; margin-top: 2px;}
-            .friend_index{background: url(http://gossout.com/images/image-friend.png) no-repeat left top!important;}
-            /*            .community_index{background: url(images/image-community.png) no-repeat left top!important;}*/
-            #column1,#column2 {display: inline-block;width: 49.5%;vertical-align: top;}
-            #column1 {text-align: left;}.box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 800px;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} #nav2 div{} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}</style>
+            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA;  border: 1px solid #F4F4F4; margin-top: 2px;}
+            .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
+            #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
+            #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
+            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:#fff} a:active,a:hover,a:visited{color: #ddd}</style>
     </head>
     <body> 
         <div>
@@ -136,7 +134,7 @@ function registerUser($firstname, $lastname, $gender, $dob, $email, $password) {
                         <hr>
                         <table cellspacing="5px">
                             <tr >
-                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> This message was sent to ' . $to . '
+                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> <span style="font-size: .8em">For more information on gossout.com contact us on feedback@gossout.com</span>
                             </td>
                         </tr>
                     </table>
@@ -149,11 +147,10 @@ function registerUser($firstname, $lastname, $gender, $dob, $email, $password) {
 </body>
 </html>
 ';
-                        if ($_SESSION['auth']['email'] != $to) {
-                            @mail($to, $subject, $html, $headers);
-                        }
-                    }
+                if ($_SESSION['auth']['email'] != $to) {
+                    @mail($to, $subject, $html, $headers);
                 }
+
                 $success = "";
             } else {
                 $success .= " " . mysql_error();
@@ -178,18 +175,10 @@ function registerUser($firstname, $lastname, $gender, $dob, $email, $password) {
 }
 
 function manageSession() {
-    if (isset($_SESSION['auth']['last_update'])) {
-        if (isset($_SESSION['auth']['last_update']['maxTime'])) {
-            if (time() - $_SESSION['auth']['last_update']['updateTime'] > $_SESSION['auth']['last_update']['maxTime']) {
-                // last request was more than 1hr ago
-                session_destroy();   // destroy session data in storage
-                session_unset();     // unset $_SESSION variable for the runtime
-            } else {
-                session_regenerate_id(true);
-                $_SESSION['auth']['last_update']['updateTime'] = time(); // update last activity time stamp
-            }
-        }
-    }
+//    if(isset($_COOKIE['auth'])){
+//        $id = $_COOKIE['id'];
+//        
+//    }
 }
 
 // log user in function
@@ -231,9 +220,7 @@ function login($username, $password, $rem = false) {
             $arr['admin'] = $row['role'];
         }
         if ($rem) {
-            $time['updateTime'] = time();
-            $time['maxTime'] = 31536000;
-            $arr['last_update'] = $time;
+//            setcookie("auth",$arr['id'],time()+60*60*24*30*12);
         }
         $comm['id'] = $row['community_id'];
         $comm['name'] = $row['name'];
@@ -266,6 +253,7 @@ function login($username, $password, $rem = false) {
         }
 
         $_SESSION['auth'] = $arr;
+        
         header('Location: page.php?view=home');
         exit;
     } else {
@@ -278,7 +266,7 @@ function login($username, $password, $rem = false) {
 }
 
 function subscribeToCommunity($userId, $com, $comcat) {
-    $sql = "SELECT `id` FROM `community` WHERE `name` = '" . clean(htmlspecialchars(toSentenceCase(trim($com)))) . "' and category = '" . clean(htmlspecialchars($comcat)) . "'";
+    $sql = "SELECT `id` FROM `community` WHERE `name` = '" . clean(htmlspecialchars(trim($com))) . "'";
     $result = mysql_query($sql);
     $arr = array();
     if (mysql_num_rows($result) > 0) {
@@ -555,7 +543,7 @@ function getUserPixSet($userId) {
     return $arr;
 }
 
-function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0, $lowlimit = 0,$showAnonymous=0) {
+function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0, $lowlimit = 0, $showAnonymous = 0) {
     $where = "";
     if ($all) {
         $where = "where p.sender_id = $userId";
@@ -564,21 +552,21 @@ function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0, $low
         if ($where) {
             $where .= " AND p.community_id=$from";
         } else {
-            $where .= "where p.community_id=$from";
+            $where = "where p.community_id=$from";
         }
     }
     if ($withPost_id) {
         if ($where) {
             $where .=" AND p.id=$withPost_id";
         } else {
-            $where .="where p.id=$withPost_id";
+            $where ="where p.id=$withPost_id";
         }
     }
-    if($showAnonymous){
-        if($where){
+    if ($showAnonymous) {
+        if ($where) {
             $where .=" AND p.status<>'ANONYMOUS'";
-        }else{
-            $where .="where p.status<>'ANONYMOUS'";
+        } else {
+            $where ="where p.status<>'ANONYMOUS'";
         }
     }
 
@@ -667,28 +655,29 @@ function alertGossbag($sender_id, $post_id, $community_id, $caption) {
  */
 function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
     $name = '<a href="page.php?view=profile&uid=' . $userId . '">' . $senderFullname . '</a>';
+    $arr = array();
+    $arr['imgL'] = $_SESSION['auth']['image50x50'];
     if ($status == "true") {
         $sql = "INSERT INTO `post`(`post`, `community_id`, `sender_id`, `status`) VALUES ('" . clean(htmlspecialchars($text)) . "','$community','$userId','ANONYMOUS')";
         $senderFullname = "Anonymous";
         $name = $senderFullname;
         $arr['imgL'] = "images/anony.png";
     } else {
-        $arr['imgL'] = $_SESSION['auth']['image50x50'];
+        
         $sql = "INSERT INTO `post`(`post`, `community_id`, `sender_id`) VALUES ('" . clean(htmlspecialchars($text)) . "','$community','$userId')";
     }
 
     mysql_query($sql);
-    $arr = array();
+    
     if (mysql_affected_rows() > 0) {
         $id = mysql_insert_id();
         $sql = "SELECT c.`community_id`, concat(u.`firstname`,' ',u.lastname) as fullname,u.email FROM `community_subscribers` as c JOIN user_personal_info as u ON c.user=u.id WHERE c.`community_id`=$community";
         $result = mysql_query($sql);
         $email = trim(strip_tags("post+notification@gossout.com"));
-
         $full_name = 'Gossout';
         $from_mail = $full_name . '<' . $email . '>';
         $from_mail2 = $full_name . '<no-rely@gossout.com>';
-        $message = ($text);
+        $message = stripcslashes($text);
 
         // set here
         $subject = "$senderFullname post to $comm";
@@ -704,12 +693,11 @@ function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
         <meta charset="utf-8">
         <!--        <link rel="stylesheet" media="screen and (min-device-width: 1024px)" href="css/main.css" />-->
         <style> a {text-decoration: none;} ol,ul {    list-style: none;} h1,h2,h3,h4,h5,h6 {font-weight: normal; color: #333;font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;} hr {margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;background-color: #ddd;} span {} img {border: none;padding: .2em;    max-width: 100%;} .inner_wrappper {display: inline-block;padding: .5em;background: #fafafa;width: 100%;}
-            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA; height: 140px; border: 1px solid #F4F4F4; margin-top: 2px;}
-            .friend_index{background: url(http://gossout.com/images/image-friend.png) no-repeat left top!important;}
-            /*            .community_index{background: url(images/image-community.png) no-repeat left top!important;}*/
-            #column1,#column2 {display: inline-block;width: 49.5%;vertical-align: top;}
-            #column1 {text-align: left;}.box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 800px;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} #nav2 div{} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}</style>
+            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA;  border: 1px solid #F4F4F4; margin-top: 2px;}
+            .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
+            #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
+            #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
+            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:#fff} a:active,a:hover,a:visited{color: #ddd}</style>
     </head>
     <body> 
         <div>
@@ -717,9 +705,10 @@ function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
                 <div class="inner_wrappper box_shadow8 center_div ">
                     <div id="column1" style="width: 100%">
                         <div  class="community_index index_fnx" > 
-                            <span> <h1 class="fnx"><img src="http://gossout.com/images/G.png" /><a href="page.php?view=community&com=' . $community . '"> ' . $comm . '</a><hr> </h1>
-                                <p class="fnx_detail"><img src="http://www.gossout.com/' . $arr['imgL'] . '" align="left"/><strong>'.$name.'</strong><br/>' . $message . '</p>
+                            <span> <h1 class="fnx"><img src="http://gossout.com/images/G.png" /><a href="page.php?view=community&com=' . $community . '"> ' . $comm . '</a><hr> </h1><a href="http://www.gossout.com/page.php?view=notification&open='.$id.'"><span class="box_shadow8 center_div" style="display: block; width: 40%;text-align: center;background-color:#99c53d;font-size: .9em; ">Comment on Post</span></a>
+                                <p class="fnx_detail"><img src="http://www.gossout.com/' . $arr['imgL'] . '" align="left"/><strong>' . $name . '</strong><br/>' . $message . '</p>
                             </span>
+                            <a href="http://www.gossout.com/page.php?view=notification&open='.$id.'"><span class="box_shadow8 center_div" style="display: block; width: 40%;text-align: center;background-color:#99c53d;font-size: .9em; ">Comment on Post</span></a>
                         </div>
 
                     </div>
@@ -727,7 +716,7 @@ function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
                         <hr>
                         <table cellspacing="5px">
                             <tr >
-                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> This message was sent to ' . $to . '
+                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> <span style="font-size: .8em">For more information on gossout.com contact us on feedback@gossout.com</span>
                             </td>
                         </tr>
                     </table>
@@ -756,7 +745,7 @@ function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
         $arr['sender_id'] = $userId;
         $arr['imgS'] = $_SESSION['auth']['image35x35'];
         $arr['name'] = toSentenceCase($senderFullname);
-        $arr['text'] = make_links_clickable(htmlspecialchars($text));
+        $arr['text'] = make_links_clickable(htmlspecialchars(stripcslashes($text)));
         $arr['com_id'] = $community;
         $arr['com'] = $comm;
         $arr['time'] = "now";
@@ -787,7 +776,7 @@ function sendComment($userId, $postId, $comment, $senderFullname) {
         $full_name = 'Gossout';
         $from_mail = $full_name . '<' . $email . '>';
         $from_mail2 = $full_name . '<no-rely@gossout.com>';
-        $message = ($comment);
+        $message = stripcslashes($comment);
 
         // set here
         $subject = "$senderFullname commented on what is happenning in $com_name";
@@ -826,7 +815,7 @@ function sendComment($userId, $postId, $comment, $senderFullname) {
                         <hr>
                         <table cellspacing="5px">
                             <tr >
-                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> This message was sent to ' . $to . '
+                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> <span style="font-size: .8em">For more information on gossout.com contact us on feedback@gossout.com</span>
                             </td>
                         </tr>
                     </table>
@@ -851,7 +840,7 @@ function sendComment($userId, $postId, $comment, $senderFullname) {
         $arr['sender_id'] = $userId;
         $arr['imgS'] = $_SESSION['auth']['image35x35'];
         $arr['name'] = toSentenceCase($senderFullname);
-        $arr['text'] = make_links_clickable(htmlspecialchars($comment));
+        $arr['text'] = make_links_clickable(stripcslashes(htmlspecialchars($comment)));
         $arr['time'] = "now";
         $row = mysql_fetch_array(mysql_query("SELECT NOW() as rawTime"));
         $arr['rawTime'] = $row['rawTime'];
@@ -868,7 +857,7 @@ function sendPirvateMessage($userId, $reciver_id, $comment, $senderFullname) {
         $arr['id'] = mysql_insert_id();
         $arr['imgL'] = $_SESSION['auth']['image50x50'];
         $arr['name'] = toSentenceCase($senderFullname);
-        $arr['text'] = make_links_clickable(htmlspecialchars($comment));
+        $arr['text'] = make_links_clickable(stripcslashes(htmlspecialchars($comment)));
         $arr['time'] = ago(time());
         $row = mysql_fetch_array(mysql_query("SELECT NOW() as rawTime"));
         $arr['rawTime'] = $row['rawTime'];
@@ -926,9 +915,9 @@ function getGossbag($userId, $postId = "0") {
         }
     }
     if ($postId == 0) {
-        $sql = "SELECT gb . *,c.name,CONCAT(p.firstname,' ',p.lastname) as fullname, cs.`datejoined` FROM  `gossbag` AS gb JOIN community_subscribers AS cs ON ( cs.`user` =$userId AND gb.`community_id` = cs.`community_id`) JOIN community as c on gb.`community_id`=c.id JOIN user_personal_info as p on gb.sender_id=p.id WHERE gb.`sender_id` <>$userId AND gb.time > '$time' order by gb.id desc";
+        $sql = "SELECT gb . *,c.name,pt.status,if(pt.status='ANONYMOUS','Anonymous',CONCAT(p.firstname,' ',p.lastname)) as fullname, cs.`datejoined` FROM  `gossbag` AS gb JOIN community_subscribers AS cs ON ( cs.`user` =$userId AND gb.`community_id` = cs.`community_id`) JOIN community as c on gb.`community_id`=c.id JOIN user_personal_info as p on gb.sender_id=p.id JOIN post as pt ON gb.post_id=pt.id WHERE gb.`sender_id` <>$userId AND gb.time > '$time' order by gb.id desc";
     } else {
-        $sql = "SELECT gb . *,c.name,CONCAT(p.firstname,' ',p.lastname) as fullname, cs.`datejoined` FROM  `gossbag` AS gb JOIN community_subscribers AS cs ON ( cs.`user` =$userId AND gb.`community_id` = cs.`community_id`) JOIN community as c on gb.`community_id`=c.id JOIN user_personal_info as p on gb.sender_id=p.id WHERE gb.`sender_id` <>$userId AND gb.post_id =$postId order by gb.id desc";
+        $sql = "SELECT gb . *,c.name,pt.status,if(pt.status='ANONYMOUS','Anonymous',CONCAT(p.firstname,' ',p.lastname)) as fullname, cs.`datejoined` FROM  `gossbag` AS gb JOIN community_subscribers AS cs ON ( cs.`user` =$userId AND gb.`community_id` = cs.`community_id`) JOIN community as c on gb.`community_id`=c.id JOIN user_personal_info as p on gb.sender_id=p.id JOIN post as pt ON gb.post_id=pt.id WHERE gb.`sender_id` <>$userId AND gb.post_id =$postId order by gb.id desc";
     }
     $result = mysql_query($sql);
 
@@ -936,8 +925,13 @@ function getGossbag($userId, $postId = "0") {
         while ($row = mysql_fetch_array($result)) {
             $temp = array();
             $image = getUserPixSet($row['sender_id']);
-            $temp["id"] = $row['id'];
             $temp["sender_id"] = $row['sender_id'];
+            if ($row['status'] == "ANONYMOUS") {
+                $image['image50x50'] = 'images/anony.png';
+                $temp["sender_id"] = 0;
+            }
+            $temp["id"] = $row['id'];
+
             $temp["post_id"] = $row['post_id'];
             $temp["community_id"] = $row['community_id'];
             $temp["caption"] = $row['caption'];
@@ -1040,11 +1034,11 @@ function sendFrq($userId, $frndId, $senderFullname) {
         return $arr;
     }
     $sql = "INSERT INTO usercontacts(username1,username2,sender_id) VALUES('$userId','$frndId','$userId')";
-    mysql_query($sql);
+    @mysql_query($sql);
     $arr = array();
     if (mysql_affected_rows() > 0) {
         $arr['status'] = "success";
-        $sql = "SELECT  `email` FROM `user_personal_info` WHERE `id`=$frndId";
+        $sql = "SELECT  `email` FROM `user_personal_info` WHERE `id`=".$frndId;
         $result = mysql_query($sql);
         $email = trim(strip_tags("frq+notification@gossout.com"));
 
@@ -1065,12 +1059,11 @@ function sendFrq($userId, $frndId, $senderFullname) {
         <meta charset="utf-8">
         <!--        <link rel="stylesheet" media="screen and (min-device-width: 1024px)" href="css/main.css" />-->
         <style> a {text-decoration: none;} ol,ul {    list-style: none;} h1,h2,h3,h4,h5,h6 {font-weight: normal; color: #333;font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;} hr {margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;background-color: #ddd;} span {} img {border: none;padding: .2em;    max-width: 100%;} .inner_wrappper {display: inline-block;padding: .5em;background: #fafafa;width: 100%;}
-            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA; height: 140px; border: 1px solid #F4F4F4; margin-top: 2px;}
-            .friend_index{background: url(http://gossout.com/images/image-friend.png) no-repeat left top!important;}
-            /*            .community_index{background: url(images/image-community.png) no-repeat left top!important;}*/
-            #column1,#column2 {display: inline-block;width: 49.5%;vertical-align: top;}
-            #column1 {text-align: left;}.box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 800px;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} #nav2 div{} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}</style>
+            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA;  border: 1px solid #F4F4F4; margin-top: 2px;}
+            .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
+            #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
+            #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
+            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:#fff} a:active,a:hover,a:visited{color: #ddd}</style>
     </head>
     <body> 
         <div>
@@ -1089,7 +1082,7 @@ function sendFrq($userId, $frndId, $senderFullname) {
                         <hr>
                         <table cellspacing="5px">
                             <tr >
-                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> This message was sent to ' . $to . '
+                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> <span style="font-size: .8em">For more information on gossout.com contact us on feedback@gossout.com</span>
                             </td>
                         </tr>
                     </table>
@@ -1162,7 +1155,7 @@ function getConversationUpdate($contactId, $userId) {
 
 function showInbox($userInbox) {
     $sql = "UPDATE `privatemessae` SET `status`='D' WHERE `receiver_id` = '$userInbox' and `status` = 'N'";
-    $sqlGet = "SELECT p.id, p.sender_id,u.firstname as senderFname,u.lastname as senderLname, p.receiver_id, r.firstname as receiverFname, r.lastname as receiverLname, p.message, p.time, p.status FROM  `privatemessae` AS p JOIN user_personal_info AS u ON u.id = p.sender_id JOIN user_personal_info as r on r.id = p.receiver_id WHERE p.receiver_id =$userInbox OR p.sender_id =$userInbox order by p.time";
+    $sqlGet = "SELECT p.id, p.sender_id,u.firstname as senderFname,u.lastname as senderLname, p.receiver_id, r.firstname as receiverFname, r.lastname as receiverLname, p.message, p.time, p.status FROM  `privatemessae` AS p JOIN user_personal_info AS u ON u.id = p.sender_id JOIN user_personal_info as r on r.id = p.receiver_id WHERE p.receiver_id =$userInbox OR p.sender_id =$userInbox order by p.time desc";
 
     $resultGet = mysql_query($sqlGet);
     $genArr = array();
@@ -1182,7 +1175,7 @@ function showInbox($userInbox) {
                 $eachMsgarr['time'] = agoServer($row['time']);
                 $eachMsgarr['rawTime'] = $row['time'];
                 $eachMsgarr['status'] = 'R';
-                $eachMsgarr['isUser'] = true;
+                $eachMsgarr['isUser'] = "true";
                 $genArr[$row['receiver_id']] = $eachMsgarr;
 
 //                $response = "<div class='post' id='" . $row['id'] . "'><img class='profile_small' src='" . $row['receiverImage'] . "'/><img class='profile_small' src='images/reply.png'/><p class='name'><a href='page.php?view=messages&open=" . $row['receiver_id'] . "'>" . $row['receiverLname'] . ' ' . $row['receiverFname'] . "</a></p><p class='status'>" . $row['message'] . "</p><p class='time'>" . agoServer($row['time']) . "</p></div>";
@@ -1203,7 +1196,7 @@ function showInbox($userInbox) {
                 $eachMsgarr['text'] = $row['message'];
                 $eachMsgarr['time'] = agoServer($row['time']);
                 $eachMsgarr['rawTime'] = $row['time'];
-                $eachMsgarr['isUser'] = false;
+                $eachMsgarr['isUser'] = "false";
                 $genArr[$row['sender_id']] = $eachMsgarr;
                 //continue heer
 //                $response = "<div class='post$status' id='" . $row['id'] . "'><img class='profile_small' src='" . $row['senderImage'] . "'/><p class='name'><a href='page.php?view=messages&open=" . $row['sender_id'] . "'>" . $row['senderLname'] . ' ' . $row['senderFname'] . "</a></p><p class='status'>" . $row['message'] . "</p><p class='time'>" . agoServer($row['time']) . "</p></div>";
@@ -1464,10 +1457,10 @@ function subscribe($userId, $comm) {
     return $arr;
 }
 
-function shortenStr($str, $minLen = 24) {
+function shortenStr($str, $maxLen = 24) {
     $comName = "";
-    if (strlen($str) > $minLen) {
-        $comName = substr($str, 0, $minLen) . "...";
+    if (strlen($str) > $maxLen) {
+        $comName = substr($str, 0, $maxLen) . "...";
     } else {
         $comName = $str;
     }
@@ -1611,12 +1604,11 @@ function sendTweakWink($userId, $receiver_id, $tweakwink) {
         <meta charset="utf-8">
         <!--        <link rel="stylesheet" media="screen and (min-device-width: 1024px)" href="css/main.css" />-->
         <style> a {text-decoration: none;} ol,ul {    list-style: none;} h1,h2,h3,h4,h5,h6 {font-weight: normal; color: #333;font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;} hr {margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;background-color: #ddd;} span {} img {border: none;padding: .2em;    max-width: 100%;} .inner_wrappper {display: inline-block;padding: .5em;background: #fafafa;width: 100%;}
-            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA; height: 140px; border: 1px solid #F4F4F4; margin-top: 2px;}
-            .friend_index{background: url(http://gossout.com/images/image-friend.png) no-repeat left top!important;}
-            /*            .community_index{background: url(images/image-community.png) no-repeat left top!important;}*/
-            #column1,#column2 {display: inline-block;width: 49.5%;vertical-align: top;}
-            #column1 {text-align: left;}.box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 800px;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} #nav2 div{} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}</style>
+            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA;  border: 1px solid #F4F4F4; margin-top: 2px;}
+            .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
+            #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
+            #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
+            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:#fff} a:active,a:hover,a:visited{color: #ddd}</style>
     </head>
     <body> 
         <div>
@@ -1634,7 +1626,7 @@ function sendTweakWink($userId, $receiver_id, $tweakwink) {
                         <hr>
                         <table cellspacing="5px">
                             <tr >
-                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> This message was sent to ' . $to . '
+                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> <span style="font-size: .8em">For more information on gossout.com contact us on feedback@gossout.com</span>
                             </td>
                         </tr>
                     </table>

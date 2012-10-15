@@ -5,15 +5,17 @@ include 'executecommand.php';
 connect();
 $array = showInbox($_SESSION['auth']['id']);
 echo '<div class="posts">';
-if ($array['status'] == "success"){
+if ($array['status'] == "success") {
     foreach ($array as $msg) {
-        if ($msg['isUser']) {
+        if ($msg['isUser'] == "true") {
+            if($msg['name']!="s")
             echo "<div class='post' id='inb_msg" . $msg['msgid'] . "'><img class='profile_small' src='" . $msg['img'] . "'/><img class='profile_small' src='images/reply.png'/><p class='name'><a href='page.php?view=messages&open=" . $msg['id'] . "'>" . $msg['name'] . "</a></p><p class='status'>" . $msg['text'] . "</p><p class='time' id='inb_msg_tim" . $msg['msgid'] . "'>" . $msg['time'] . "</p></div><script>setTimeout(timeUpdate,2000,'" . $msg['rawTime'] . "','inb_msg_tim" . $msg['rawTime'] . "');</script>";
         } else {
+            if($msg['name']!="s")
             echo "<div class='post' id='inb_msg" . $msg['msgid'] . "'><img class='profile_small' src='" . $msg['img'] . "'/><p class='name'><a href='page.php?view=messages&open=" . $msg['id'] . "'>" . $msg['name'] . "</a></p><p class='status'>" . $msg['text'] . "</p><p class='time' id='inb_msg_tim" . $msg['msgid'] . "'>" . $msg['time'] . "</p></div><script>setTimeout(timeUpdate,2000,'" . $msg['rawTime'] . "','inb_msg_tim" . $msg['rawTime'] . "');</script>";
         }
     }
-}else{
+} else {
     echo "No message available";
 }
 echo '</div>';

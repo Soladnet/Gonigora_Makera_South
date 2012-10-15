@@ -105,6 +105,14 @@ if (isset($_SESSION['auth'])) {
                                 <li class="icn_categories"><a href="#">Categories</a></li>
                                 <li class="icn_tags"><a href="#">Tags</a></li>-->
             </ul>
+            <h3>Webmail</h3>
+            <ul class="toggle">
+                <li class="icn_folder"><a href="https://login.secureserver.net" target="_blank">Login to email</a></li>
+                <!--                <li class="icn_new_article"><a href="#">New Article</a></li>
+                                <li class="icn_edit_article"><a href="#">Edit Articles</a></li>
+                                <li class="icn_categories"><a href="#">Categories</a></li>
+                                <li class="icn_tags"><a href="#">Tags</a></li>-->
+            </ul>
             <!--            <h3>Users</h3>
                         <ul class="toggle">
                             <li class="icn_add_user"><a href="#">Add New User</a></li>

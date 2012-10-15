@@ -10,7 +10,7 @@ if (!isset($_SESSION['auth'])) {
     session_unset();
     header("Location:index.php");
 } else {
-//    manageSession();
+    manageSession();
 
     $sql = "SELECT uc.*,c.name,c.category FROM `user_comm` as uc JOIN community as c on uc.community_id=c.id WHERE uc.user_id=" . $_SESSION['auth']['id'];
     $result = mysql_query($sql) or die(mysql_error());

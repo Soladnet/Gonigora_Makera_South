@@ -65,7 +65,7 @@
                 }
                 ?></span><span id="share_loading"></span>
                                     <br/><input id="fileToUpload" type="file" size="45" name="fileToUpload" class="input" ><input type="submit" class="submit" value="Share" id ='postsubmit' onClick="getValue('#status','posts');"/>
-                     
+
                                 </form>
                                 <div class="clear">
                                 </div>

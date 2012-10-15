@@ -9,7 +9,7 @@ if (!isset($_SESSION['auth'])) {
     <head>
         <meta charset="utf-8">
         <?php include_once("head.php"); ?>
-        
+
     </head>
     <body>
         <div id="page">
@@ -23,14 +23,11 @@ if (!isset($_SESSION['auth'])) {
                         <ul>
                             <?php
                             if (isset($_GET['open'])) {
-                                echo '<li class="lefttab"><a href="#conversation" >Conversation</a></li><li class="righttab"><a href="gossoutpages/inbox.php" >Inbox</a></li>';
+                                echo '<li class="lefttab"><a href="#conversation" >Conversation</a></li><li class="righttab"><a href="inbox.php" >Inbox</a></li>';
                             } else {
                                 echo '<li class="lefttab"><a href="inbox.php"  >Inbox</a></li>';
                             }
                             ?>
-
-                            <!--                            <li> <a href="#sent" > Sent Messages</a></li>
-                                                        <li><a href="#drafts" class="righttab"> Drafts</a></li>-->
                         </ul>
                         <?php
                         if (isset($_GET['open'])) {
@@ -45,18 +42,17 @@ if (!isset($_SESSION['auth'])) {
                         }
                         ?>
 
-<!--                        <div id="inbox">
-                            
-                            <?php
+                        <!--                        <div id="inbox">
+                                                    
+                        <?php
 //                            if (!isset($_GET['open'])){
 //                                echo "<script>getInbox();</script>";
 //                            }else{
 //                                echo "<div><img src='images/loading.gif' id='messagesgloading' /></div><script>setTimeout(getInbox,5000);</script>";
 //                            }
-                            
-                            ?>
-
-                        </div>-->
+                        ?>
+                        
+                                                </div>-->
 
                         <!--                        <div id="sent">
                         

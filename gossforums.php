@@ -51,7 +51,7 @@
                                     foreach ($arr as $value) {
                                         echo '<tr>
                                 <td><p class="catg_name"><a href="page.php?view=community&com=' . $value['id'] . '">' . $value['name'] . ' (' . $value['subscriber'] . ' subscribers)</a></p>
-                                    <!--<p class="catg_desc">' . $value['description'] . '</p>-->
+                                    <p class="catg_desc" ><span style="font-size:60%;">' . $value['description'] . '</span></p>
                                 </td>
                                 <td align="right">' . $value['postCount'] . '</td>
                                 <td align="right">' . $value['commentCount'] . '</td>
@@ -79,7 +79,7 @@
                                 foreach ($arr as $value) {
                                     echo '<tr>
                                 <td><p class="catg_name"><a href="page.php?view=community&com=' . $value['id'] . '">' . $value['name'] . ' (' . $value['subscriber'] . ' subscribers)</a></p>
-                                    <!--<p class="catg_desc">' . $value['description'] . '</p>-->
+                                    <p class="catg_desc"><span style="font-size:60%;">' . $value['description'] . '<span></p>
                                 </td>
                                 <td align="right">' . $value['postCount'] . '</td>
                                 <td align="right">' . $value['commentCount'] . '</td>

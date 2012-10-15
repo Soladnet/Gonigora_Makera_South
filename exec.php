@@ -25,7 +25,12 @@ if (isset($_POST['action'])) {
             $senderFullname = $_SESSION['auth']['fullname'];
             $userId = $_SESSION['auth']['id'];
             $communityId = $_SESSION['auth']['community']['id'];
-            $status = $_POST['status'];
+            if(isset($_POST['status'])){
+                $status = $_POST['status'];
+            }else{
+                $status = "false";
+            }
+            
             if ($communityId == NULL) {
                 $arr['status'] = "failed";
                 $arr['message'] = "Please join a community before you can send a post";
