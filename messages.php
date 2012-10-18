@@ -23,9 +23,9 @@ if (!isset($_SESSION['auth'])) {
                         <ul>
                             <?php
                             if (isset($_GET['open'])) {
-                                echo '<li class="lefttab"><a href="#conversation" >Conversation</a></li><li class="righttab"><a href="inbox.php" >Inbox</a></li>';
+                                echo '<li class="lefttab"><a href="#conversation" >Conversation</a></li><li class="righttab"><a href="#inbox" >Inbox</a></li><li><a href="#outbox">Outbox</a></li>';
                             } else {
-                                echo '<li class="lefttab"><a href="inbox.php"  >Inbox</a></li>';
+                                echo '<li class="lefttab"><a href="#inbox">Inbox</a></li><li><a href="#outbox">Outbox</a></li>';
                             }
                             ?>
                         </ul>
@@ -41,18 +41,46 @@ if (!isset($_SESSION['auth'])) {
                                 </script>";
                         }
                         ?>
+                        <div id="inbox">
 
-                        <!--                        <div id="inbox">
-                                                    
-                        <?php
-//                            if (!isset($_GET['open'])){
-//                                echo "<script>getInbox();</script>";
-//                            }else{
-//                                echo "<div><img src='images/loading.gif' id='messagesgloading' /></div><script>setTimeout(getInbox,5000);</script>";
-//                            }
-                        ?>
-                        
-                                                </div>-->
+                            <?php
+                            $sql = "SELECT m.`id`,  m.`receiver_id`,m.`sender_id`,concat(l.firstname,' ',l.lastname) as fullname, m.`message`, m.`time`, m.`status` FROM `privatemessae` as m JOIN user_personal_info as l ON m.`sender_id`=l.id WHERE m.receiver_id=" . $_SESSION['auth']['id'] . " order by m.time desc";
+                            $result = mysql_query($sql);
+                            if (mysql_num_rows($result) > 0) {
+                                echo '<div class="posts">';
+                                $pivot = "";
+                                while ($row = mysql_fetch_array($result)) {
+                                    if ($pivot != $row['sender_id']) {
+                                        $msg = getUserPixSet($row['sender_id']);
+                                        echo "<div class='post' id='in_msg" . $row['id'] . "'><img class='profile_small' src='" . $msg['image50x50'] . "'/><p class='name'><a href='page.php?view=messages&open=" . $row['id'] . "'>" . $row['fullname'] . "</a></p><p class='status'>" . $row['message'] . "</p><p class='time' id='in_msg_tim" . $row['id'] . "'>" . agoServer($row['time']) . "</p></div><script>setTimeout(timeUpdate,2000,'" . $row['time'] . "','in_msg_tim" . $row['time'] . "');</script>";
+                                        $pivot = $row['sender_id'];
+                                    }
+                                }
+                                echo "</div>";
+                            } else {
+                                echo "No outbox message";
+                            }
+                            ?>
+
+                        </div>
+                        <div id="outbox">
+
+                            <?php
+                            $sql = "SELECT m.`id`,  m.`receiver_id`,concat(l.firstname,' ',l.lastname) as fullname, m.`message`, m.`time`, m.`status` FROM `privatemessae` as m JOIN user_personal_info as l ON m.`receiver_id`=l.id WHERE m.sender_id=" . $_SESSION['auth']['id'];
+                            $result = mysql_query($sql);
+                            if (mysql_num_rows($result) > 0) {
+                                while ($row = mysql_fetch_array($result)) {
+                                    $msg = getUserPixSet($row['receiver_id']);
+                                    //echo '<div class="posts">';
+                                    echo "<div class='post' id='out_msg" . $row['id'] . "'><img class='profile_small' src='" . $msg['image50x50'] . "'/><p class='name'><a href='page.php?view=messages&open=" . $row['id'] . "'>" . $row['fullname'] . "</a></p><p class='status'>" . $row['message'] . "</p><p class='time' id='out_msg_tim" . $row['id'] . "'>" . $row['time'] . "</p></div><script>setTimeout(timeUpdate,2000,'" . $row['time'] . "','out_msg_tim" . $row['time'] . "');</script>";
+                                }
+                            } else {
+                                echo "No outbox message";
+                            }
+                            ?>
+
+                        </div>
+
 
                         <!--                        <div id="sent">
                         

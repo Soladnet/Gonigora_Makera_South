@@ -253,7 +253,7 @@ function login($username, $password, $rem = false) {
         }
 
         $_SESSION['auth'] = $arr;
-        
+
         header('Location: page.php?view=home');
         exit;
     } else {
@@ -559,14 +559,14 @@ function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0, $low
         if ($where) {
             $where .=" AND p.id=$withPost_id";
         } else {
-            $where ="where p.id=$withPost_id";
+            $where = "where p.id=$withPost_id";
         }
     }
     if ($showAnonymous) {
         if ($where) {
             $where .=" AND p.status<>'ANONYMOUS'";
         } else {
-            $where ="where p.status<>'ANONYMOUS'";
+            $where = "where p.status<>'ANONYMOUS'";
         }
     }
 
@@ -663,12 +663,15 @@ function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
         $name = $senderFullname;
         $arr['imgL'] = "images/anony.png";
     } else {
-        
         $sql = "INSERT INTO `post`(`post`, `community_id`, `sender_id`) VALUES ('" . clean(htmlspecialchars($text)) . "','$community','$userId')";
     }
-
+    if (strlen($text) > 160) {
+        $arr['message'] = "Text too long. Please summarize to 160 characters";
+        $arr['status'] = "failed";
+        return $arr;
+    }
     mysql_query($sql);
-    
+
     if (mysql_affected_rows() > 0) {
         $id = mysql_insert_id();
         $sql = "SELECT c.`community_id`, concat(u.`firstname`,' ',u.lastname) as fullname,u.email FROM `community_subscribers` as c JOIN user_personal_info as u ON c.user=u.id WHERE c.`community_id`=$community";
@@ -705,10 +708,10 @@ function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
                 <div class="inner_wrappper box_shadow8 center_div ">
                     <div id="column1" style="width: 100%">
                         <div  class="community_index index_fnx" > 
-                            <span> <h1 class="fnx"><img src="http://gossout.com/images/G.png" /><a href="page.php?view=community&com=' . $community . '"> ' . $comm . '</a><hr> </h1><a href="http://www.gossout.com/page.php?view=notification&open='.$id.'"><span class="box_shadow8 center_div" style="display: block; width: 40%;text-align: center;background-color:#99c53d;font-size: .9em; ">Comment on Post</span></a>
+                            <span> <h1 class="fnx"><img src="http://gossout.com/images/G.png" /><a href="page.php?view=community&com=' . $community . '"> ' . $comm . '</a><hr> </h1><a href="http://www.gossout.com/page.php?view=notification&open=' . $id . '"><span class="box_shadow8 center_div" style="display: block; width: 40%;text-align: center;background-color:#99c53d;font-size: .9em; ">Comment on Post</span></a>
                                 <p class="fnx_detail"><img src="http://www.gossout.com/' . $arr['imgL'] . '" align="left"/><strong>' . $name . '</strong><br/>' . $message . '</p>
                             </span>
-                            <a href="http://www.gossout.com/page.php?view=notification&open='.$id.'"><span class="box_shadow8 center_div" style="display: block; width: 40%;text-align: center;background-color:#99c53d;font-size: .9em; ">Comment on Post</span></a>
+                            <a href="http://www.gossout.com/page.php?view=notification&open=' . $id . '"><span class="box_shadow8 center_div" style="display: block; width: 40%;text-align: center;background-color:#99c53d;font-size: .9em; ">Comment on Post</span></a>
                         </div>
 
                     </div>
@@ -754,7 +757,7 @@ function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
         $arr['status'] = "success";
         $arr['message'] = "Post sent successfully!";
     } else {
-        $arr['message'] = "Failt to send your post at this time";
+        $arr['message'] = "Text must not exceed 160 characters";
         $arr['status'] = "failed";
     }
     return $arr;
@@ -1038,7 +1041,7 @@ function sendFrq($userId, $frndId, $senderFullname) {
     $arr = array();
     if (mysql_affected_rows() > 0) {
         $arr['status'] = "success";
-        $sql = "SELECT  `email` FROM `user_personal_info` WHERE `id`=".$frndId;
+        $sql = "SELECT  `email` FROM `user_personal_info` WHERE `id`=" . $frndId;
         $result = mysql_query($sql);
         $email = trim(strip_tags("frq+notification@gossout.com"));
 
@@ -1155,7 +1158,7 @@ function getConversationUpdate($contactId, $userId) {
 
 function showInbox($userInbox) {
     $sql = "UPDATE `privatemessae` SET `status`='D' WHERE `receiver_id` = '$userInbox' and `status` = 'N'";
-    $sqlGet = "SELECT p.id, p.sender_id,u.firstname as senderFname,u.lastname as senderLname, p.receiver_id, r.firstname as receiverFname, r.lastname as receiverLname, p.message, p.time, p.status FROM  `privatemessae` AS p JOIN user_personal_info AS u ON u.id = p.sender_id JOIN user_personal_info as r on r.id = p.receiver_id WHERE p.receiver_id =$userInbox OR p.sender_id =$userInbox order by p.time desc";
+    $sqlGet = "SELECT p.id, p.sender_id,u.firstname as senderFname,u.lastname as senderLname, p.receiver_id, r.firstname as receiverFname, r.lastname as receiverLname, p.message, p.time, p.status FROM  `privatemessae` AS p JOIN user_personal_info AS u ON u.id = p.sender_id JOIN user_personal_info as r on r.id = p.receiver_id WHERE p.receiver_id =$userInbox OR p.sender_id =$userInbox";
 
     $resultGet = mysql_query($sqlGet);
     $genArr = array();

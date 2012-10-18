@@ -59,7 +59,7 @@ if (isset($_POST['saveForm'])) {
             $date = clean($_POST['dob_yr']) . "-" . clean($_POST['dob_month']) . "-" . clean($_POST['dob_day']);
             $done = registerUser(clean($_POST['first_name']), clean($_POST['last_name']), clean($_POST['gender']), $date, clean($_POST['email']), clean($_POST['password']));
             if ($done == "") {
-                header("Location: page.php?view=join");
+                header("Location: page.php?view=community");
             } else {
                 $_SESSION['err'][] = "The email you selected is not available.";
                 header("Location: index.php");

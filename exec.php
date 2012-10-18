@@ -271,7 +271,7 @@ if (isset($_POST['action'])) {
                                 $arr['fbmsg'] = "Shared with facebook";
                             } catch (FacebookApiException $e) {
                                 $arr['fbstatus'] = "failed";
-                                $arr['fbmsg'] = "Opps! We cannot connect you to facebook now...try again later";
+                                $arr['fbmsg'] = "Opps! We cannot connect you to facebook now...Make sure you are connected to internet";
                             }
                         } else {
                             try {

@@ -35,14 +35,24 @@ function getValue(a,b){
             if(c==""){
                 return
             }else{
-                $("#share_loading").html('<img src="images/load.gif" />');
-                $(a).attr("disabled","disabled");
-                sendData(c,b,".posts",a)
+                if(c.length>160){
+                    showFlashMessageDialoge("Text too long. Please summarize to 160 characters","messenger","error");
+                    $(a).removeClass("sending");
+                }else{
+                    $("#share_loading").html('<img src="images/load.gif" />');
+                    $(a).attr("disabled","disabled");
+                    sendData(c,b,".posts",a)
+                }
             }
         }else{
-            $(a).attr("disabled","disabled");
-            $("#share_loading").html('<img src="images/load.gif" />');
-            ajaxFileUpload(c,a)
+            if(c.length>160){
+                showFlashMessageDialoge("Text too long. Please summarize to 160 characters","messenger","error");
+                $(a).removeClass("sending");
+            }else{
+                $(a).attr("disabled","disabled");
+                $("#share_loading").html('<img src="images/load.gif" />');
+                ajaxFileUpload(c,a)
+            }
         }
     }else if(b=="commentsPost"){
         var d=$.trim($("#c"+a).val());
@@ -805,17 +815,18 @@ function join(a){
         success:function(b){
             if(b){
                 if(b.status=="success"){
-                    refreshRightPanel("mycommunity");
-                    refreshRightPanel("suggestion");
-                    $(".comhome").removeClass("addbutton");
-                    $(".comhome").removeClass("ui-state-highlight");
-                    $(".comhome").html("");
-                    $("#hom"+a).addClass("addbutton");
-                    $("#hom"+a).addClass("ui-state-highlight");
-                    $("#hom"+a).html('<img src="images/icon_home.png" />');
-                    $(".panel").html("<p>Unsubscribe | <span>Join</span></p>");
-                    $("#pan"+a).html("This is your current community");
-                    $("#status_community").html("Share with "+b.comm);
+                    //                    refreshRightPanel("mycommunity");
+                    //                    refreshRightPanel("suggestion");
+                    //                    $(".comhome").removeClass("addbutton");
+                    //                    $(".comhome").removeClass("ui-state-highlight");
+                    //                    $(".comhome").html("");
+                    //                    $("#hom"+a).addClass("addbutton");
+                    //                    $("#hom"+a).addClass("ui-state-highlight");
+                    //                    $("#hom"+a).html('<img src="images/icon_home.png" />');
+                    //                    $(".panel").html("<p>Unsubscribe | <span>Join</span></p>");
+                    //                    $("#pan"+a).html("This is your current community");
+                    //                    $("#status_community").html("Share with "+b.comm);
+                    window.location.reload(true);
                     showFlashMessageDialoge(b.message,"messenger","info")
                 }else{
                     showFlashMessageDialoge(b.message,"messenger","error")

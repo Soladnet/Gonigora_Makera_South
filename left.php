@@ -80,7 +80,7 @@
     <span id="community_chat">
         <?php
         if (isset($_SESSION['auth']['community']['id'])) {
-           include("community-chat.php");
+//           include("community-chat.php");
         }
         ?>
     </span>
