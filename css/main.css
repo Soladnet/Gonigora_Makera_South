@@ -66,7 +66,6 @@ textarea {
     resize: none;
 }
 
-
 /*  generics    ----------------------------------------------------------------------------*/
 .animate{
     -webkit-transition-duration       : 190ms;
@@ -257,11 +256,11 @@ input[type=password]:focus {
     float: left;
     min-width: 8em;
     margin: 0;
-    padding: 0 10px 4px 25px;
+    padding: 0 10px 4px 24px;
     font-size: 1em;
     vertical-align: bottom;
 }
-.nav .logout { float: right;}
+.nav .logout { float: right; }
 .nav form{
     float: right;
     margin: 0;
@@ -438,6 +437,7 @@ form#signup label.desc {
     left  : 0;
     padding: .6em;
     overflow: auto;
+    min-width: 900px;
 }
 .left {
     position: absolute;
@@ -547,17 +547,6 @@ form#signup label.desc {
     -moz-box-shadow   : 0 0 3px #666;
     box-shadow        : 0 0 3px #666;  
 }
-/* .lefttab{
-    margin:0px;
-    -moz-border-radius:5px 0px 0px 5px;
-    -webkit-border-radius: 5px 0px 0px 5px;
-    -khtml-border-radius: 5px 0px 0px 5px;
-}
-.righttab{
-    -moz-border-radius:0px 5px 5px 0px;
-    -webkit-border-radius: 0px 5px 5px 0px;
-    -khtml-border-radius: 0px 5px 5px 0px;
-} */
 #tabs ul li { display: inline; float: left; }
 #tabs a             { text-align: center; text-decoration: none; cursor: pointer; }
 
@@ -592,9 +581,6 @@ form#signup label.desc {
 
 
 #footer{    padding: 5px 10px 5px 10px; margin: 0 auto; }
-/*  #footer table{    width:100%;} */
-#footer a{    color:#333; padding: 0 .2em;}
-#footer a:hover{    color:#A6CC8B;}
 #footer li {    float: left;}
 
 
@@ -629,7 +615,6 @@ form#signup label.desc {
 
 /*************************************************************************************************************/
 /* misc     **************************************************************************************************/
-
 #messenger { 
     width: 240px;
     padding: 0.7em;
@@ -696,7 +681,7 @@ form#signup label.desc {
     text-align:justify;
 }
 .index_fnx{
-    height: 140px;
+    min-height: 140px;
     margin-top: 2px;
 }
 .friend_index{
@@ -707,7 +692,7 @@ form#signup label.desc {
 }
 .gossip_index{
     background: url(../images/image-gossip.png) no-repeat left top!important;
-}   
+} 
 .index_fnx span{
     padding-right:20px;
     padding-left: 150px;
@@ -739,5 +724,39 @@ body:before {
    max-width:350px;
    margin: 0px auto;
    text-align: justify;
-   padding-top: 250px;
+   padding-top: 260px;
+}
+
+
+/* Media Queries for Desktops ----------- */
+@media only screen 
+and (max-width : 880px) {
+    *{       
+        
+    }
+    #column1, #column2 {
+        -webkit-transition: all 1s ease-out;  /* Safari 3.2+, Chrome */
+             -moz-transition: all 1s ease-out;  /* Firefox 4-15 */
+               -o-transition: all 1s ease-out;  /* Opera 10.5–12.00 */
+                  transition: all 1s ease-out;  /* Firefox 16+, Opera 12.50+ */
+        width: 100%;
+    }
+    .width800{
+        -webkit-transition: all 1s ease-out;  /* Safari 3.2+, Chrome */
+             -moz-transition: all 1s ease-out;  /* Firefox 4-15 */
+               -o-transition: all 1s ease-out;  /* Opera 10.5–12.00 */
+                  transition: all 1s ease-out;  /* Firefox 16+, Opera 12.50+ */
+        width: 80%;
+    }
+    .right{
+        display: none;
+    }
+    .content{
+        -webkit-transition: all 1s ease-out;  /* Safari 3.2+, Chrome */
+         -moz-transition: all 1s ease-out;  /* Firefox 4-15 */
+           -o-transition: all 1s ease-out;  /* Opera 10.5–12.00 */
+              transition: all 1s ease-out;  /* Firefox 16+, Opera 12.50+ */
+        position: absolute;
+        right: 0;
+    }
 }

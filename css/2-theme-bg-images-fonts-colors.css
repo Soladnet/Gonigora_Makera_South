@@ -1,11 +1,11 @@
-body {    background: url(../images/bg/1-brown.jpg) repeat;    color: #333333;font-family: 'Segoe UI',sans-serif;}
+body {    background: url(../images/bg/1462099.png) repeat;    color: #333333;font-family: 'Segoe UI',sans-serif;}
 h1,h2,h3,h4,h5,h6 {    color: #333; font-weight: normal;    font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;}
 input[type=submit],
 input[type=button],
 input[type=file],
 input[type=reset],
 button {
-    border: 1px solid #717171;
+    border: 1px solid #462A35;
     font-size: 1em; 
     font-family: 'Segoe UI',sans-serif;
  }
@@ -14,7 +14,7 @@ input[type=button]:hover,
 input[type=file]:hover,
 input[type=reset]:hover,
 button:hover {
-    border: 1px solid #99c53d;
+    border: 1px solid #B18486;
 }
 input[type=text],
 input[type=password],
@@ -30,7 +30,7 @@ input[type=email]:focus,
 input[type=password]:focus,
 textarea:focus {
     border: 1px solid #91ce4f;
-    color: #717171;
+    color: #462A35;
 }
 .ash_gradient{
     background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#f2f2f2)); /* Saf4+, Chrome */
@@ -52,7 +52,7 @@ textarea:focus {
     background-color: #1F1F1F;
 }
 .nav_gradient {   
-    background-color: #99c53d;
+    background-color: #B18486;
 }
 .nav2_gradient {
     background-color: #f3f3f3;
@@ -64,17 +64,17 @@ textarea:focus {
     background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);
 }
 #nav2 {
-    border-bottom: 1px solid #717171;
+    border-bottom: 1px solid #462A35;
 }
 .nav {
-    border-top: .2em solid #99c53d;
-    border-bottom: 0.1em solid #99c53d;
+    border-top: .2em solid #B18486;
+    border-bottom: 0.1em solid #B18486;
 }
-.nav span a {
-    color: #717171;
+.nav span a{
+    color: #fff;
 }
-.nav a{
-    color: #717171;
+.nav a {
+    color: #462A35;
 }
 .nav a:hover {
     color: #000 !important;
@@ -110,7 +110,7 @@ textarea:focus {
     border: 2px solid transparent;
 }
 #suggestions .post:hover{
-    border: 2px solid #99C53D;
+    border: 2px solid #B18486;
 }
 .login-page-column{
     background: url(../images/logo_image_text.png) no-repeat center top!important;
@@ -121,14 +121,14 @@ textarea:focus {
 #friend_requests{   background: url(../images/icon_frq.png) no-repeat 4px 50%;    cursor: pointer; }
 #settings       {   background: url(../images/icon_settings.png) no-repeat 4px 50%;    cursor: pointer; }
 
-#gossbag:hover  {    background: url(../images/icon_gossbag.png) no-repeat 4px 50% #def4b6; }
-#messages:hover {    background: url(../images/icon_message.png) no-repeat 4px 50% #def4b6; }
-#friend_requests:hover{    background: url(../images/icon_frq.png) no-repeat 4px 50% #def4b6; }
-#settings:hover {    background: url(../images/icon_settings.png) no-repeat 4px 50% #def4b6; }
+#gossbag:hover  {    background: url(../images/icon_gossbag.png) no-repeat 4px 50% #EEDADC; }
+#messages:hover {    background: url(../images/icon_message.png) no-repeat 4px 50% #EEDADC; }
+#friend_requests:hover{    background: url(../images/icon_frq.png) no-repeat 4px 50% #EEDADC; }
+#settings:hover {    background: url(../images/icon_settings.png) no-repeat 4px 50% #EEDADC; }
 
 .heading {
     border: 1px solid #aaa;
-    background: #717171;
+    background: #462A35;
     color: #fff;
     font-size: 1em;
 }
@@ -140,7 +140,7 @@ textarea:focus {
 }
 /*  profile styling     *************************************************************************************/
 .person{ border: 2px solid #F5F5F5; background:  #FAFAFA;}
-.person:hover{border: 2px solid #99c53d;}
+.person:hover{border: 2px solid #B18486;}
 .details a{  color: #008299;}
 .p_name{    word-wrap: normal; font-size: .9em;}
 .p_location{    font-size: .8em;}
@@ -163,7 +163,7 @@ textarea:focus {
 #tabs ul:after      { background: red; }
 #tabs a             { color: #008299; }
 #postbox {
-    border: 2px solid #717171;
+    border: 2px solid #462A35;
     background-color: #ffffff;
     background-image: -webkit-gradient(linear,left top,left bottom,from(#ffffff),to(#f2f2f2));
     background-image: -webkit-linear-gradient(top,#ffffff,#f2f2f2);
@@ -172,7 +172,7 @@ textarea:focus {
     background-image: -o-linear-gradient(top,#ffffff,#f2f2f2);
     background-image: linear-gradient(to bottom,#ffffff,#f2f2f2);
 }
-.update_textarea { border: 1px solid #717171;}
+.update_textarea { border: 1px solid #462A35;}
 
 #statusUpdate input[type=submit] {     float: right;     margin-right: 8px; }
 .post { border-top: solid #CCC 1px; border-left: solid #CCC 1px; font-size: .9em; }
@@ -209,7 +209,7 @@ textarea:focus {
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { /* border: 1px solid #999999; */ /* background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x; */ /* color: #212121; */ /* font-weight: normal; */ /* }
 .ui-state-hover a, .ui-state-hover a:hover { color: #212121; */ /* text-decoration: none; */ }
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
-    background-color: #99c53d; 
+    background-color: #B18486; 
     color: black;
  }
 
@@ -303,5 +303,5 @@ textarea:focus {
 .not_found {
    background: url(../images/404.png) 50% 50px no-repeat;  
 }
-#footer a{ padding: 0 .2em;    color:#333;}
-#footer a:hover{    color:#A6CC8B;}
+#footer a{ padding: 0 .2em;    color:#462A35;}
+#footer a:hover{    color:#B18486;}
