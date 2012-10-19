@@ -32,8 +32,8 @@ input[type=button]:hover,
 input[type=file]:hover,
 input[type=reset]:hover,
 button:hover {
-    -webkit-box-shadow: 0 0 0 1px #91ce4f;
-    box-shadow: 0 0 0 1px #91ce4f;
+    -webkit-box-shadow: 0 0 0 1px #717171;
+    box-shadow: 0 0 0 1px #717171;
 }
 input[type=text],
 input[type=password],
@@ -219,7 +219,7 @@ the Terms & Conditions Ish
     float:right;
 }
 .login-box span{
-    color: #717373;
+    color: #717171;
     vertical-align: middle;
 }
 .login-box 
@@ -244,6 +244,7 @@ input[type=password]:focus {
     top: 0;
     right: 0;
     left: 0;
+    min-width: 600px;
 }
 .nav *{
     vertical-align: text-top;
@@ -407,10 +408,6 @@ form#signup label.desc {
 #tooltip_menu1 a,#tooltip_menu2 a,#tooltip_menu3 a,#tooltip_menu4 a{
     color: #717171;
 }
-#tooltip_menu1 div:hover,#tooltip_menu2 div:hover,#tooltip_menu3 div:hover,#tooltip_menu4 div:hover {/*important color stuff*/
-    background: #A6CC8B;
-    color: #fff;
-}
 #tooltip_menu1 div img,#tooltip_menu2 div img,#tooltip_menu3 div img,#tooltip_menu4 div img {
     position: relative;/*important with images if any*/
     top: 5px;
@@ -454,7 +451,7 @@ form#signup label.desc {
     overflow: auto;
 }
 /*  profile styling     *************************************************************************************/
-.person{ margin: 2px;  cursor:pointer; }
+.person{ margin: 2px;}
 .details{ display: inline-block; margin: 0px auto 0;}
 .details span{    display: block;    margin: 0px auto 0;}
 .p_name{ overflow: hidden;}
@@ -563,7 +560,7 @@ form#signup label.desc {
 .post img {     float: left; }
 .post .status {    padding: 4px; }
 .post .time {    position: absolute;    top: 0;    right: 0;    margin-bottom: 5px;    margin-left  : 100px;    padding    : 4px;    padding-top: 15px; } 
-.post_activities span:hover{text-decoration: underline;    cursor: pointer; }
+.post_activities span:hover{ cursor: pointer;}
 #comment {     position: relative;     margin-left: 5em;     padding-top: 2px;  -webkit-border-radius: 2px;     border-radius: 2px;     margin-top: .08em;    clear: both; }
 #comment .time {    position: absolute;    top: 0;   right: 0;    margin-bottom: 5px;    margin-left  : 100px;    padding    : 4px;    padding-top: 3px; }
 #commentbox {    margin-left: 6.0em;    padding: 5px;    vertical-align: bottom;   -webkit-border-radius: 2px;    border-radius: 2px;    margin-top: 1px;  height:50px; }
