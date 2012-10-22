@@ -313,7 +313,7 @@ class UploadHandler {
         if ($this->validate($uploaded_file, $file, $error, $index)) {
             $this->handle_form_data($file, $index);
             $file_path = $this->options['upload_dir'] . $file->name;
-            $myImgVerUrl[] = 'upload/files' . $file->name;
+            $myImgVerUrl[] = 'upload/files/' . $file->name;
 
             $append_file = !$this->options['discard_aborted_uploads'] &&
                     is_file($file_path) && $file->size > filesize($file_path);

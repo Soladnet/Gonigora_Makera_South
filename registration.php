@@ -132,7 +132,7 @@ if (!isset($_SESSION['auth'])) {
                 <div class="content">
                     <div id="tabs">
                         <ul class="tabNav">
-                            <li class="lefttab"><a href="#community" >Join a community </a></li>
+<!--                            <li class="lefttab"><a href="#community" >Join a community </a></li>-->
                             <li ><a href="#ppinfo" >Tell us about you </a></li>
                             <li ><a href="#friends" >Share</a></li>
                             <li class="righttab"><a href="page.php?view=upload&photos=" >Add photo </a></li>
@@ -187,7 +187,7 @@ if (!isset($_SESSION['auth'])) {
                                 </div>
                             </div>
                         </div>
-                        <div id="community">
+<!--                        <div id="community">
                             <div class="ui-corner-all">
                                 <p style="padding: 8px; line-height: 2em;">Please note, joining a community on gossout is a prerequisite. Use the fields below to specify a community of your choice or navigate to your home page to see suggested communities </p>
                                 <p class="heading">
@@ -213,10 +213,10 @@ if (!isset($_SESSION['auth'])) {
                                             </td><td><span id="editcommunity"><input  id="com" onkeydown="autoComplete('com')" type="text" size=50 /></span></td>
                                         </tr>
                                     </table>
-<span style="display: block;" class="menu_bottom">&nbsp;<span style="float: right; margin-left: .4em;margin-right: .4em;" class="next" id="join" onclick="editInfo('pcommunity')">Continue</span><!--<span style="float: right" id="skip" class="back">Back</span>--><span style="display: block" class="clear"></span></span>
+<span style="display: block;" class="menu_bottom">&nbsp;<span style="float: right; margin-left: .4em;margin-right: .4em;" class="next" id="join" onclick="editInfo('pcommunity')">Continue</span><span style="float: right" id="skip" class="back">Back</span><span style="display: block" class="clear"></span></span>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                         <div id="friends">
                             <p class="heading">Disclaimer</p>
                             <p style="padding: 8px; line-height: 2em;">Gossout won't share your personal information you import with anyone, but we will store them (when necessary) on your behalf and may use them later to help others search for people or to generate friend suggestions for you and others. <!--Depending on your email provider, addresses from your contacts list and mail folders may be imported. You should only import contacts from accounts you've set up for personal use.--></p>

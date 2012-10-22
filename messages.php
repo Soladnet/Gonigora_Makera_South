@@ -48,12 +48,16 @@ if (!isset($_SESSION['auth'])) {
                             $result = mysql_query($sql);
                             if (mysql_num_rows($result) > 0) {
                                 echo '<div class="posts">';
-                                $pivot = "";
+                                $pivot = array();
                                 while ($row = mysql_fetch_array($result)) {
-                                    if ($pivot != $row['sender_id']) {
+                                    if (!in_array($row['sender_id'], $pivot)) {
                                         $msg = getUserPixSet($row['sender_id']);
-                                        echo "<div class='post' id='in_msg" . $row['id'] . "'><img class='profile_small' src='" . $msg['image50x50'] . "'/><p class='name'><a href='page.php?view=messages&open=" . $row['id'] . "'>" . $row['fullname'] . "</a></p><p class='status'>" . $row['message'] . "</p><p class='time' id='in_msg_tim" . $row['id'] . "'>" . agoServer($row['time']) . "</p></div><script>setTimeout(timeUpdate,2000,'" . $row['time'] . "','in_msg_tim" . $row['time'] . "');</script>";
-                                        $pivot = $row['sender_id'];
+                                        if ($row['status'] == "D" || $row['status'] == "N") {
+                                            echo "<div class='post shade' id='in_msg" . $row['id'] . "'><img class='profile_small' src='" . $msg['image50x50'] . "'/><p class='name'><a href='page.php?view=messages&open=" . $row['sender_id'] . "'>" . $row['fullname'] . "</a></p><p class='status'>" . $row['message'] . "</p><p class='time' id='in_msg_tim" . $row['id'] . "'>" . agoServer($row['time']) . "</p></div><script>setTimeout(timeUpdate,2000,'" . $row['time'] . "','in_msg_tim" . $row['time'] . "');</script>";
+                                        } else {
+                                            echo "<div class='post' id='in_msg" . $row['id'] . "'><img class='profile_small' src='" . $msg['image50x50'] . "'/><p class='name'><a href='page.php?view=messages&open=" . $row['sender_id'] . "'>" . $row['fullname'] . "</a></p><p class='status'>" . $row['message'] . "</p><p class='time' id='in_msg_tim" . $row['id'] . "'>" . agoServer($row['time']) . "</p></div><script>setTimeout(timeUpdate,2000,'" . $row['time'] . "','in_msg_tim" . $row['time'] . "');</script>";
+                                        }
+                                        $pivot[] = $row['sender_id'];
                                     }
                                 }
                                 echo "</div>";
@@ -69,11 +73,13 @@ if (!isset($_SESSION['auth'])) {
                             $sql = "SELECT m.`id`,  m.`receiver_id`,concat(l.firstname,' ',l.lastname) as fullname, m.`message`, m.`time`, m.`status` FROM `privatemessae` as m JOIN user_personal_info as l ON m.`receiver_id`=l.id WHERE m.sender_id=" . $_SESSION['auth']['id'];
                             $result = mysql_query($sql);
                             if (mysql_num_rows($result) > 0) {
+                                $pivot = array();
+                                echo '<div class="posts">';
                                 while ($row = mysql_fetch_array($result)) {
                                     $msg = getUserPixSet($row['receiver_id']);
-                                    //echo '<div class="posts">';
-                                    echo "<div class='post' id='out_msg" . $row['id'] . "'><img class='profile_small' src='" . $msg['image50x50'] . "'/><p class='name'><a href='page.php?view=messages&open=" . $row['id'] . "'>" . $row['fullname'] . "</a></p><p class='status'>" . $row['message'] . "</p><p class='time' id='out_msg_tim" . $row['id'] . "'>" . $row['time'] . "</p></div><script>setTimeout(timeUpdate,2000,'" . $row['time'] . "','out_msg_tim" . $row['time'] . "');</script>";
+                                    echo "<div class='post' id='out_msg" . $row['id'] . "'><img class='profile_small' src='" . $msg['image50x50'] . "'/><p class='name'><a href='page.php?view=messages&open=" . $row['id'] . "'>" . $row['fullname'] . "</a></p><p class='status'>" . $row['message'] . "</p><p class='time' id='out_msg_tim" . $row['id'] . "'>" . agoServer($row['time']) . "</p></div><script>setTimeout(timeUpdate,2000,'" . $row['time'] . "','out_msg_tim" . $row['time'] . "');</script>";
                                 }
+                                echo "</div>";
                             } else {
                                 echo "No outbox message";
                             }

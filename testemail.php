@@ -9,7 +9,7 @@
             .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
             #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
             #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:#fff} a:active,a:hover,a:visited{color: #ddd}</style>
+            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:green} a:active,a:hover,a:visited{color:green}</style>
     </head>
     <body> 
         <div>

@@ -919,7 +919,9 @@ function makeProfilePix(a){
         success:function(a){
             if(a){
                 if(a.status=="success"){
-                    showFlashMessageDialoge(a.message,"messenger","info")
+                    showFlashMessageDialoge(a.message,"messenger","info");
+                    setTimeout("window.location.reload(true)",1000);
+                    
                 }else{
                     showFlashMessageDialoge(a.message,"messenger","error")
                 }
@@ -1028,11 +1030,9 @@ function showGossoutModeldialog(a,b){
                                 }
                                 if(a.facebook){
                                     if(c.fbstatus!="success"){
-                                        if(c.fbmsg=="Facebook authentication failed"){
-                                            $("#gossout_loading").html($("#gossout_loading").html()+",<span style='color:red;'>"+c.fbmsg+".</span> <a href='page.php?view=facebook'>Login here</a>")
-                                        }else{
-                                            $("#gossout_loading").html($("#gossout_loading").html()+",<span style='color:red;'>"+c.fbmsg+".</span>")
-                                        }
+                                        window.location = "http://gossout.com/page.php?view=facebook&post="+a.facebook;
+                                        $("#gossout_loading").html($("#gossout_loading").html()+",Please wait while we authenticate your account.<img src='images/load.gif' />")
+                                        
                                     }else if(c.fbstatus=="success"){
                                         if(c.fb_post_id>0||c.fb_post_id!=""){
                                             $("#gossout_loading").html($("#gossout_loading").html()+", "+c.fbmsg)
@@ -1205,6 +1205,7 @@ function enlargePostPix(a,b){
         modal:true,
         show:"",
         title:b,
+        
         resizable:false,
         draggable:true,
         buttons:{
@@ -1289,6 +1290,57 @@ function lookup(a){
             }
         })
     }
+}
+function deleteFile(fileId,bool){
+    
+    if(bool){
+        alert(bool);
+    }else{
+        $("#dialog").html("Are you sure you want to remove image completely?");
+        $("#dialog").dialog({
+            autoOpen:true,
+            modal:true,
+            show:"",
+            title:"Confirm Deletion",
+            resizable:false,
+            draggable:false,
+            buttons:{
+                Yes:function(){
+                    sendToServer({
+                        deleteFile:"photo",
+                        fileId:fileId
+                    });
+                },
+                "No, Thanks":function(){
+                    $(this).dialog("close")
+                }
+            },
+            open:function(){
+                $("#dialogtext").focus()
+            },
+            close:function(){}
+        });
+    }
+}
+function sendToServer(data){
+    $.ajax({
+        url:"exec.php",
+        data:data,
+        cache:false,
+        dataType:"json",
+        type:"post",
+        success:function(a){
+            if(data.deleteFile){
+                if(a){
+                    if(a.status=="success"){
+                        showFlashMessageDialoge(a.message,"messenger","")        
+                    }else{
+                        showFlashMessageDialoge(a.message,"messenger","error")       
+                    }
+                }
+            }
+        }
+    })
 }
 function refreshCommunityChat(){}
 var postState=0

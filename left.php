@@ -66,7 +66,7 @@
                             User Option
                         </div>
                         <div class="profile"><a href="page.php?view=profile" ><span>My Profile</span></a></div>
-                        <div class="profile"><a href="page.php?view=join" ><span>Join/Start Community</span></a></div>
+                        <div class="profile"><a href="page.php?view=community" ><span>Join Community</span></a></div>
                         <div class="logout"><a href="page.php?view=home&signout=">Logout</a></div>
                         <div class="menu_bottom">
 

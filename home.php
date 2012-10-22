@@ -45,7 +45,10 @@
         <div id="page">
             <?php include_once("nav.php") ?>
             <div class="inner-container" >
-                <?php include_once("left.php"); ?>
+                <?php
+                include_once("left.php");
+                
+                ?>
 
                 <div class="content">
                     <div id="tabs">

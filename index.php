@@ -91,7 +91,6 @@ if (isset($_POST['saveForm'])) {
         <?php include_once("head-noScripts.php"); ?>
     </head>
     <body>
-
         <div class="container">
 
             <div id="nav2" class="nav2_gradient">

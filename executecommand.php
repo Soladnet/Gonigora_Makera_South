@@ -116,7 +116,7 @@ function registerUser($firstname, $lastname, $gender, $dob, $email, $password) {
             .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
             #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
             #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:#fff} a:active,a:hover,a:visited{color: #ddd}</style>
+            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:green} a:active,a:hover,a:visited{color:green}</style>
     </head>
     <body> 
         <div>
@@ -251,11 +251,13 @@ function login($username, $password, $rem = false) {
             $arr['image35x35'] = $image3535;
             $arr['image100x100'] = $image100100;
         }
-
         $_SESSION['auth'] = $arr;
-
-        header('Location: page.php?view=home');
-        exit;
+        if(isset($_SESSION['navigateTo'])){
+            header('Location: http://'.$_SESSION['navigateTo']);
+            unset($_SESSION['navigateTo']);
+        }else{
+            header('Location: page.php?view=home');
+        }
     } else {
         // login failed save error to a session
         $_SESSION['err']['status'] = 'Sorry, wrong username or password ';
@@ -700,7 +702,7 @@ function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
             .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
             #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
             #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:#fff} a:active,a:hover,a:visited{color: #ddd}</style>
+            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:green} a:active,a:hover,a:visited{color:green}</style>
     </head>
     <body> 
         <div>
@@ -795,12 +797,11 @@ function sendComment($userId, $postId, $comment, $senderFullname) {
         <meta charset="utf-8">
         <!--        <link rel="stylesheet" media="screen and (min-device-width: 1024px)" href="css/main.css" />-->
         <style> a {text-decoration: none;} ol,ul {    list-style: none;} h1,h2,h3,h4,h5,h6 {font-weight: normal; color: #333;font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;} hr {margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;background-color: #ddd;} span {} img {border: none;padding: .2em;    max-width: 100%;} .inner_wrappper {display: inline-block;padding: .5em;background: #fafafa;width: 100%;}
-            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA; height: 140px; border: 1px solid #F4F4F4; margin-top: 2px;}
-            .friend_index{background: url(http://gossout.com/images/image-friend.png) no-repeat left top!important;}
-            /*            .community_index{background: url(images/image-community.png) no-repeat left top!important;}*/
-            #column1,#column2 {display: inline-block;width: 49.5%;vertical-align: top;}
-            #column1 {text-align: left;}.box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 800px;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} #nav2 div{} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}</style>
+            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA;  border: 1px solid #F4F4F4; margin-top: 2px;}
+            .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
+            #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
+            #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
+            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:green} a:active,a:hover,a:visited{color:green}</style>
     </head>
     <body> 
         <div>
@@ -1066,7 +1067,7 @@ function sendFrq($userId, $frndId, $senderFullname) {
             .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
             #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
             #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:#fff} a:active,a:hover,a:visited{color: #ddd}</style>
+            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:green} a:active,a:hover,a:visited{color:green}</style>
     </head>
     <body> 
         <div>
@@ -1611,7 +1612,7 @@ function sendTweakWink($userId, $receiver_id, $tweakwink) {
             .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
             #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
             #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:#fff} a:active,a:hover,a:visited{color: #ddd}</style>
+            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:green} a:active,a:hover,a:visited{color:green}</style>
     </head>
     <body> 
         <div>

@@ -24,56 +24,18 @@
 <script type="text/javascript" src="js/jquery-ui-1.8.23.custom.min.js"></script>
 
 <script src="js/script.js" type="text/javascript"></script>
-<?php
-if (isset($_GET['view'])) {
-    if ($_GET['view'] == 'profile') {
-        
-    }
-}
-?>
+
 <script>
     $(document).ready(function() {
         $("#tabs").tabs({
             ajaxOptions: {
-                spinner: "Loading...",
-                
-                statusCode:{
-                    404: function(){
-                        $("#dialog").dialog({
-                            autoOpen: true,
-                            modal: true,
-                            buttons:{
-                                OK: function(){
-                                    $(this).dialog( "close" );
-                                }
-                            },
-                            minHeight: 200
-                        });
-                    },
-                    400: function(){
-                        //bad request
-                    },
-                    401: function(){
-                        //unauthorized
-                    },
-                    403: function(){
-                        //forbiden
-                    },
-                    407: function(){
-                        //proxy auth requ
-                    },
-                    408: function(){
-                        //timeout
-                    },
-                    450: function(){
-                        //parental control
-                    }
-                }
-           
-                
+                spinner: "Loading..."
             },
+            
             cache: false
         });
+        
+        $( "#tabs" ).tabs(  "select" , <?php echo isset($_GET['view'])?$_GET['view']=="profile"?isset($_GET['photo'])?1:0:0:0 ?>  );
         $( "div .community" ).click(function() {
             $("div .community").removeClass("community_selected");
             $(this).toggleClass( "community_selected");

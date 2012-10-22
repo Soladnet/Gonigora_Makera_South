@@ -21,9 +21,11 @@ if (mysql_num_rows($result) > 0) {
     $row = mysql_fetch_array($result);
     $fullname = $row['firstname'] . " " . $row['lastname'];
     $location = $row['location'];
+    $community = $row['name'];
+    $community_id = $row['community_id'];
     $gender = $row['gender'];
     $id = $row['id'];
-}else{
+} else {
     $fullname = "Anonymous";
     $location = "Anonymous";
     $gender = "Anonymous";
@@ -39,6 +41,7 @@ $userFriends = getUserFriends($id, true);
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <?php include_once("head.php"); ?>
+        
 
     </head>
     <body>
@@ -57,6 +60,7 @@ $userFriends = getUserFriends($id, true);
                         <div id="profile_details">
                             <p><span class="desc">Name: </span><?php echo $fullname ?></p>
                             <p><span class="desc">Location: </span><?php echo $location ?> </p>
+                            <p><span class="desc">Community: </span><?php echo "<a href='page.php?view=community&com=$community_id'>$community</a>" ?> </p>
                             <p><span class="desc">Gender: </span><?php
                     if ($gender == "M") {
                         echo " Male";
@@ -92,12 +96,14 @@ $userFriends = getUserFriends($id, true);
                                                     <?php
                                                 } else {
                                                     ?>
-                                                    <input type="submit" value="<?php $frqstatus = checkFrqStatus($_SESSION['auth']['id'], $id);
+                                                    <input type="submit" value="<?php
+                                        $frqstatus = checkFrqStatus($_SESSION['auth']['id'], $id);
                                         if ($frqstatus['status'] == "pending") {
                                             echo "Cancel Request";
                                         } else {
                                             echo "Send Friend Request";
-                                        } ?>" onclick="sendFriendRequest('<?php echo $id ?>')" id="sfr"/>
+                                        }
+                                        ?>" onclick="sendFriendRequest('<?php echo $id ?>')" id="sfr"/>
                                                     <br />
                                                     <?php
                                                 }
@@ -105,9 +111,9 @@ $userFriends = getUserFriends($id, true);
                                             ?>
                                             </div>
                                             <div class="clear"></div>
-    <?php
-} else {//This is suspecious...it should be a rare case but precaution
-    ?>
+                                            <?php
+                                        } else {//This is suspecious...it should be a rare case but precaution
+                                            ?>
                                             <div id="profile_pic">
                                                 <img src="<?php echo $_SESSION['auth']['image100x100'] ?>"/>
                                             </div>
@@ -133,25 +139,25 @@ $userFriends = getUserFriends($id, true);
                                                 <input type="submit" value="See Friends" class="ash_gradient" />-->
                                             </div>
                                             <div class="clear"></div>
-    <?php
-}
-?>
+                                            <?php
+                                        }
+                                        ?>
                                         </div>
                                         <div class="p">
                                             <div id="tabs">
                                                 <ul class="tabs">
                                                     <li class="lefttab"><a href="userTimeline.php">Updates </a></li>
-                                                    <?php if (array_key_exists($id, $my_friends) || $id == $_SESSION['auth']['id']) { ?>
+<?php if (array_key_exists($id, $my_friends) || $id == $_SESSION['auth']['id']) { ?>
                                                         <li><a href="userPhotos.php"> Photos </a></li>
                                                         <!--                                                <li><a href="gossoutpages/userVideos.php"> Videos </a></li>-->
                                                         <li ><a href="userPersonalInfo.php"> Info </a></li>
                                                         <li class="righttab"><a href="friends.php"> Friends (<?php echo count($userFriends); ?>)</a></li>
-                                        <?php } ?>
+<?php } ?>
                                                 </ul>
                                             </div>
 
                                         </div>
-<?php ?>
+                                        <?php ?>
                                         </div>
 
 <?php include_once("right.php"); ?>

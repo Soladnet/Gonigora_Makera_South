@@ -149,6 +149,30 @@ ul.box_small li {
     vertical-align: top;
     list-style-type: none;
 }
+.album{
+    width: 100px;
+/*    height: 100px;*/
+    float: left;
+    background-color: whitesmoke;
+    padding: 5px;
+    border-left: #666;
+    border-left-style: solid;
+    margin-left: 5px;
+    font-size: .8em;
+    cursor: pointer;
+}
+.album .albumname{
+    float: bottom;
+    background-color: whitesmoke;
+    width: 100%;
+    text-align: center;
+}
+.album .albumname p{
+    font-size: 80%;
+}
+.album .albumname p:hover{
+    background-color: #99C53D;
+}
 ul.box {
     position: relative;
     z-index: 1; /* prevent shadows falling behind containers with backgrounds */

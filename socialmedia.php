@@ -34,7 +34,7 @@ if (isset($_SESSION['find'])) {
                             $fb_post_id = sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array('message' => $row['post']));
                             $arr['status'] = "success";
                             $arr['fb_post_id'] = $fb_post_id;
-                            $arr['fbmsg'] = "Shared with facebook successfull!";
+                            $arr['fbmsg'] = "Post shared with facebook successfull!";
                         } catch (FacebookApiException $e) {
                             $arr['fbstatus'] = "failed";
                             $arr['fbmsg'] = "Opps! We cannot connect you to facebook now...try again later";
@@ -53,7 +53,7 @@ if (isset($_SESSION['find'])) {
                             $arr['fbmsg'] = "Shared with facebook successfull!";
                         } catch (FacebookApiException $e) {
                             $arr['fbstatus'] = "failed";
-                            $arr['fbmsg'] = "Opps! We cannot connect you to facebook now...try again later";
+                            $arr['fbmsg'] = "Use the button bellow (when it appears) to authorise Gossout to share post on your wall.";
                         }
                     }
                 } else {
@@ -61,8 +61,8 @@ if (isset($_SESSION['find'])) {
                     $arr['fbmsg'] = "This post cannot be sent to facebook at this time";
                 }
             } else {
-                $arr['status'] = "failed";
-                $arr['fbmsg'] = "Post does not exist or have been removed";
+                $arr['status'] = "err";
+                $arr['fbmsg'] = "Post does not exist or have been removed or flagged inappropriate";
             }
         } else if($user){
             $arr['status'] = "success";
@@ -97,7 +97,7 @@ if (isset($_SESSION['find'])) {
                     <?php
                     if ($_SESSION['find'] == "facebook") {
 
-                        if ($arr['status'] == "success" && $user) {
+                        if (($arr['status'] == "success" && $user) || ($arr['status'] == "err" && $user)) {
                             echo '<table style="text-align: center; width: 90%;height: 300px">
                                 <tr>
                                     <td>' . $arr['fbmsg'] . '</td>
