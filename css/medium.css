@@ -8,7 +8,8 @@
     box-sizing                        : border-box;
     -ms-box-sizing                    : border-box;
 }
-a { text-decoration: none;}
+a { text-decoration: none;  border-bottom: 1px solid transparent; color: #097FA0;}
+a:hover { border-bottom: 1px solid #097FA0; }
 ol,ul { list-style: none;}
 hr { margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;    background-color: #ddd;}
 img { border: none;    padding: .2em;    max-width: 100%;}
@@ -162,6 +163,7 @@ input[type=password]:focus {
 #logo a img {
     padding: .5em;
 }
+#logo a:hover {border: none;}
 /*************************************************/
 .nav *{
     vertical-align: text-top;
@@ -258,6 +260,13 @@ form#signup label.desc {
 .login-box label {
     display: block;
 }
+/***********************************************************
+CAPTHA FIX*/
+#recaptcha_area, #recaptcha_table {
+    overflow: auto;
+    width: 100%!important;
+}
+
 
 /*  body    **********************************************************************************/
 /*  gossbox styling     ---------------------------------*/
@@ -338,7 +347,8 @@ form#signup label.desc {
 .inner-container {  /* This is a container just below the .nav serving as a container for .left .content & .right*/
     padding: .6em;
     overflow: auto;
-    width: 100%;
+    width: 95%;
+    margin: 0 auto;
 }
 .left {
     overflow: auto;
@@ -376,6 +386,7 @@ form#signup label.desc {
     overflow: auto;
 }
 .right_container{
+    border: 1px solid #717171;
 }
 .community{
     position:relative;
