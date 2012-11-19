@@ -7,37 +7,6 @@
         <style>
             #status_community{display: none;font-size: .7em;color:#999;}
         </style>
-        <script>
-            var laststate= 0;
-            $(function() {
-                $( "#status" ).toggle(
-                function() {
-                    $( "#status" ).animate({  height: 60  }, 300 );
-                    $("#status_community").css("display", "inline");
-                },
-                function() {
-                    $( "#status" ).animate({ height:30 }, 300 );
-                    $("#status_community").css("display", "none");
-                }
-            );
-                jQuery(
-                function($)
-                {
-                    $('.content').bind('scroll', function()
-                    {
-                        if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight){
-                            //alert(laststate);
-                            laststate += 5;
-                            showMorePost(laststate);
-                            //                            alert(res);
-                        }
-                    })
-                }
-            );
-                
-            });
-            
-        </script>
 
     </head>
     <body>
@@ -47,44 +16,16 @@
             <div class="inner-container" >
                 <?php
                 include_once("left.php");
-                
                 ?>
 
                 <div class="content">
                     <div id="tabs">
                         <ul>
-                            <li class="lefttab"><a href="#timeline" >Timeline </a></li>
-                            <li class="righttab"><a href="gossout_hottest.php" >Hottest Gossip </a></li>
+                            <li class="lefttab"><a href="timeline.php" >Timeline</a></li>
+                            <li class="righttab"><a href="gossout_hottest.php" >Trending</a></li>
+                            <li class="righttab"><a href="communityfeeds.php" >Community Feeds</a></li>
                         </ul>
-                        <div id="timeline">
-                            <div id="postbox">
-                                <form method="get" id="statusUpdate" onSubmit="return false">
-                                    <textarea placeholder="What's happening right now!" class="update_textarea" id="status" ></textarea>
-                                    <span class="name" id="status_community"><?php
-                if ($_SESSION['auth']['community']['name'] != "") {
-                    echo "<input type=\"checkbox\" name=\"post_status\" id=\"post_status\" />Post anonymously to " . $_SESSION['auth']['community']['name'];
-                } else {
-                    echo "<span class='req'>Join a community before you can share information</span>";
-                }
-                ?></span><span id="share_loading"></span>
-                                    <br/><input id="fileToUpload" type="file" size="45" name="fileToUpload" class="input" ><input type="submit" class="submit" value="Share" id ='postsubmit' onClick="getValue('#status','posts');"/>
-
-                                </form>
-                                <div class="clear">
-                                </div>
-                            </div>
-
-                            <div class="posts">
-                                <?php
-//connect();
-                                echo showPostAndComment($_SESSION['auth']['id']);
-                                ?>
-                            </div>
-                            <span id="posts_loading"></span>
-                        </div>
-                        <div class="view-more ">
-                            <p class="notice" style="text-align: center;"><a href="#" >Load more ...</a></p>
-                        </div>
+                        
 
                     </div>					
                     <div class="clear"></div>

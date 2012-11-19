@@ -46,6 +46,8 @@ if (isset($_GET['view'])) {
             include("individualrecord.php");
         } else if (strtolower($_GET['view']) == "tweakwink") {
             include("individualrecord.php");
+        }else if (strtolower($_GET['view']) == "request") {
+            include("individualrecord.php");
         } else {
             header("HTTP/1.0 404 Not Found");
         }

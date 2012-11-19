@@ -100,6 +100,7 @@ function sendData(a,b,c,d){
                         $(d).val("");
                         $(d).removeClass("sending");
                         showFlashMessageDialoge(a.message,"messenger","info")
+                    //                        setTimeout("window.location.reload(true)",1000);
                     }else if(a.status=="failed"){
                         $(d).removeAttr("disabled");
                         showFlashMessageDialoge(a.message,"messenger","error")
@@ -195,7 +196,7 @@ function getUpdateCount(){
             parseURLParams(document.URL,b)
         }
     });
-    setTimeout(getUpdateCount,3e3)
+    setTimeout(getUpdateCount,10e3)
 }
 function getInbox(){
     $.ajax({
@@ -738,7 +739,7 @@ function save(a){
         return
     }else{
         $("#"+a).attr("disabled","disabled");
-        $("#loading").html("<img src='images/load.gif' />")
+        $("#album_loading").html("<img src='images/load.gif' />")
     }
     $.ajax({
         url:"exec.php",
@@ -752,14 +753,7 @@ function save(a){
         type:"post",
         success:function(b){
             if(b.status){
-                var c="";
-                $.each(b,function(a,b){
-                    if(b.id){
-                        c+="<option value='"+b.id+"'>"+b.album+"</option>"
-                    }
-                });
-                emptyElement("newAlbum");
-                $("#album").html("<select name='album' onchange='getAlbumImages(this.value)'>"+c+"</select><span id='newAlbum'></span><span class='btn btn-success fileinput-button' style='float:right' ><span onclick=\"create('newAlbum')\"><span style='float:left' class='ui-icon ui-icon-plusthick'></span>Create new Album</span></span>")
+                window.location.reload(true);
             }else{
                 $("#"+a).removeAttr("disabled")
             }
@@ -920,7 +914,7 @@ function makeProfilePix(a){
             if(a){
                 if(a.status=="success"){
                     showFlashMessageDialoge(a.message,"messenger","info");
-                    setTimeout("window.location.reload(true)",1000);
+                //                    setTimeout("window.location.reload(true)",1000);
                     
                 }else{
                     showFlashMessageDialoge(a.message,"messenger","error")
@@ -1219,36 +1213,47 @@ function enlargePostPix(a,b){
         close:function(){}
     })
 }
-function showMorePost(a){
-    if(postState<0){
+function showMoreFTLPost(loadingClass,postContainerId,option){
+    //alert(postState);
+    
+    if((option=="FTL"?FTLPostState:option=="TRD"?TRPostState:CFPostState)<0){
         return
     }
-    $("#posts_loading").html("<img src='images/load.gif' />");
+    $(loadingClass).html("<img src='images/load.gif' />");
     $.ajax({
         url:"exec.php",
         data:{
             action:"morePost",
-            posts:a
+            posts:option=="FTL"?FTLPostState:option=="TRD"?TRPostState:CFPostState,
+            tab:option
         },
         cache:false,
         type:"post",
         success:function(b){
-            if(b=="No post available at the moment"){
-                postState=-10;
-                return
+            if(b=="false"){
+                if(option=="TRD"){
+                    TRPostState = -1;  
+                }else if(option=="FTL"){
+                    FTLPostState = -1;
+                }else if(option=="CF"){
+                    CFPostState = -1;
+                }
             }else{
-                postState=a
-            }
-            if(b){
-                $("#posts_loading").html("");
-                var c=$(".posts").html();
-                $(".posts").html(c+b)
+                if(option=="TRD"){
+                    TRPostState += 15;
+                }else if(option=="FTL"){
+                    FTLPostState += 15;
+                }else if(option=="CF"){
+                    CFPostState += 15;
+                }
+                var c = $(postContainerId).html();
+                $(postContainerId).html(c+b)
             }
         },
         complete:function(a,b){
-            $("#posts_loading").html("")
+            $(loadingClass).html("");
         }
-    })
+    });
 }
 function lookup(a){
     if(a.length==0){
@@ -1291,36 +1296,33 @@ function lookup(a){
         })
     }
 }
-function deleteFile(fileId,bool){
+function deleteFile(fileId){
     
-    if(bool){
-        alert(bool);
-    }else{
-        $("#dialog").html("Are you sure you want to remove image completely?");
-        $("#dialog").dialog({
-            autoOpen:true,
-            modal:true,
-            show:"",
-            title:"Confirm Deletion",
-            resizable:false,
-            draggable:false,
-            buttons:{
-                Yes:function(){
-                    sendToServer({
-                        deleteFile:"photo",
-                        fileId:fileId
-                    });
-                },
-                "No, Thanks":function(){
-                    $(this).dialog("close")
-                }
+    $("#dialog").html("Are you sure you want to remove image completely?");
+    $("#dialog").dialog({
+        autoOpen:true,
+        modal:true,
+        show:"",
+        title:"Confirm Deletion",
+        resizable:false,
+        draggable:false,
+        buttons:{
+            Yes:function(){
+                sendToServer({
+                    action:"deletePhoto",
+                    fileId:fileId
+                });
             },
-            open:function(){
-                $("#dialogtext").focus()
-            },
-            close:function(){}
-        });
-    }
+            "No, Thanks":function(){
+                $(this).dialog("close")
+            }
+        },
+        open:function(){
+            $("#dialogtext").focus()
+        },
+        close:function(){}
+    });
+    
 }
 function sendToServer(data){
     $.ajax({
@@ -1329,18 +1331,43 @@ function sendToServer(data){
         cache:false,
         dataType:"json",
         type:"post",
-        success:function(a){
-            if(data.deleteFile){
-                if(a){
-                    if(a.status=="success"){
-                        showFlashMessageDialoge(a.message,"messenger","")        
+        success:function(output){
+            if(data.action=="deletePhoto"){
+                if(output){
+                    if(output.status=="success"){
+                        $("#dialog").dialog("close");
+                        showFlashMessageDialoge("Operation successfull!","messenger","success");
+                        setTimeout("window.location.reload(true)",1000);
+                        
                     }else{
-                        showFlashMessageDialoge(a.message,"messenger","error")       
+                        showFlashMessageDialoge("Your last command was not successfull","messenger","error")       
                     }
                 }
             }
+            else if(data.action=="albumCover"){
+                if(output){
+                    if(output.status=="success"){
+                        showFlashMessageDialoge("Operation successfull!","messenger","success");
+                    }else{
+                        showFlashMessageDialoge("Your last command was not successfull "+output.status,"messenger","error")       
+                    }
+                }
+            }
+        },
+        complete:function(dataX,status){
+            if(status!="success")
+                showFlashMessageDialoge(status,"messenger","error");
+        //                
         }
     })
 }
-function refreshCommunityChat(){}
-var postState=0
+function makrAlbumCover(fileID,album){
+    sendToServer({
+        action:"albumCover",
+        ola:fileID,
+        album:album
+    });
+}
+var FTLPostState = 15;
+var TRPostState = 15;
+var CFPostState = 15;

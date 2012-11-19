@@ -152,13 +152,13 @@ ul.box_small li {
 }
 .album{
     width: 100px;
-/*    height: 100px;*/
+    height: 150px;
     float: left;
     background-color: whitesmoke;
     padding: 5px;
     border-left: #666;
     border-left-style: solid;
-    margin-left: 5px;
+    margin: 5px;
     font-size: .8em;
     cursor: pointer;
 }
@@ -237,7 +237,7 @@ the Terms & Conditions Ish
 .notice{    background: #FFF6BF;    color: #514721;}
 .info{    background: #ddd;    color: #264409;}
 .success{    background: #E6EFC2;    color: #264409;}
-.view-more{display: none;}
+/*.view-more{display: none;}*/
 /*  navs    *********************************************************************************/
 .login-box{
     padding: .3em;    
@@ -573,7 +573,7 @@ form#signup label.desc {
 #tabs ul li { display: inline; float: left; }
 #tabs a             { text-align: center; text-decoration: none; cursor: pointer; }
 
-#timeline    {    z-index: 3;}
+.timeline    {    z-index: 3;}
 
 /*  posts and timeline  **********************************************************************/
 #postbox {

@@ -2,6 +2,8 @@
 
 session_start();
 include 'executecommand.php';
+include 'encryptionClass.php';
+$encrypt = new Encryption();
 if (isset($_POST['action'])) {
     $conn_arr = connect();
     if (isset($_POST['count'])) {
@@ -25,17 +27,17 @@ if (isset($_POST['action'])) {
             $senderFullname = $_SESSION['auth']['fullname'];
             $userId = $_SESSION['auth']['id'];
             $communityId = $_SESSION['auth']['community']['id'];
-            if(isset($_POST['status'])){
+            if (isset($_POST['status'])) {
                 $status = $_POST['status'];
-            }else{
+            } else {
                 $status = "false";
             }
-            
+
             if ($communityId == NULL) {
                 $arr['status'] = "failed";
                 $arr['message'] = "Please join a community before you can send a post";
             } else {
-                $arr = sendPost($userId, $_SESSION['auth']['community']['id'], $_SESSION['auth']['community']['name'], $text, $senderFullname,$status);
+                $arr = sendPost($userId, $_SESSION['auth']['community']['id'], $_SESSION['auth']['community']['name'], $text, $senderFullname, $status);
             }
             echo json_encode($arr);
         } else if ($_POST['action'] == "commentsPost") {
@@ -54,7 +56,13 @@ if (isset($_POST['action'])) {
             echo json_encode($arr);
         } else if ($_POST['action'] == "morePost") {
             $userId = $_SESSION['auth']['id'];
-            echo showPostAndComment($userId, 0, 0, 0, $_POST['posts']);
+            if($_POST['tab']=="FTL"){
+                echo showPostAndCommentFTL($userId, $_POST['posts']);
+            }else if($_POST['tab']=="TRD"){
+                echo showPostAndCommentTR($userId, 80, $_POST['posts']);
+            }else if($_POST['tab']=="CF"){
+                echo showPostAndCommentCF($userId, 80, $_POST['posts']);
+            }
         }
     } else if (isset($_POST['inbox'])) {
         $userId = $_SESSION['auth']['id'];
@@ -158,7 +166,7 @@ if (isset($_POST['action'])) {
         $arr = search($_POST['search']);
         echo json_encode($arr);
     } else if (isset($_POST['ppix'])) {
-        $sql1 = "INSERT INTO `user_profile_pix` (`username`, `pix_id`) VALUES ('" . $_SESSION['auth']['id'] . "', '" . $_POST['ppix'] . "')";
+        $sql1 = "INSERT INTO `user_profile_pix` (`username`, `pix_id`) VALUES ('" . $_SESSION['auth']['id'] . "', '" . $encrypt->safe_b64decode($_POST['ppix']) . "')";
         mysql_query($sql1);
         $arr = array();
         if (mysql_affected_rows() > 0) {
@@ -183,13 +191,21 @@ if (isset($_POST['action'])) {
         }
     } else if (isset($_POST['album'])) {
         if ($_POST['album'] == "new") {
-            $sql = "INSERT INTO `album`(`username`, `album`) VALUES ('" . $_SESSION['auth']['id'] . "','" . clean(htmlspecialchars($_POST['name'])) . "')";
-            mysql_query($sql);
-            $status = false;
-            if (mysql_affected_rows() > 0) {
+
+            $sql = "SELECT * FROM album WHERE username=" . $_SESSION['auth']['id'] . " AND album='" . clean(htmlspecialchars($_POST['name'])) . "'";
+            $result = mysql_query($sql);
+            if (mysql_num_rows($result) > 0) {
                 $status = true;
+            } else {
+                $sql = "INSERT INTO `album`(`username`, `album`) VALUES ('" . $_SESSION['auth']['id'] . "','" . clean(htmlspecialchars($_POST['name'])) . "')";
+                mysql_query($sql);
+                $status = false;
+                if (mysql_affected_rows() > 0) {
+                    $status = true;
+                }
             }
-            $arr = getAlbum($_SESSION['auth']['id']);
+
+//            $arr = getAlbum($_SESSION['auth']['id']);
             $arr['status'] = $status;
 
             echo json_encode($arr);
@@ -211,7 +227,7 @@ if (isset($_POST['action'])) {
         $arr['time'] = agoServer($_POST['timeUpdate']);
         echo json_encode($arr);
     } else if (isset($_POST['frq'])) {
-        $arr = sendFrq($_SESSION['auth']['id'], $_POST['frq'],$_SESSION['auth']['fullname']);
+        $arr = sendFrq($_SESSION['auth']['id'], $_POST['frq'], $_SESSION['auth']['fullname']);
         echo json_encode($arr);
     } else if (isset($_POST['cfrq'])) {
         $arr = cancelFrq($_SESSION['auth']['id'], $_POST['cfrq']);
@@ -262,10 +278,10 @@ if (isset($_POST['action'])) {
                         if ($row['image'] == "images/logo75x75.png") {
                             $str = "";
                             if ($row['sender_id'] != $_SESSION['auth']['id']) {
-                                $str = $row['fullname']." says: ";
+                                $str = $row['fullname'] . " says: ";
                             }
                             try {
-                                $fbPostId = sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array('message' => $str.$row['post']));
+                                $fbPostId = sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array('message' => $str . $row['post']));
                                 $arr['fbstatus'] = "success";
                                 $arr['fb_post_id'] = $fbPostId;
                                 $arr['fbmsg'] = "Shared with facebook";
@@ -313,10 +329,10 @@ if (isset($_POST['action'])) {
                         if ($row['image'] == "images/logo75x75.png") {
                             $str = "";
                             if ($row['sender_id'] != $_SESSION['auth']['id']) {
-                                $str = $row['fullname']." says: ";
+                                $str = $row['fullname'] . " says: ";
                             }
                             try {
-                                $fbPostId = sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array('message' => $str.$row['post']));
+                                $fbPostId = sendToFacbook($conn_arr['facebook_obj'], '/me/feed', "POST", array('message' => $str . $row['post']));
                                 $arr['fbstatus'] = "success";
                                 $arr['fb_post_id'] = $fbPostId;
                                 $arr['fbmsg'] = "Shared with facebook";
@@ -358,8 +374,48 @@ if (isset($_POST['action'])) {
             }
         }
         echo json_encode($arr);
-    }
-} else {
+    } else if ($_POST['action'] == "deletePhoto") {
+        $fileId = $encrypt->safe_b64decode($_POST['fileId']);
+        $sql = "SELECT `id`, `album_id`, `user_id`, `35x35`, `50x50`, `100x100`, `original`, `date_added`, `comment` FROM `pictureuploads` WHERE id=$fileId";
+        $result = mysql_query($sql);
+        if (mysql_num_rows($result) > 0) {
+            $arr['status'] = "success";
+            $row = mysql_fetch_array($result);
+            unlink($row['35x35']);
+            unlink($row['50x50']);
+            unlink($row['100x100']);
+            unlink($row['original']);
+            $sql = "DELETE FROM `pictureuploads` WHERE `id`=$fileId";
+            mysql_query($sql);
+        } else {
+            $arr['status'] = "failed";
+        }
+        echo json_encode($arr);
+    }else if(isset ($_POST['ola'])){
+        $arr['status'] = "Success";
+        echo json_encode($arr);
+    } 
     
+//    else if ($_POST['action'] == "albumCover") {
+//        $fileId = $encrypt->safe_b64decode($_POST['fileID']);
+//        $albumId = $encrypt->safe_b64decode($_POST['album']);
+//        
+////        $result = mysql_query($sql);
+////        if (mysql_num_rows($result) > 0) {
+//        $arr['status'] = "success";
+////            $row = mysql_fetch_array($result);
+////            unlink($row['35x35']);
+////            unlink($row['50x50']);
+////            unlink($row['100x100']);
+////            unlink($row['original']);
+////            $sql = "DELETE FROM `pictureuploads` WHERE `id`=$fileId";
+////            mysql_query($sql);
+////        } else {
+////            $arr['status'] = "failed";
+////        }
+//        echo json_encode($arr);
+//    }
+} else {
+    echo json_encode(array("status" => "failed"));
 }
 ?>

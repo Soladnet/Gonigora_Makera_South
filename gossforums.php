@@ -17,7 +17,7 @@
                         if (trim(clean($_GET['com'])) != "") {
                             ?>
                             <div id="tabs">
-                                <div id="timeline">
+                                <div class="timeline">
                                     <div class="posts">
                                         <?php
                                         $commId = clean($_GET['com']);

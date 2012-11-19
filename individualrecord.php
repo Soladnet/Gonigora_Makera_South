@@ -14,7 +14,7 @@
 
                 <div class="content" id="#style">
                     <div class="tabs">
-                        <div id="timeline">
+                        <div class="timeline">
                             <div class="posts">
                                 <?php
                                 if ($_GET['view']=="notification") {
@@ -33,7 +33,24 @@
                                             $option = "<span onclick='tweakwink(\"".$row['sender_id']."\",\"W\")'>Wink Back</span>";
                                         }
                                         echo '<div class="post"><img class="profile_small" src="'.$image['image50x50'].'"/><p class="name"><a href="page.php?view=profile&uid='.$row['sender_id'].'">'.$row['sender_fullname'].'</p><p class="status">'.$row['naration'].'</p><p class="time">'.agoServer($row['time']).'</p><div class="post_activities"> '.$option.'</div></div>';
+                                    }else{
+                                        echo "Page Not Found";
                                     }
+                                }else if ($_GET['view']=="request") {
+                                    $arr = getFriendRequest($_SESSION['auth']['id']);
+                                    if(isset($arr['status'])){
+                                        if($arr['status']=="success"){
+                                            foreach ($arr as $value){
+                                                if(isset($value['rowId']) && $value!="success"){
+                                                    echo "<div class='post' id='frq$value[rowId]'><img class='profile_small' src='$value[img]'/><p class='name'><a href='page.php?view=profile&uid=$value[id]'>$value[fullname]</a></p><p class='status'>$value[caption]</p><p class='time'>$value[time]</p><span id='requestoption$value[id]'><input type='submit' value='Accept' onclick='acceptOrDeclineFrq(\"$value[id]\",\"acpt\",\"$value[rowId]\")' class='ash_gradient' /><input type='submit' value='Decline' class='ash_gradient' onclick='acceptOrDeclineFrq(\"$value[id]\",\"decl\",\"$value[id]\")' /></span></div>";
+                                                }
+                                            }
+                                        }else{
+                                            echo "No request to respond to";
+                                        }
+                                    }
+                                }else{
+                                    echo "<p>Page Not found</a>";
                                 }
                                 ?>
                             </div>

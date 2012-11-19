@@ -2,12 +2,15 @@
 session_start();
 include 'executecommand.php';
 connect();
-echo '<div class="posts">';
-$where = "";
-$from = "80";
-$userId = $_SESSION['auth']['id'];
-$all = "";
-$lowlimit = "0";
+?>
+<div class="timeline">
+<div class="posts" id="tr_post">
+    <?php
+    $where = "";
+    $from = "80";
+    $userId = $_SESSION['auth']['id'];
+    $all = "";
+    $lowlimit = "0";
     if ($all) {
         $where = "where p.sender_id = $userId";
     }
@@ -18,20 +21,6 @@ $lowlimit = "0";
             $where = "where p.community_id=$from";
         }
     }
-//    if ($withPost_id) {
-//        if ($where) {
-//            $where .=" AND p.id=$withPost_id";
-//        } else {
-//            $where .="where p.id=$withPost_id";
-//        }
-//    }
-//    if ($showAnonymous) {
-//        if ($where) {
-//            $where .=" AND p.status<>'ANONYMOUS'";
-//        } else {
-//            $where .="where p.status<>'ANONYMOUS'";
-//        }
-//    }
 
     $limit = "Limit $lowlimit,15";
 
@@ -49,17 +38,16 @@ $lowlimit = "0";
 
 
             if ($postRow['250x250'] == NULL) {
-                $postValue .= '<div class="post" id=' . $postRow['id'] . '>
+                $postValue .= '<div class="post" id=tr_' . $postRow['id'] . '>
                 <img class="profile_small"src="' . $image['image50x50'] . '"/>
                 <p class="name">' . $name . '</p><p class="status">' . make_links_clickable($postRow['post']) . '</p><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
-                //.' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>'
                 if ($postRow['name'] != "Zuma Broadcast") {
                     $postValue .= ' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
                 } else {
                     $postValue .= '</div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
                 }
             } else {
-                $postValue .= '<div class="post" id=' . $postRow['id'] . '>
+                $postValue .= '<div class="post" id=tr_' . $postRow['id'] . '>
                 <img class="profile_small"src="' . $image['image50x50'] . '"/>
                 <p class="name">' . $name . '</p><p class="status">' . make_links_clickable($postRow['post']) . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '" alt="' . $postRow['name'] . '" onclick="enlargePostPix(\'' . $postRow['250x250'] . '\',\'Shared with ' . $postRow['name'] . '\');"/></li></ul><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
                 if ($postRow['name'] != "Zuma Broadcast") {
@@ -76,10 +64,11 @@ $lowlimit = "0";
                     $postValue .= '<div id="comment" class=' . $commentRow['id'] . '><img class="profile_small" src="' . $image['image35x35'] . '"/><p class="name"><a href="page.php?view=profile&uid=' . $commentRow['sender_id'] . '">' . toSentenceCase($commentRow['firstname'] . ' ' . $commentRow['lastname']) . '</a></p><p class="status">' . make_links_clickable($commentRow['comment']) . '</p><p class="time" id="tpc' . $commentRow['id'] . '">' . agoServer($commentRow['time']) . '</p></div><script>setTimeout(timeUpdate,20000,\'' . $commentRow['time'] . '\',\'tpc' . $commentRow['id'] . '\')</script>';
                 }
 //                $postValue .= '</span><span id="box'.$postRow['id'].'"><div id="commentbox"><form method="GET" onsubmit="getValue(\'' . $postRow['id'] . '\',\'commentsPost\');return false"><img class="profile_small" src="' . $_SESSION['auth']['image35x35'] . '" /><input class="commenttext" type="text" id="c' . $postRow['id'] . '"/></form><div class="arrowdown"> </div></div></span></div>';
-            }//else{
+            }//else {
             $postValue .= '</span><span id="box' . $postRow['id'] . '"></span></div>';
             //}
         }
+        echo $postValue;
     } else {
         if ($from) {
             $arr = getCommunityMembers($from);
@@ -104,6 +93,11 @@ $lowlimit = "0";
         }
         $postValue = "No post available at the moment";
     }
-    echo ($postValue);
-echo '</div>';
-?>
+//echo ($postValue);
+    ?>
+</div>
+<span class="tr_posts_loading"></span>
+<div class='view-more'>
+    <p class='notice' style='text-align: center;'><a onclick="showMoreFTLPost('.tr_posts_loading','#tr_post','TRD');" >Load more ...</a></p>
+</div>
+</div>

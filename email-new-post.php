@@ -45,7 +45,7 @@
             consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
             cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
             proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <span><a href="">Comment</a></span>
+            <span><a href="">Comment on post</a></span>
         </div>
         <hr>
         <div class="footer">                

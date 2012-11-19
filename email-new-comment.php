@@ -31,7 +31,7 @@
             <br>
             <h2>Reciever Name, </h2>
             <!-- Sample Notification types -->
-            <p><span class="user-name"><a href="">Sample Name</a></span> commented on a <a href="">post</a> </p>
+            <p><span class="user-name"><a href="">Sample Name</a></span> commented on a post from <a href="">Sender name</a> in community name</p>
             <!-- Sample Notification types -->
             <p class="time" align="right">Time: 8:00am 29-12-2012</p>
             <hr>      

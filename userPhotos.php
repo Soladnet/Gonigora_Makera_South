@@ -8,7 +8,7 @@ $str = $_SERVER['HTTP_REFERER'];
 $id = custumGet($str, "uid=", $_SESSION['auth']['id'], true);
 if (strpos($str, "param=")) {
     $paramval = custumGet($_SERVER['HTTP_REFERER'], "param=", "", false);
-    $decodedParam = $encrypt->decode($paramval);
+    $decodedParam = $encrypt->safe_b64decode($paramval);
     if (strpos($decodedParam, "viewAlbum=") >= 0) {
         $albumid = custumGet($decodedParam, "viewAlbum=", "", false);
     }
@@ -18,16 +18,26 @@ if (strpos($str, "param=")) {
     <?php
     if ($id == $_SESSION['auth']['id']) {
         if (!isset($albumid)) {
-//            echo '<a id="delAlbum">Remove Album</a>';
+            ?>
+            <input type="text" id="album" /><input type="submit" value="Create new Album" onclick="save('album')"/><span id="album_loading"></span>
+            <?php
         } else {
-            echo '<a id="backButton" href="page.php?view=profile&photo=userPhoto&uid=' . $id . '"><img src="images/icon_left.png" />Go Back</a><br/><a id="upLoadButton" href="page.php?view=upload&photos=">Add Photos</a>';
+            echo '<a id="backButton" href="page.php?view=profile&photo=userPhoto&uid=' . $id . '"><img src="images/icon_left.png" />Go Back</a><br/>';
+            ?>
+            <form action="upload/index.php" method="POST" enctype="multipart/form-data">
+                <input type="file" name="uploadImage"/>
+                <input type="hidden" name="redirect" value="<?php echo $encrypt->safe_b64encode("../page.php?view=profile&photo=userPhoto"); ?>" />
+                <input type="hidden" name="album" value="<?php echo $encrypt->safe_b64encode($albumid); ?>" />
+                <input type="submit" name="action" value="Start Upload"/>
+            </form>
+            <?php
         }
         ?>
 
         <script>
             $("#upLoadButton,#delAlbum,.backButton").button();    
             $("#upLoadButton,#delAlbum,.backButton").css('margin-bottom', '5px')
-                                                    
+                                                                                            
         </script>
         <?php
     }
@@ -44,8 +54,15 @@ if (strpos($str, "param=")) {
                 <div class="album">
                     <img src="<?php echo $row['100x100'] ?>" title="<?php echo $row['comment'] ?>" onclick="enlargePostPix('<?php echo $row["original"] ?>','In <?php echo toSentenceCase($row["album"]) ?>');"/>
                     <div class="albumname">
-                        <p onclick='makeProfilePix("<?php echo $row['id'] ?>")'>Make Profile Pix</p>
-                        <p onclick="deleteFile(1, false)">Remove Picture</p>
+                        <?php
+                        if ($id == $_SESSION['auth']['id']) {
+                            ?>
+                <!--                        <p onclick='makrAlbumCover("<?php echo $encrypt->safe_b64encode($row['id']) ?>","<?php echo $encrypt->safe_b64encode($albumid) ?>")'><span class="ui-icon-heart"></span>Make Album Cover</p>-->
+                            <p onclick='makeProfilePix("<?php echo $encrypt->safe_b64encode($row['id']) ?>")'>Make Profile Pix</p>
+                            <p onclick='deleteFile("<?php echo $encrypt->safe_b64encode($row['id']) ?>");'>Remove Picture</p>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
                 <?php
@@ -59,14 +76,15 @@ if (strpos($str, "param=")) {
             echo "No Image Found!";
         }
     } else {
-        $sql = "SELECT a.`id`, a.`album`, a.`album_cover`, a.`datecreated`,if(p.`100x100`<>NULL,p.`100x100`,'images/album-icon.png') as cover FROM `album` as a LEFT JOIN  pictureuploads as p ON a.album_cover=p.id WHERE a.`username`=$id";
+        $sql = "SELECT a.`id`, a.`album`, a.`album_cover`, a.`datecreated`,if(p.`100x100`<>NULL,p.`100x100`,'images/album-icon.png') as cover,(SELECT count(id) FROM pictureuploads WHERE album_id=a.id) as pix  FROM `album` as a LEFT JOIN  pictureuploads as p ON a.album_cover=p.id WHERE a.`username`=$id";
         $result = mysql_query($sql);
         if (mysql_num_rows($result) > 0) {
             while ($row = mysql_fetch_array($result)) {
                 ?>
                 <div class="album">
-                    <a href="page.php?view=profile&photo=userPhoto&uid=<?php echo "$id&param=" . $encrypt->encode("viewAlbum=$row[id]"); ?>"><img src="<?php echo $row['cover'] ?>" title="<?php echo $row['album'] ?>" /></a>
-                    <div class="albumname"><!--<input type="checkbox" name="" id="album"/>--><?php echo toSentenceCase(shortenStr($row['album'], 8)); ?></div>
+                    <a href="page.php?view=profile&photo=userPhoto&uid=<?php echo "$id&param=" . $encrypt->safe_b64encode("viewAlbum=$row[id]"); ?>"><img src="<?php echo $row['cover'] ?>" title="<?php echo $row['album'] ?>" /></a>
+                    <p class="albumname"><?php echo toSentenceCase(shortenStr($row['album'], 8)); ?></p>
+                    <p class="albumname"><?php echo "($row[pix])"; ?></p>
                 </div>
                 <?php
             }

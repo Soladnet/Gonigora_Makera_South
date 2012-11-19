@@ -439,7 +439,7 @@ CAPTHA FIX*/
 #tabs ul li { display: inline; float: left; }
 #tabs a             { text-align: center; text-decoration: none; cursor: pointer; }
 
-#timeline    {    z-index: 3;}
+.timeline    {    z-index: 3;}
 
 /*  posts and timeline  **********************************************************************/
 #postbox {

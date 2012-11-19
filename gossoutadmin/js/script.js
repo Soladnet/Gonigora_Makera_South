@@ -1212,6 +1212,7 @@ function enlargePostPix(a,b){
     })
 }
 function showMorePost(a){
+    
     if(postState<0){
         return
     }

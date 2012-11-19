@@ -23,15 +23,15 @@ class UploadHandler {
             'script_url' => $this->getFullUrl() . '/',
             'upload_dir' => dirname($_SERVER['SCRIPT_FILENAME']) . '/files/',
             'upload_url' => $this->getFullUrl() . '/files/',
-            'param_name' => 'files',
+            'param_name' => 'uploadImage',
             // Set the following option to 'POST', if your server does not support
             // DELETE requests. This is a parameter sent to the client:
             'delete_type' => 'DELETE',
             // The php.ini settings upload_max_filesize and post_max_size
             // take precedence over the following max_file_size setting:
-            'max_file_size' => 2000000,
+            'max_file_size' => 1048576,
             'min_file_size' => 1,
-            'accept_file_types' => '/^image\/(gif|jpeg|png)$/',
+            'accept_file_types' => '/^image\/(gif|jpeg|png|jpg)$/',
             // The maximum number of files for the upload directory:
             'max_number_of_files' => null,
             // Image resolution restrictions:
@@ -198,7 +198,7 @@ class UploadHandler {
             $file->error = 'missingFileName';
             return false;
         }
-        if (!preg_match($this->options['accept_file_types'], $file->name)) {
+        if (!preg_match($this->options['accept_file_types'], $file->type)) {
             $file->error = 'acceptFileTypes';
             return false;
         }
@@ -304,15 +304,18 @@ class UploadHandler {
         return $success;
     }
 
-    protected function handle_file_upload($uploaded_file, $name, $size, $type, $error, $index = null) {
+    protected function handle_file_upload($encrypt,$uploaded_file, $name, $size, $type, $error, $index = null) {
+
         $myImgVerUrl = array();
         $file = new stdClass();
         $file->name = $this->trim_file_name($name, $type, $index);
         $file->size = intval($size);
         $file->type = $type;
         if ($this->validate($uploaded_file, $file, $error, $index)) {
+
             $this->handle_form_data($file, $index);
             $file_path = $this->options['upload_dir'] . $file->name;
+
             $myImgVerUrl[] = 'upload/files/' . $file->name;
 
             $append_file = !$this->options['discard_aborted_uploads'] &&
@@ -353,14 +356,21 @@ class UploadHandler {
                     $myImgVerUrl[] = $imgName;
                 }
                 $album = "";
-                if (isset($_POST['album'])){
-                    $album = $_POST['album'];
-                }else{
-                    $query = "INSERT INTO `album`(`username`, `album`) VALUES ('".$_SESSION['auth']['id']."','Untitled')";
-                    mysql_query($query);
-                    $album = mysql_insert_id();
+                if (isset($_POST['album'])) {
+                    $album = $encrypt->safe_b64decode($_POST['album']);
+                } else {
+                    $sql = "SELECT * FROM album WHERE album='Untitled' AND username=" . $_SESSION['auth']['id'];
+                    $result = mysql_query($sql);
+                    if (mysql_num_rows($result) > 0) {
+                        while ($row = mysql_fetch_array($result)){
+                            $album = $row['id'];
+                        }
+                    } else {
+                        $query = "INSERT INTO `album`(`username`, `album`) VALUES ('" . $_SESSION['auth']['id'] . "','Untitled')";
+                        mysql_query($query);
+                        $album = mysql_insert_id();
+                    }
                 }
-                    
                 $str = implode(' , ', $myImgVerUrl);
                 $sql = "INSERT INTO `pictureuploads`(`album_id`, `user_id`, `35x35`, `50x50`, `100x100`, `original`) VALUES ('$album','" . $_SESSION['auth']['id'] . "','upload/thumbnails/$myImgVerUrl[2]','upload/thumbnails/$myImgVerUrl[3]','upload/thumbnails/$myImgVerUrl[1]','$myImgVerUrl[0]')";
 //                connect();
@@ -387,7 +397,7 @@ class UploadHandler {
         echo json_encode($info);
     }
 
-    public function post() {
+    public function post($encrypt) {
         if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
             return $this->delete();
         }
@@ -399,6 +409,7 @@ class UploadHandler {
             // $_FILES is a multi-dimensional array:
             foreach ($upload['tmp_name'] as $index => $value) {
                 $info[] = $this->handle_file_upload(
+                        $encrypt,
                         $upload['tmp_name'][$index], time() . '_' . $_SESSION['auth']['id'] . '_' . rand(1, 2000), isset($_SERVER['HTTP_X_FILE_SIZE']) ?
                                 $_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'][$index], isset($_SERVER['HTTP_X_FILE_TYPE']) ?
                                 $_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'][$index], $upload['error'][$index], $index
@@ -408,6 +419,7 @@ class UploadHandler {
             // param_name is a single object identifier like "file",
             // $_FILES is a one-dimensional array:
             $info[] = $this->handle_file_upload(
+                    $encrypt,
                     isset($upload['tmp_name']) ? $upload['tmp_name'] : null, time() . '_' . $_SESSION['auth']['id'], isset($_SERVER['HTTP_X_FILE_SIZE']) ?
                             $_SERVER['HTTP_X_FILE_SIZE'] : (isset($upload['size']) ?
                                     $upload['size'] : null), isset($_SERVER['HTTP_X_FILE_TYPE']) ?
@@ -417,8 +429,9 @@ class UploadHandler {
         }
         header('Vary: Accept');
         $json = json_encode($info);
+        
         $redirect = isset($_REQUEST['redirect']) ?
-                stripslashes($_REQUEST['redirect']) : null;
+                stripslashes($encrypt->safe_b64decode($_REQUEST['redirect'])) : null;
         if ($redirect) {
             header('Location: ' . sprintf($redirect, rawurlencode($json)));
             return;

@@ -53,7 +53,7 @@
                         </div>
                         <span id="tooltip_menu3_content"><img src='images/load.gif' id='messagesgloading' /></span>
                         <div class="menu_bottom">
-                            See all Friend Requests
+                            <a href="page.php?view=request">See all Friend Requests</a>
                         </div>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                             User Option
                         </div>
                         <div class="profile"><a href="page.php?view=profile" ><span>My Profile</span></a></div>
-                        <div class="profile"><a href="page.php?view=community" ><span>Join Community</span></a></div>
+<!--                        <div class="profile"><a href="page.php?view=community" ><span>Join Community</span></a></div>-->
                         <div class="logout"><a href="page.php?view=home&signout=">Logout</a></div>
                         <div class="menu_bottom">
 

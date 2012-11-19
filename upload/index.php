@@ -13,6 +13,8 @@
 error_reporting(E_ALL | E_STRICT);
 
 require('upload.class.php');
+include '../encryptionClass.php';
+$encrypt = new Encryption();
 if(isset($_GET['img']))
     $upload_handler = new UploadHandler(array('accept_file_types' => '/\.(gif|jpe?g|png)$/i'));
 else
@@ -38,7 +40,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
             $upload_handler->delete();
         } else {
-            $upload_handler->post();
+            $upload_handler->post($encrypt);
         }
         break;
     case 'DELETE':

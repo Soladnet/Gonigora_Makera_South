@@ -252,10 +252,10 @@ function login($username, $password, $rem = false) {
             $arr['image100x100'] = $image100100;
         }
         $_SESSION['auth'] = $arr;
-        if(isset($_SESSION['navigateTo'])){
-            header('Location: http://'.$_SESSION['navigateTo']);
+        if (isset($_SESSION['navigateTo'])) {
+            header('Location: http://' . $_SESSION['navigateTo']);
             unset($_SESSION['navigateTo']);
-        }else{
+        } else {
             header('Location: page.php?view=home');
         }
     } else {
@@ -545,6 +545,202 @@ function getUserPixSet($userId) {
     return $arr;
 }
 
+function showPostAndCommentFTL($userId, $lowlimit) {
+    $sql = "SELECT if($userId<>uc.username1,uc.username1,uc.username2) AS id,concat(p.firstname,' ',p.lastname) AS fullname,p.location,com.name,uc.time FROM usercontacts as uc JOIN user_personal_info AS p ON if($userId<>uc.username1,uc.username1,uc.username2)=p.id LEFT JOIN `user_comm` as ucom ON if($userId<>uc.username1,uc.username1,uc.username2)=ucom.user_id LEFT JOIN community as com ON ucom.community_id=com.id WHERE (uc.username1=$userId OR uc.username2=$userId) AND uc.status<>'D' AND uc.status<>'C'";
+    $result = mysql_query($sql);
+    if (mysql_num_rows($result) > 0) {
+        $arr = array();
+        while ($row = mysql_fetch_array($result)) {
+            $arr[] = $row['id'];
+        }
+        $r = "";
+        foreach ($arr as $x) {
+            if ($r != "")
+                $r .= ",";
+            $r .= $x;
+        }
+        $r = explode(",", $r);
+        $condition = implode(" or sender_id = ", $r);
+
+        $where = "";
+        $where = "where p.sender_id = $condition AND p.community_id <> 80";
+
+        $limit = "Limit $lowlimit,15";
+
+        $postValue = "";
+        $postSql = "SELECT p.id,p.post,c.name,p.community_id,p.sender_id,p.time,p.status,if(p.status='Show',concat(s.`firstname`,' ',s.`lastname`),'Anonymous') as fullname,cp.`250x250`,cp.`original` FROM `post` as p JOIN user_personal_info as s on p.sender_id=s.id JOIN community_subscribers as cs on (cs.user=$userId and cs.`community_id`=p.`community_id`) JOIN community as c on cs.`community_id`=c.id LEFT JOIN community_pix AS cp ON p.id = cp.post_id $where order by p.id desc $limit";
+
+        $postResult = mysql_query($postSql) or die(mysql_error());
+
+        if (mysql_num_rows($postResult) > 0) {
+            while ($postRow = mysql_fetch_array($postResult)) {
+                $name = '<a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . toSentenceCase($postRow['fullname']) . '</a>';
+                $image = getUserPixSet($postRow['sender_id']);
+                if ($postRow['fullname'] == "Anonymous") {
+                    $name = $postRow['fullname'];
+                    $image['image50x50'] = "images/anony.png";
+                }
+
+
+                if ($postRow['250x250'] == NULL) {
+                    $postValue .= '<div class="post" id=f_tl' . $postRow['id'] . '>
+                <img class="profile_small"src="' . $image['image50x50'] . '"/>
+                <p class="name">' . $name . '</p><p class="status">' . make_links_clickable($postRow['post']) . '</p><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'f_tl_box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
+                    if ($postRow['name'] != "Zuma Broadcast") {
+                        $postValue .= ' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                    } else {
+                        $postValue .= '</div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                    }
+                } else {
+                    $postValue .= '<div class="post" id=f_tl' . $postRow['id'] . '>
+                <img class="profile_small"src="' . $image['image50x50'] . '"/>
+                <p class="name">' . $name . '</p><p class="status">' . make_links_clickable($postRow['post']) . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '" alt="' . $postRow['name'] . '" onclick="enlargePostPix(\'' . $postRow['250x250'] . '\',\'Shared with ' . $postRow['name'] . '\');"/></li></ul><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'f_tl_box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
+                    if ($postRow['name'] != "Zuma Broadcast") {
+                        $postValue .= ' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                    } else {
+                        $postValue .= '</div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                    }
+                }
+                $commentSql = "SELECT c.`id`,c.`comment`,c.`sender_id`,u.`lastname`,u.`firstname`,c.`time` FROM `comments` as c JOIN user_personal_info as u on c.`sender_id` = u.`id` where c.post_id = " . $postRow['id'] . " order by c.time asc";
+                $commentResult = mysql_query($commentSql);
+                if (mysql_num_rows($commentResult) > 0) {
+                    while ($commentRow = mysql_fetch_array($commentResult)) {
+                        $image = getUserPixSet($commentRow['sender_id']);
+                        $postValue .= '<div id="comment" class=' . $commentRow['id'] . '><img class="profile_small" src="' . $image['image35x35'] . '"/><p class="name"><a href="page.php?view=profile&uid=' . $commentRow['sender_id'] . '">' . toSentenceCase($commentRow['firstname'] . ' ' . $commentRow['lastname']) . '</a></p><p class="status">' . make_links_clickable($commentRow['comment']) . '</p><p class="time" id="tpc' . $commentRow['id'] . '">' . agoServer($commentRow['time']) . '</p></div><script>setTimeout(timeUpdate,20000,\'' . $commentRow['time'] . '\',\'tpc' . $commentRow['id'] . '\')</script>';
+                    }
+//                $postValue .= '</span><span id="box'.$postRow['id'].'"><div id="commentbox"><form method="GET" onsubmit="getValue(\'' . $postRow['id'] . '\',\'commentsPost\');return false"><img class="profile_small" src="' . $_SESSION['auth']['image35x35'] . '" /><input class="commenttext" type="text" id="c' . $postRow['id'] . '"/></form><div class="arrowdown"> </div></div></span></div>';
+                }//else{
+                $postValue .= '</span><span id="f_tl_box' . $postRow['id'] . '"></span></div>';
+                //}
+            }
+        } else {
+            $postValue = "false";
+        }
+    } else {
+        $postValue = "false";
+    }
+    return $postValue;
+}
+
+function showPostAndCommentTR($userId, $communityId, $lowlimit) {
+    $where = "";
+//    if ($where) {
+//        $where .= " AND p.community_id=$communityId";
+//    } else {
+    $where = "where p.community_id=$communityId";
+//    }
+
+    $limit = "Limit $lowlimit,15";
+
+    $postValue = "";
+    $postSql = "SELECT p.id,p.post,c.name,p.community_id,p.sender_id,p.time,p.status,if(p.status='Show',concat(s.`firstname`,' ',s.`lastname`),'Anonymous') as fullname,cp.`250x250`,cp.`original` FROM `post` as p JOIN user_personal_info as s on p.sender_id=s.id JOIN community_subscribers as cs on (cs.user=$userId and cs.`community_id`=p.`community_id`) JOIN community as c on cs.`community_id`=c.id LEFT JOIN community_pix AS cp ON p.id = cp.post_id $where order by p.id desc $limit";
+    $postResult = mysql_query($postSql) or die(mysql_error());
+    if (mysql_num_rows($postResult) > 0) {
+        while ($postRow = mysql_fetch_array($postResult)) {
+            $name = '<a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . toSentenceCase($postRow['fullname']) . '</a>';
+            $image = getUserPixSet($postRow['sender_id']);
+            if ($postRow['fullname'] == "Anonymous") {
+                $name = $postRow['fullname'];
+                $image['image50x50'] = "images/anony.png";
+            }
+
+
+            if ($postRow['250x250'] == NULL) {
+                $postValue .= '<div class="post" id=tr_' . $postRow['id'] . '>
+                <img class="profile_small"src="' . $image['image50x50'] . '"/>
+                <p class="name">' . $name . '</p><p class="status">' . make_links_clickable($postRow['post']) . '</p><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
+                //.' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>'
+                if ($postRow['name'] != "Zuma Broadcast") {
+                    $postValue .= ' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                } else {
+                    $postValue .= '</div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                }
+            } else {
+                $postValue .= '<div class="post" id=tr_' . $postRow['id'] . '>
+                <img class="profile_small"src="' . $image['image50x50'] . '"/>
+                <p class="name">' . $name . '</p><p class="status">' . make_links_clickable($postRow['post']) . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '" alt="' . $postRow['name'] . '" onclick="enlargePostPix(\'' . $postRow['250x250'] . '\',\'Shared with ' . $postRow['name'] . '\');"/></li></ul><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
+                if ($postRow['name'] != "Zuma Broadcast") {
+                    $postValue .= ' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                } else {
+                    $postValue .= '</div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                }
+            }
+            $commentSql = "SELECT c.`id`,c.`comment`,c.`sender_id`,u.`lastname`,u.`firstname`,c.`time` FROM `comments` as c JOIN user_personal_info as u on c.`sender_id` = u.`id` where c.post_id = " . $postRow['id'] . " order by c.time asc";
+            $commentResult = mysql_query($commentSql);
+            if (mysql_num_rows($commentResult) > 0) {
+                while ($commentRow = mysql_fetch_array($commentResult)) {
+                    $image = getUserPixSet($commentRow['sender_id']);
+                    $postValue .= '<div id="comment" class=' . $commentRow['id'] . '><img class="profile_small" src="' . $image['image35x35'] . '"/><p class="name"><a href="page.php?view=profile&uid=' . $commentRow['sender_id'] . '">' . toSentenceCase($commentRow['firstname'] . ' ' . $commentRow['lastname']) . '</a></p><p class="status">' . make_links_clickable($commentRow['comment']) . '</p><p class="time" id="tpc' . $commentRow['id'] . '">' . agoServer($commentRow['time']) . '</p></div><script>setTimeout(timeUpdate,20000,\'' . $commentRow['time'] . '\',\'tpc' . $commentRow['id'] . '\')</script>';
+                }
+//                $postValue .= '</span><span id="box'.$postRow['id'].'"><div id="commentbox"><form method="GET" onsubmit="getValue(\'' . $postRow['id'] . '\',\'commentsPost\');return false"><img class="profile_small" src="' . $_SESSION['auth']['image35x35'] . '" /><input class="commenttext" type="text" id="c' . $postRow['id'] . '"/></form><div class="arrowdown"> </div></div></span></div>';
+            }//else {
+            $postValue .= '</span><span id="box' . $postRow['id'] . '"></span></div>';
+            //}
+        }
+        return $postValue;
+    } else {
+        return "false";
+    }
+}
+
+function showPostAndCommentCF($userId, $communityExceptionId,$lowlimit) {
+    $where = "";
+    if ($communityExceptionId) {
+        $where = "where p.community_id<>$communityExceptionId";
+    }
+    $limit = "Limit $lowlimit,15";
+
+    $postValue = "";
+    $postSql = "SELECT p.id,p.post,c.name,p.community_id,p.sender_id,p.time,p.status,if(p.status='Show',concat(s.`firstname`,' ',s.`lastname`),'Anonymous') as fullname,cp.`250x250`,cp.`original` FROM `post` as p JOIN user_personal_info as s on p.sender_id=s.id JOIN community_subscribers as cs on (cs.user=$userId and cs.`community_id`=p.`community_id`) JOIN community as c on cs.`community_id`=c.id LEFT JOIN community_pix AS cp ON p.id = cp.post_id $where order by p.id desc $limit";
+    $postResult = mysql_query($postSql) or die(mysql_error());
+    if (mysql_num_rows($postResult) > 0) {
+        while ($postRow = mysql_fetch_array($postResult)) {
+            $name = '<a href="page.php?view=profile&uid=' . $postRow['sender_id'] . '">' . toSentenceCase($postRow['fullname']) . '</a>';
+            $image = getUserPixSet($postRow['sender_id']);
+            if ($postRow['fullname'] == "Anonymous") {
+                $name = $postRow['fullname'];
+                $image['image50x50'] = "images/anony.png";
+            }
+
+
+            if ($postRow['250x250'] == NULL) {
+                $postValue .= '<div class="post" id=cf_' . $postRow['id'] . '>
+                <img class="profile_small"src="' . $image['image50x50'] . '"/>
+                <p class="name">' . $name . '</p><p class="status">' . make_links_clickable($postRow['post']) . '</p><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
+                //.' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>'
+                if ($postRow['name'] != "Zuma Broadcast") {
+                    $postValue .= ' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                } else {
+                    $postValue .= '</div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                }
+            } else {
+                $postValue .= '<div class="post" id=cf_' . $postRow['id'] . '>
+                <img class="profile_small"src="' . $image['image50x50'] . '"/>
+                <p class="name">' . $name . '</p><p class="status">' . make_links_clickable($postRow['post']) . '</p><ul class="box"><li><img src="' . $postRow['250x250'] . '" alt="' . $postRow['name'] . '" onclick="enlargePostPix(\'' . $postRow['250x250'] . '\',\'Shared with ' . $postRow['name'] . '\');"/></li></ul><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
+                if ($postRow['name'] != "Zuma Broadcast") {
+                    $postValue .= ' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                } else {
+                    $postValue .= '</div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>';
+                }
+            }
+            $commentSql = "SELECT c.`id`,c.`comment`,c.`sender_id`,u.`lastname`,u.`firstname`,c.`time` FROM `comments` as c JOIN user_personal_info as u on c.`sender_id` = u.`id` where c.post_id = " . $postRow['id'] . " order by c.time asc";
+            $commentResult = mysql_query($commentSql);
+            if (mysql_num_rows($commentResult) > 0) {
+                while ($commentRow = mysql_fetch_array($commentResult)) {
+                    $image = getUserPixSet($commentRow['sender_id']);
+                    $postValue .= '<div id="comment" class=' . $commentRow['id'] . '><img class="profile_small" src="' . $image['image35x35'] . '"/><p class="name"><a href="page.php?view=profile&uid=' . $commentRow['sender_id'] . '">' . toSentenceCase($commentRow['firstname'] . ' ' . $commentRow['lastname']) . '</a></p><p class="status">' . make_links_clickable($commentRow['comment']) . '</p><p class="time" id="tpc' . $commentRow['id'] . '">' . agoServer($commentRow['time']) . '</p></div><script>setTimeout(timeUpdate,20000,\'' . $commentRow['time'] . '\',\'tpc' . $commentRow['id'] . '\')</script>';
+                }
+//                $postValue .= '</span><span id="box'.$postRow['id'].'"><div id="commentbox"><form method="GET" onsubmit="getValue(\'' . $postRow['id'] . '\',\'commentsPost\');return false"><img class="profile_small" src="' . $_SESSION['auth']['image35x35'] . '" /><input class="commenttext" type="text" id="c' . $postRow['id'] . '"/></form><div class="arrowdown"> </div></div></span></div>';
+            }//else{
+            $postValue .= '</span><span id="box' . $postRow['id'] . '"></span></div>';
+            //}
+        }
+    } else {
+        $postValue = "false";
+    }
+    return $postValue;
+}
+
 function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0, $lowlimit = 0, $showAnonymous = 0) {
     $where = "";
     if ($all) {
@@ -576,6 +772,7 @@ function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0, $low
 
     $postValue = "";
     $postSql = "SELECT p.id,p.post,c.name,p.community_id,p.sender_id,p.time,p.status,if(p.status='Show',concat(s.`firstname`,' ',s.`lastname`),'Anonymous') as fullname,cp.`250x250`,cp.`original` FROM `post` as p JOIN user_personal_info as s on p.sender_id=s.id JOIN community_subscribers as cs on (cs.user=$userId and cs.`community_id`=p.`community_id`) JOIN community as c on cs.`community_id`=c.id LEFT JOIN community_pix AS cp ON p.id = cp.post_id $where order by p.id desc $limit";
+
     $postResult = mysql_query($postSql) or die(mysql_error());
     if (mysql_num_rows($postResult) > 0) {
         while ($postRow = mysql_fetch_array($postResult)) {
@@ -588,7 +785,7 @@ function showPostAndComment($userId, $all = 0, $from = 0, $withPost_id = 0, $low
 
 
             if ($postRow['250x250'] == NULL) {
-                $postValue .= '<div class="post" id=' . $postRow['id'] . '>
+                $postValue .= '<div class="post" id=f_tl' . $postRow['id'] . '>
                 <img class="profile_small"src="' . $image['image50x50'] . '"/>
                 <p class="name">' . $name . '</p><p class="status">' . make_links_clickable($postRow['post']) . '</p><p class="time" id="tp' . $postRow['id'] . '">' . agoServer($postRow['time']) . '</p><div class="post_activities"> <span onclick="showGossoutModeldialog(\'dialog\',\'' . $postRow['id'] . '\');">Gossout</span> . <span onclick="showCommentBox(\'box' . $postRow['id'] . '\',\'' . $postRow['id'] . '\',\'' . $_SESSION['auth']['image35x35'] . '\')">Comment</span>';
                 //.' . <span><a href="page.php?view=community&com=' . $postRow['community_id'] . '">in ' . $postRow['name'] . '</a></span></div><span id="comments' . $postRow['id'] . '"><script>setTimeout(timeUpdate,20000,\'' . $postRow['time'] . '\',\'tp' . $postRow['id'] . '\');</script>'
@@ -676,14 +873,15 @@ function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
 
     if (mysql_affected_rows() > 0) {
         $id = mysql_insert_id();
-        $sql = "SELECT c.`community_id`, concat(u.`firstname`,' ',u.lastname) as fullname,u.email FROM `community_subscribers` as c JOIN user_personal_info as u ON c.user=u.id WHERE c.`community_id`=$community";
+        $row = mysql_fetch_array(mysql_query("SELECT NOW() as rawTime"));
+        $arr['rawTime'] = $row['rawTime'];
+        $sql = "SELECT c.`community_id`, concat(u.`firstname`,' ',u.lastname) as fullname,u.email,u.location,u.id FROM `community_subscribers` as c JOIN user_personal_info as u ON c.user=u.id WHERE c.`community_id`=$community";
         $result = mysql_query($sql);
         $email = trim(strip_tags("post+notification@gossout.com"));
         $full_name = 'Gossout';
         $from_mail = $full_name . '<' . $email . '>';
         $from_mail2 = $full_name . '<no-rely@gossout.com>';
         $message = stripcslashes($text);
-
         // set here
         $subject = "$senderFullname post to $comm";
         $headers = "Reply-To: $from_mail2 \r\n" . "From:" . $from_mail . "\r\n" . "X-Mailer: PHP/" . phpversion();
@@ -694,43 +892,74 @@ function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
                 $to = $row['email'];
                 $html = '<!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <!--        <link rel="stylesheet" media="screen and (min-device-width: 1024px)" href="css/main.css" />-->
-        <style> a {text-decoration: none;} ol,ul {    list-style: none;} h1,h2,h3,h4,h5,h6 {font-weight: normal; color: #333;font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;} hr {margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;background-color: #ddd;} span {} img {border: none;padding: .2em;    max-width: 100%;} .inner_wrappper {display: inline-block;padding: .5em;background: #fafafa;width: 100%;}
-            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA;  border: 1px solid #F4F4F4; margin-top: 2px;}
-            .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
-            #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
-            #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:green} a:active,a:hover,a:visited{color:green}</style>
-    </head>
-    <body> 
-        <div>
-            <div class="center_div width800">
-                <div class="inner_wrappper box_shadow8 center_div ">
-                    <div id="column1" style="width: 100%">
-                        <div  class="community_index index_fnx" > 
-                            <span> <h1 class="fnx"><img src="http://gossout.com/images/G.png" /><a href="page.php?view=community&com=' . $community . '"> ' . $comm . '</a><hr> </h1><a href="http://www.gossout.com/page.php?view=notification&open=' . $id . '"><span class="box_shadow8 center_div" style="display: block; width: 40%;text-align: center;background-color:#99c53d;font-size: .9em; ">Comment on Post</span></a>
-                                <p class="fnx_detail"><img src="http://www.gossout.com/' . $arr['imgL'] . '" align="left"/><strong>' . $name . '</strong><br/>' . $message . '</p>
-                            </span>
-                            <a href="http://www.gossout.com/page.php?view=notification&open=' . $id . '"><span class="box_shadow8 center_div" style="display: block; width: 40%;text-align: center;background-color:#99c53d;font-size: .9em; ">Comment on Post</span></a>
-                        </div>
+<head>
+    <meta charset="utf-8">
+    <style>
+    body{ font-family: "Segoe UI",sans-serif; background-color: #f9f9f9; color: #717171;}
+    a { color: #62a70f; text-decoration: none; }
+    a:hover { color: #000;}
+    a:active , a:focus { color: green;}
+    h2 { color: #252525; font-weight: normal; padding: 3px; margin: 0;}
+    ol,ul { list-style: none; }
+    p {margin: 3px;}
+    hr { margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;    background-color: #ddd;}
+    img { border: none; padding: .2em; margin: .5em; max-width: 100%;}
+    .container {max-width: 800px; margin: 0 auto; background-color: #fff; border: 1px solid #f2f2f2; padding: 10px}
+    .header {background: url(http://gossout.com/images/logo_text_s.png) no-repeat right top!important;}  
+    .header .time {font-size: .7em;}
+    .content { background-color: #fff; padding: 1em;}
+    .content p { font-size: .9em;}
+    .content span { font-size: .8em;}
+    .footer { background-color: #f9f9f9; padding: 10px; font-size: .8em;}
 
-                    </div>
-                    <div id="footer" class="p_name">
-                        <hr>
-                        <table cellspacing="5px">
-                            <tr >
-                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> <span style="font-size: .8em">For more information on gossout.com contact us on feedback@gossout.com</span>
-                            </td>
-                        </tr>
-                    </table>
-                    <div class="clear"></div>
-                </div>
-            </div>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <br>
+            <h2>' . $row['fullname'] . ', </h2>
+            <p><span class="user-name"><a href="http://gossout.com/page.php?view=profile&uid=' . $userId . '">' . $senderFullname . '</a></span> posted in <span><a href="http://gossout.com/page.php?view=community&com=' . $row['community_id'] . '">' . $comm . '</a></span></p>
+            <p class="time" align="right"> Time: ' . $arr['rawTime'] . '</p>
+            <hr>      
+        </div>
+        <div class="content">
+            <img src="http://gossout.com/' . $arr['imgL'] . '" align="left">
+            <span class="user-name"><a href="http://gossout.com/page.php?view=profile&uid=' . $userId . '">' . $senderFullname . '</a></span>
+            <p>' . $message . '</p>
+            <span><a href="http://gossout.com/page.php?view=notification&open=' . $id . '">Comment on post</a></span>
+        </div>
+        <hr>
+        <div class="footer">
+            This email was intended for <span class="user-name"><a href="http://gossout.com/page.php?view=profile&uid=' . $row['id'] . '">' . $row['fullname'] . '</a></span> 
+            (<span class="user-location">' . ($row['location'] ? $row['location'] : $to) . '</span>).
+            <!--<br>If you believe 
+            <span class="user-name"><a href="http://gossout.com/page.php?view=profile&uid=' . $userId . '">' . $senderFullname . '</a></span>
+            is engaging in abusive behavior on
+            <span><a href="http://gossout.com">Gossout</a></span>, you may <a href="">report 
+            <span class="user-name"><a href="">Sample Name </a></span>
+            for spam.</a> 
+            <br>Forgot your 
+            <span><a href="http://www.gossout.com">Gossout</a></span> password? 
+            <a href="">Get instructions on how to reset it.</a>
+            <br>You can also 
+            <a href="">unsubscribe to these emails.</a>
+            <br>If you received this message in error and did not sign up for <span><a href="http://www.gossout.com">Gossout</a></span>
+            , click <a href="">not my account. </a>-->
+            <br>
+            <hr>
+            <table cellspacing="5px">
+                <tr>        
+                    <td> <a href="http://gossout.com/page.php?view=about">About</a> </td>
+                    <td> <a href="http://gossout.com/page.php?view=terms">Terms</a> </td>
+                    <td> <a href="http://gossout.com/page.php?view=privacy">Privacy</a> </td>
+                </tr>
+                <tr >
+                    <td colspan="3"> &copy; ' . date("Y") . '<a href="http://gossout.com">Gossout</a></td>
+                </tr>
+            </table>
         </div>
     </div>
-
 </body>
 </html>
 ';
@@ -754,8 +983,6 @@ function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
         $arr['com_id'] = $community;
         $arr['com'] = $comm;
         $arr['time'] = "now";
-        $row = mysql_fetch_array(mysql_query("SELECT NOW() as rawTime"));
-        $arr['rawTime'] = $row['rawTime'];
         $arr['status'] = "success";
         $arr['message'] = "Post sent successfully!";
     } else {
@@ -766,15 +993,21 @@ function sendPost($userId, $community, $comm, $text, $senderFullname, $status) {
 }
 
 function sendComment($userId, $postId, $comment, $senderFullname) {
+    $arr = array();
     $sql = "INSERT INTO `comments` (`comment`, `post_id`, `sender_id`) VALUES ('" . clean(htmlspecialchars($comment)) . "', '$postId', '$userId')";
     mysql_query($sql);
-    $sql = "SELECT p.community_id,c.name FROM post as p JOIN community as c on c.id=p.community_id WHERE p.id=$postId";
+    $row = mysql_fetch_array(mysql_query("SELECT NOW() as rawTime"));
+    $arr['rawTime'] = $row['rawTime'];
+    $sql = "SELECT p.community_id,p.sender_id,concat(u.firstname,' ',u.lastname) as fullname,c.name FROM post as p JOIN community as c on c.id=p.community_id JOIN user_personal_info as u ON u.id=p.sender_id WHERE p.id=$postId";
     $result = mysql_query($sql);
+
     if (mysql_num_rows($result) > 0) {
         $row = mysql_fetch_array($result);
         $com_name = $row['name'];
+        $postSenderFullname = $row['fullname'];
+        $postSenderId = $row['sender_id'];
         alertGossbag($userId, $postId, $row['community_id'], $senderFullname . " commented on a post in " . $row['name']);
-        $sql = "SELECT c.`community_id`, concat(u.`firstname`,' ',u.lastname) as fullname,u.email FROM `community_subscribers` as c JOIN user_personal_info as u ON c.user=u.id WHERE c.`community_id`=" . $row['community_id'];
+        $sql = "SELECT c.`community_id`,u.id, concat(u.`firstname`,' ',u.lastname) as fullname,u.location,u.email FROM `community_subscribers` as c JOIN user_personal_info as u ON c.user=u.id WHERE c.`community_id`=" . $row['community_id'];
         $result = mysql_query($sql);
         $email = trim(strip_tags("comment+notification@gossout.com"));
 
@@ -793,42 +1026,74 @@ function sendComment($userId, $postId, $comment, $senderFullname) {
                 $to = $row['email'];
                 $html = '<!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <!--        <link rel="stylesheet" media="screen and (min-device-width: 1024px)" href="css/main.css" />-->
-        <style> a {text-decoration: none;} ol,ul {    list-style: none;} h1,h2,h3,h4,h5,h6 {font-weight: normal; color: #333;font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;} hr {margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;background-color: #ddd;} span {} img {border: none;padding: .2em;    max-width: 100%;} .inner_wrappper {display: inline-block;padding: .5em;background: #fafafa;width: 100%;}
-            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA;  border: 1px solid #F4F4F4; margin-top: 2px;}
-            .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
-            #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
-            #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:green} a:active,a:hover,a:visited{color:green}</style>
-    </head>
-    <body> 
-        <div>
-            <div class="center_div width800">
-                <div class="inner_wrappper box_shadow8 center_div ">
-                    <div id="column1" style="width: 100%">
-                        <div  class="community_index index_fnx" > 
-                            <span> <h1 class="fnx"><img src="http://gossout.com/images/G.png" /><a href="page.php?view=community&com=' . $community . '"> ' . $comm . '</a><hr> </h1>
-                                <p class="fnx_detail"><img src="http://www.gossout.com/' . $_SESSION['auth']['image50x50'] . '" align="left"/><strong><a href="page.php?view=profile&uid=' . $userId . '">' . $senderFullname . '</a></strong><br/>' . $message . '</p>
-                            </span>
-                        </div>
+<head>
+    <meta charset="utf-8">
+    <style>
+    body{ font-family: "Segoe UI",sans-serif; background-color: #f9f9f9; color: #717171;}
+    a { color: #62a70f; text-decoration: none; }
+    a:hover { color: #000;}
+    a:active , a:focus { color: green;}
+    h2 { color: #252525; font-weight: normal; padding: 3px; margin: 0;}
+    ol,ul { list-style: none; }
+    p {margin: 3px;}
+    hr { margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;    background-color: #ddd;}
+    img { border: none; padding: .2em; margin: .5em; max-width: 100%;}
+    .container {max-width: 800px; margin: 0 auto; background-color: #fff; border: 1px solid #f2f2f2; padding: 10px}
+    .header {background: url(http://gossout.com/images/logo_text_s.png) no-repeat right top!important;} 
+    .header .time {font-size: .7em;} 
+    .content { background-color: #fff; padding: 1em;}
+    .content p { font-size: .9em;}
+    .content span { font-size: .8em;}
+    .footer { background-color: #f9f9f9; padding: 10px; font-size: .8em;}
 
-                    </div>
-                    <div id="footer" class="p_name">
-                        <hr>
-                        <table cellspacing="5px">
-                            <tr >
-                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> <span style="font-size: .8em">For more information on gossout.com contact us on feedback@gossout.com</span>
-                            </td>
-                        </tr>
-                    </table>
-                    <div class="clear"></div>
-                </div>
-            </div>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <br>
+            <h2>' . $row['fullname'] . ', </h2>
+            <p><span class="user-name"><a href="http://gossout.com/page.php?view=profile&uid=' . $userId . '">' . $senderFullname . '</a></span> commented on a post from <a href="http://gossout.com/page.php?view=profile&uid=' . $postSenderId . '">' . $postSenderFullname . '</a> in <a href="http://gossout.com/page.php?view=community&com=' . $row['community_id'] . '">' . $row['name'] . '</a> </p>
+            <p class="time" align="right">Time: ' . $arr['rawTime'] . '</p>
+            <hr>      
+        </div>
+        <div class="content">
+            <img src="http://gossout.com/' . $_SESSION['auth']['image50x50'] . '" align="left">
+            <span class="user-name"><a href="http://gossout.com/page.php?view=profile&uid=' . $userId . '">' . $senderFullname . '</a></span>
+            <p>' . $message . '</p>
+            <span><!--54 Comments... --></span><span><a href="http://gossout.com/page.php?view=notification&open=' . $postId . '">View post to add a comment</a></span>
+        </div>
+        <hr>
+        <div class="footer">                
+            This email was intended for <span class="user-name"><a href="http://gossout.com/page.php?view=profile&uid=' . $row['id'] . '">' . $row['fullname'] . '</a></span> 
+            (<span class="user-location">' . ($row['location'] ? $row['location'] : $to) . '</span>).
+            <!--<br>If you believe 
+            <span class="user-name"><a href="http://gossout.com/page.php?view=profile&uid=' . $userId . '">' . $senderFullname . '</a></span>
+            is engaging in abusive behavior on
+            <span><a href="http://gossout.com">Gossout</a></span>, you may <a href="">report 
+            <span class="user-name"><a href="">Sample Name </a></span>
+            for spam.</a> 
+            <br>Forgot your 
+            <span><a href="http://www.gossout.com">Gossout</a></span> password? 
+            <a href="">Get instructions on how to reset it.</a>
+            <br>You can also 
+            <a href="">unsubscribe to these emails.</a>
+            <br>If you received this message in error and did not sign up for <span><a href="http://www.gossout.com">Gossout</a></span>
+            , click <a href="">not my account. </a>-->
+            <br>
+            <hr>
+            <table cellspacing="5px">
+                <tr>        
+                    <td> <a href="http://gossout.com/page.php?view=about">About</a> </td>
+                    <td> <a href="http://gossout.com/page.php?view=terms">Terms</a> </td>
+                    <td> <a href="http://gossout.com/page.php?view=privacy">Privacy</a> </td>
+                </tr>
+                <tr >
+                    <td colspan="3"> &copy;' . date("Y") . ' <a href="http://www.gossout.com">Gossout</a></td>
+                </tr>
+            </table>
         </div>
     </div>
-
 </body>
 </html>
 ';
@@ -838,17 +1103,16 @@ function sendComment($userId, $postId, $comment, $senderFullname) {
             }
         }
     }
-    $arr = array();
-    if (mysql_affected_rows() > 0) {
-        $arr['id'] = mysql_insert_id();
-        $arr['sender_id'] = $userId;
-        $arr['imgS'] = $_SESSION['auth']['image35x35'];
-        $arr['name'] = toSentenceCase($senderFullname);
-        $arr['text'] = make_links_clickable(stripcslashes(htmlspecialchars($comment)));
-        $arr['time'] = "now";
-        $row = mysql_fetch_array(mysql_query("SELECT NOW() as rawTime"));
-        $arr['rawTime'] = $row['rawTime'];
-    }
+
+
+    $arr['id'] = mysql_insert_id();
+    $arr['sender_id'] = $userId;
+    $arr['imgS'] = $_SESSION['auth']['image35x35'];
+    $arr['name'] = toSentenceCase($senderFullname);
+    $arr['text'] = make_links_clickable(stripcslashes(htmlspecialchars($comment)));
+    $arr['time'] = "now";
+
+
     return $arr;
 }
 
@@ -1042,8 +1306,9 @@ function sendFrq($userId, $frndId, $senderFullname) {
     $arr = array();
     if (mysql_affected_rows() > 0) {
         $arr['status'] = "success";
-        $sql = "SELECT  `email` FROM `user_personal_info` WHERE `id`=" . $frndId;
+        $sql = "SELECT  concat(firstname,' ',lastname) as fullname,location,`email`,NOW() as time FROM `user_personal_info` WHERE `id`=" . $frndId;
         $result = mysql_query($sql);
+        $img = $_SESSION['auth']['image50x50'];
         $email = trim(strip_tags("frq+notification@gossout.com"));
 
         $full_name = 'Gossout';
@@ -1057,48 +1322,86 @@ function sendFrq($userId, $frndId, $senderFullname) {
         if (mysql_num_rows($result) > 0) {
             while ($row = mysql_fetch_array($result)) {
                 $to = $row['email'];
-                $html = '<!doctype html>
+                $html = "<!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <!--        <link rel="stylesheet" media="screen and (min-device-width: 1024px)" href="css/main.css" />-->
-        <style> a {text-decoration: none;} ol,ul {    list-style: none;} h1,h2,h3,h4,h5,h6 {font-weight: normal; color: #333;font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;} hr {margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;background-color: #ddd;} span {} img {border: none;padding: .2em;    max-width: 100%;} .inner_wrappper {display: inline-block;padding: .5em;background: #fafafa;width: 100%;}
-            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA;  border: 1px solid #F4F4F4; margin-top: 2px;}
-            .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
-            #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
-            #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:green} a:active,a:hover,a:visited{color:green}</style>
-    </head>
-    <body> 
-        <div>
-            <div class="center_div width800">
-                <div class="inner_wrappper box_shadow8 center_div ">
-                    <div id="column1" style="width: 100%">
-                        <div  class="community_index index_fnx" > 
-                            <span> <h1 class="fnx">Friend Request<hr> </h1>
-                                <p class="fnx_detail"><img src="http://www.gossout.com/' . $_SESSION['auth']['image50x50'] . '" align="left"/><strong><a href="page.php?view=profile&uid=' . $userId . '">' . $senderFullname . '</a></strong><br/> have sent you a friend request</p>
-                                    <p><a href="http://gossout.com">Click here to repond</a></p>
-                            </span>
-                        </div>
+<head>
+    <meta charset='utf-8'>
+    <style>
+    /**********************************************/
+    body{ font-family: 'Segoe UI',sans-serif; background-color: #f9f9f9; color: #717171;}
+    a { color: #62a70f; text-decoration: none; }
+    a:hover { color: #000;}
+    a:active , a:focus { color: green;}
+    h2 { color: #252525; font-weight: normal; padding: 3px; margin: 0;}
+    input[type=button] {padding: 5px;}
+    ol,ul { list-style: none; }
+    p {margin: 3px;}
+    hr { margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;    background-color: #ddd;}
+    img { border: none; padding: .2em; margin: .5em; max-width: 100%;}
+    /*********************************************/
+    .container {max-width: 800px; margin: 0 auto; background-color: #fff; border: 1px solid #f2f2f2; padding: 10px}
+    .header {background: url(http://gossout.com/images/logo_text_s.png) no-repeat right top!important;}  
+    .header .time {font-size: .7em;}
+    .content { background-color: #fff; padding: 1em;}
+    .footer { background-color: #f9f9f9; padding: 10px; font-size: .8em;}
 
-                    </div>
-                    <div id="footer" class="p_name">
-                        <hr>
-                        <table cellspacing="5px">
-                            <tr >
-                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> <span style="font-size: .8em">For more information on gossout.com contact us on feedback@gossout.com</span>
-                            </td>
-                        </tr>
-                    </table>
-                    <div class="clear"></div>
-                </div>
-            </div>
+    /*********************************************/
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='header'>
+            <br>
+            <h2>$row[fullname], </h2>
+            <!-- Sample Notification types -->
+            <p><span class='user-name'><a href='http://gossout.com/page.php?view=profile&uid=$userId'>$senderFullname</a></span> want's to be your friend.</p>
+            <!-- Sample Notification types -->
+            <p class='time' align='right'>Time: $row[time]</p>
+            <hr>      
+        </div>
+        <div class='content'>
+            <img src='http://gossout.com/$img' align='left'>
+            <span class='user-name'><a href='http://gossout.com/page.php?view=profile&uid=$frndId]'>$senderFullname</a></span>
+            <br><span>" . $_SESSION['auth']['gender'] . "</span>
+            <br>Location: <span>" . $_SESSION['auth']['location'] . "</span>
+            <br>
+            <a href='http://gossout.com/page.php?view=request'><input type='button' name='accept' value='Respond to Request'></a>
+            <!--<input type='button' name='reject' value='Reject'>-->
+        </div>
+        <hr>
+        <div class='footer'>
+            This email was intended for <span class='user-name'><a href='http://gossout.com/page.php?view=profile&uid=$row[id]>$row[fullname]</a></span> 
+            (<span class='user-location'>" . ($row['location'] ? $row['location'] : $to) . "</span>).
+            <!--<br>If you believe 
+            <span class='user-name'><a href=''>Sample Name </a></span>
+            is engaging in abusive behavior on
+            <span><a href='http://gossout.com'>Gossout</a></span>, you may <a href=''>report 
+            <span class='user-name'><a href=''>Sample Name </a></span>
+            for spam.</a> 
+            <br>Forgot your 
+            <span><a href='http://gossout.com'>Gossout</a></span> password? 
+            <a href=''>Get instructions on how to reset it.</a>
+            <br>You can also 
+            <a href=''>unsubscribe to these emails.</a>
+            <br>If you received this message in error and did not sign up for <span><a href='http://www.gossout.com'>Gossout</a></span>
+            , click <a href=''>not my account. </a>-->
+            <br>
+            <hr>
+            <table cellspacing='5px'>
+                <tr>        
+                    <td> <a href='http://gossout.com/page.php?view=about'>About</a> </td>
+                    <td> <a href='http://gossout.com/page.php?view=terms'>Terms</a> </td>
+                    <td> <a href='http://gossout.com/page.php?view=privacy'>Privacy</a> </td>
+                </tr>
+                <tr >
+                    <td colspan='3'> &copy; " . date('Y') . " <a href='http://gossout.com'>Gossout</a></td>
+                </tr>
+            </table>
         </div>
     </div>
-
 </body>
 </html>
-';
+";
                 if ($_SESSION['auth']['email'] != $to) {
                     @mail($to, $subject, $html, $headers);
                 }
@@ -1486,16 +1789,16 @@ function getUserFriends($userId, $accepted = false) {
     $arr = array();
     if (!$accepted) {
         //get both friends accepted and pending
-        $sql = "SELECT if($userId<>uc.username1,uc.username1,uc.username2) AS id,concat(p.firstname,' ',p.lastname) AS fullname,p.location,uc.time FROM usercontacts as uc JOIN user_personal_info AS p ON if($userId<>uc.username1,uc.username1,uc.username2)=p.id WHERE (uc.username1=$userId OR uc.username2=$userId) AND uc.status<>'D' AND uc.status<>'C'";
+        $sql = "SELECT if($userId<>uc.username1,uc.username1,uc.username2) AS id,concat(p.firstname,' ',p.lastname) AS fullname,p.location,com.name,uc.time FROM usercontacts as uc JOIN user_personal_info AS p ON if($userId<>uc.username1,uc.username1,uc.username2)=p.id LEFT JOIN `user_comm` as ucom ON if($userId<>uc.username1,uc.username1,uc.username2)=ucom.user_id LEFT JOIN community as com ON ucom.community_id=com.id WHERE (uc.username1=$userId OR uc.username2=$userId) AND uc.status<>'D' AND uc.status<>'C'";
     } else {
         //get only accepted friends
-        $sql = "SELECT if($userId<>uc.username1,uc.username1,uc.username2) AS id,concat(p.firstname,' ',p.lastname) AS fullname,p.location,uc.time FROM usercontacts as uc JOIN user_personal_info AS p ON if($userId<>uc.username1,uc.username1,uc.username2)=p.id WHERE (uc.username1=$userId OR uc.username2=$userId) AND uc.status='Y'";
+        $sql = "SELECT if($userId<>uc.username1,uc.username1,uc.username2) AS id,concat(p.firstname,' ',p.lastname) AS fullname,p.location,com.name,uc.time FROM usercontacts as uc JOIN user_personal_info AS p ON if($userId<>uc.username1,uc.username1,uc.username2)=p.id LEFT JOIN `user_comm` as ucom ON if($userId<>uc.username1,uc.username1,uc.username2)=ucom.user_id LEFT JOIN community as com ON ucom.community_id=com.id WHERE (uc.username1=$userId OR uc.username2=$userId) AND uc.status='Y'";
     }
 
     $result = mysql_query($sql);
     if (mysql_num_rows($result) > 0) {
         while ($row = mysql_fetch_array($result)) {
-            $arr[$row['id']] = array("id" => $row['id'], "fullname" => toSentenceCase($row['fullname']), "image" => getUserPixSet($row['id']), "location" => $row['location'] ? $row['location'] : "Not Specified");
+            $arr[$row['id']] = array("id" => $row['id'], "fullname" => toSentenceCase($row['fullname']), "image" => getUserPixSet($row['id']), "location" => $row['location'] ? $row['location'] : "Not Specified", "community" => $row['name'] ? $row['name'] : "");
         }
     }
     return $arr;
@@ -1576,26 +1879,29 @@ function sendTweakWink($userId, $receiver_id, $tweakwink) {
     }
     $sql = "INSERT INTO tweakwink(sender_id,receiver_id,`type`) VALUES('$userId','$receiver_id','" . clean(htmlspecialchars($tweakwink)) . "')";
     mysql_query($sql);
+
     $arr = array();
+    $img = getUserPixSet($userId);
     if (mysql_affected_rows() > 0) {
+        $tweakwinkId = mysql_insert_id();
         $arr['status'] = "success";
         $arr['message'] = "Operation successfull";
-        $sql = "SELECT concat(`firstname`,' ', `lastname`) as fullname, `email` FROM `user_personal_info` WHERE `id`=$userId";
+        $sql = "SELECT concat(`firstname`,' ', `lastname`) as fullname,location, `email`,NOW() as time FROM `user_personal_info` WHERE `id`=$receiver_id";
         $result = mysql_query($sql);
         $row = mysql_fetch_array($result);
         $txt = "";
         $to = $row['email'];
 
         if ($tweakwink == "T") {
-            $txt = $row['fullname'] . " Tweaked you";
+            $txt = $_SESSION['auth']['fullname'] . " Tweaked you";
         } else if ($tweakwink == "W") {
-            $txt = $row['fullname'] . " Winked you";
+            $txt = $_SESSION['auth']['fullname'] . " Winked you";
         }
         $goss = trim(strip_tags("notification@gossout.com"));
         $full_name = 'Gossout';
         $from_mail = $full_name . '<' . $goss . '>';
         $from_mail2 = $full_name . '<no-rely@gossout.com>';
-        $message = ($txt);
+        $message = stripcslashes($txt);
 
         // set here
         $subject = "Your Gossbag";
@@ -1604,42 +1910,80 @@ function sendTweakWink($userId, $receiver_id, $tweakwink) {
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
         $html = '<!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <!--        <link rel="stylesheet" media="screen and (min-device-width: 1024px)" href="css/main.css" />-->
-        <style> a {text-decoration: none;} ol,ul {    list-style: none;} h1,h2,h3,h4,h5,h6 {font-weight: normal; color: #333;font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;} hr {margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;background-color: #ddd;} span {} img {border: none;padding: .2em;    max-width: 100%;} .inner_wrappper {display: inline-block;padding: .5em;background: #fafafa;width: 100%;}
-            .nav2_gradient {background-color: #f3f3f3; background-image: -webkit-gradient(linear,left top,left bottom,from(#f3f3f3),to(#dad9d7));background-image: -webkit-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -moz-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -ms-linear-gradient(top,#f3f3f3,#dad9d7);background-image: -o-linear-gradient(top,#f3f3f3,#dad9d7);background-image: linear-gradient(to bottom,#f3f3f3,#dad9d7);}#logo a img {padding: .5em;} .index_fnx{background-color:#FAFAFA;  border: 1px solid #F4F4F4; margin-top: 2px;}
-            .friend_index{background: url(images/image-friend.png) no-repeat left top!important;}
-            #column1 {display: inline-block;width: 49.5%;vertical-align: top;}
-            #column1 {text-align: left;} .box_shadow8 {-webkit-box-shadow: 0 0 8px 0 #999;box-shadow: 0 0 8px 0 #999;}
-            .center_div { margin: 0px auto 0;} .width800{        width: 80%;} .clear {clear: both;} #nav2 {border-bottom: 1px solid #717373;} .index_fnx .fnx{text-align:center;font-size: 1em;font-weight: bold;} .fnx_detail{font-size: .85em;}#footer{    padding: 5px 10px 5px 10px; margin: 0 auto; } #footer a{    color:#333; padding: 0 .2em;} #footer a:hover{    color:#A6CC8B;} #footer li {    float: left;}a{color:green} a:active,a:hover,a:visited{color:green}</style>
-    </head>
-    <body> 
-        <div>
-            <div class="center_div width800">
-                <div class="inner_wrappper box_shadow8 center_div ">
-                    <div id="column1" style="width: 100%">
-                        <div  class="community_index index_fnx" > 
-                            <span> <h1 class="fnx"><a href="http://gossout.com"><img src="http://gossout.com/images/G.png" /></a>Notification<hr> </h1>
-                                <p class="fnx_detail">' . $message . '</p>
-                            </span>
-                        </div>
+<head>
+    <meta charset="utf-8">
+    <style>
+    /**********************************************/
+    body{ font-family: "Segoe UI",sans-serif; background-color: #f9f9f9; color: #717171;}
+    a { color: #62a70f; text-decoration: none; }
+    a:hover { color: #000;}
+    a:active , a:focus { color: green;}
+    h2 { color: #252525; font-weight: normal; padding: 3px; margin: 0;}
+    input[type=button] {padding: 5px;}
+    ol,ul { list-style: none; }
+    p {margin: 3px;}
+    hr { margin: .3em 0;    width: 100%;    height: 1px;    border-width:0;    color: #ddd;    background-color: #ddd;}
+    img { border: none; padding: .2em; margin: .5em; max-width: 100%;}
+    /*********************************************/
+    .container {max-width: 800px; margin: 0 auto; background-color: #fff; border: 1px solid #f2f2f2; padding: 10px}
+    .header {background: url(images/logo_text_s.png) no-repeat right top!important;}
+    .header .time {font-size: .7em;}
+    .content { background-color: #fff; padding: 1em;}
+    .footer { background-color: #f9f9f9; padding: 10px; font-size: .8em;}
 
-                    </div>
-                    <div id="footer" class="p_name">
-                        <hr>
-                        <table cellspacing="5px">
-                            <tr >
-                                <td colspan="3" style="font-size: 13px" font-family: \'Segoe UI\',sans-serif;> <span style="font-size: .8em">For more information on gossout.com contact us on feedback@gossout.com</span>
-                            </td>
-                        </tr>
-                    </table>
-                    <div class="clear"></div>
-                </div>
-            </div>
+    /*********************************************/
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <br>
+            <h2>' . $row['fullname'] . ', </h2>
+            <!-- Sample Notification types -->
+            <p><span class="user-name"><a href="http://gossout.com/page.php?view=profile&uid=' . $userId . '">' . stripslashes($_SESSION['auth']['fullname']) . '</a></span> Tweaked you! </p>
+            <!-- Sample Notification types -->
+            <p class="time" align="right">Time: ' . $row['time'] . '</p>
+            <hr>      
+        </div>
+        <div class="content">
+            <img src="http://gossout.com/' . $img['50x50'] . '" align="left">
+            <span class="user-name"><a href="http://gossout.com/page.php?view=profile&uid=' . $userId . '">' . $_SESSION['auth']['fullname'] . '</a></span>
+            <br><span>' . $_SESSION['auth']['gender'] . '</span>
+            <br>Location: <span>' . $_SESSION['auth']['gender'] . '</span>
+             <br><a href="http://gossout.com/page.php?view=tweakwink&open=' . $tweakwinkId . '"><input type="button" name="accept" value="Click here to respond" /></a>
+            <!--<input type="button" name="reject" value="Reject"> -->
+        </div>
+        <hr>
+        <div class="footer">
+            This email was intended for <span class="user-name"><a href="http://gossout.com/page.php?view=profile&uid=' . $receiver_id . '">' . $row['fullname'] . '</a></span> 
+            (<span class="user-location">' . ($row['location'] ? $row['location'] : $to) . '</span>).
+            <br><!--If you believe 
+            <span class="user-name"><a href="">Sample Name </a></span>
+            is engaging in abusive behavior on
+            <span><a href="http://www.gossout.com">Gossout</a></span>, you may <a href="">report 
+            <span class="user-name"><a href="">Sample Name </a></span>
+            for spam.</a> 
+            <br>Forgot your 
+            <span><a href="http://www.gossout.com">Gossout</a></span> password? 
+            <a href="">Get instructions on how to reset it.</a>
+            <br>You can also 
+            <a href="">unsubscribe to these emails.</a>
+            <br>If you received this message in error and did not sign up for <span><a href="http://www.gossout.com">Gossout</a></span>
+            , click <a href="">not my account. </a>-->
+            <br>
+            <hr>
+            <table cellspacing="5px">
+                <tr>        
+                    <td> <a href="http://gossout.com/page.php?view=about">About</a> </td>
+                    <td> <a href="http://gossout.com/page.php?view=terms">Terms</a> </td>
+                    <td> <a href="http://gossout.com/page.php?view=privacy">Privacy</a> </td>
+                </tr>
+                <tr >
+                    <td colspan="3"> &copy; ' . date("Y") . ' <a href="http://www.gossout.com">Gossout</a></td>
+                </tr>
+            </table>
         </div>
     </div>
-
 </body>
 </html>
 ';
