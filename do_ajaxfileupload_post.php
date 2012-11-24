@@ -35,7 +35,7 @@ if ($arr['status'] == "success" && isset($_SESSION['auth']['id'])) {
                 'max_width' => 250,
                 'max_height' => 250
             ),
-            'image1000x100' => array(
+            'image100x100' => array(
                 'upload_dir' => 'upload/community_pix/',
                 'upload_url' => 'upload/community_pix/',
                 'max_width' => 100,
@@ -78,7 +78,7 @@ if ($arr['status'] == "success" && isset($_SESSION['auth']['id'])) {
             
             $arr['imgL'] = $_SESSION['auth']['image50x50'];
             $arr['imgS'] = $_SESSION['auth']['image35x35'];
-            $arr['imgStatus'] = "upload/community_pix/$myImgVerUrl[0]";
+            $arr['imgStatus'] = "upload/community_pix/" . $myImgVerUrl[0];
             
             $sql = "SELECT u.id, c.`community_id`, concat(u.`firstname`,' ',u.lastname) as fullname,u.location,u.email,NOW() as rawTime FROM `community_subscribers` as c JOIN user_personal_info as u ON c.user=u.id WHERE c.`community_id`=$community";
             $result = mysql_query($sql);
@@ -136,6 +136,7 @@ if ($arr['status'] == "success" && isset($_SESSION['auth']['id'])) {
             <img src="http://gossout.com/' . $arr['imgL'] . '" align="left">
             <span class="user-name"><a href="http://gossout.com/page.php?view=profile&uid=' . $userId . '">' . $senderFullname . '</a></span>
             <p>' . $message . '</p>
+            <ul class="box"><li><img src="http://gossout.com/'.$arr['imgStatus'].'" /></li></ul>
             <span><a href="http://gossout.com/page.php?view=notification&open=' . $id . '">Comment on post</a></span>
         </div>
         <hr>

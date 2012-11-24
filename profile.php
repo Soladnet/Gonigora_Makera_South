@@ -152,6 +152,7 @@ $userFriends = getUserFriends($id, true);
                                                         <!--                                                <li><a href="gossoutpages/userVideos.php"> Videos </a></li>-->
                                                         <li ><a href="userPersonalInfo.php"> Info </a></li>
                                                         <li class="righttab"><a href="friends.php"> Friends (<?php echo count($userFriends); ?>)</a></li>
+                                                        <li ><a href="goss_themes.php"> Themes</a></li>
 <?php } ?>
                                                 </ul>
                                             </div>

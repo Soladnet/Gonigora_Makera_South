@@ -3,6 +3,7 @@
 session_start();
 include 'executecommand.php';
 connect();
+$joinExcept = array("Football Gossip", "Celebrity", "Fashion & Style", "Controversy");
 if ($_POST['value'] == "mycommunity") {
     $res = "";
     $myCom = showMyComm($_SESSION['auth']['id']);
@@ -14,14 +15,23 @@ if ($_POST['value'] == "mycommunity") {
 
     if (count($myCom) > 0) {
         $tabindex = 0;
+        $c = 0;
         foreach ($myCom['data'] as $value) {
             if ($myCom['community_id'] == $value['id']) {
                 $res .= '<h3 class="community my_community">' . shortenStr($value['name']) . '<span class="addbutton ui-state-highlight home" id="hom' . $value['id'] . '"><img src="images/icon_home.png" /></span><div class="clear"></div></h3><div style="padding: 2px; font-size: 0.6em; cursor: pointer;" id="pan' . $value['id'] . '" class="panel"><span>This is your current community</span></div>';
             } else {
-                $res .= '<h3 class="community my_community">' . shortenStr($value['name']) . '<span class="home" id="hom' . $value['id'] . '"></span></h3><div style="padding:2px;font-size:.6em;cursor:pointer;" id="pan' . $value['id'] . '" class="panel"><p><span onclick="unsubscribe(' . $value['id'] . ')">Unsubscribe</span> | <span onclick="join(' . $value['id'] . ')">Join</span></p></div>';
+                if (in_array($value['name'], $joinExcept)) {
+                    $res .= '<h3 class="community my_community">' . shortenStr($value['name']) . '<span class="home" id="hom' . $value['id'] . '"></span></h3><div style="padding:2px;font-size:.6em;cursor:pointer;" id="pan' . $value['id'] . '" class="panel"><p><span onclick="unsubscribe(' . $value['id'] . ')">Unsubscribe</span><!-- | <span onclick="join(' . $value['id'] . ')">Join</span>--></p></div>';
+                }else{
+                    $res .= '<h3 class="community my_community">' . shortenStr($value['name']) . '<span class="home" id="hom' . $value['id'] . '"></span></h3><div style="padding:2px;font-size:.6em;cursor:pointer;" id="pan' . $value['id'] . '" class="panel"><p><span onclick="unsubscribe(' . $value['id'] . ')">Unsubscribe</span> | <span onclick="join(' . $value['id'] . ')">Join</span></p></div>';
+                }
             }
             if ($tabindex == 0) {
                 $tabindex = -1;
+            }
+            $c++;
+            if ($c >= 5) {
+                break;
             }
         }
     }
@@ -44,6 +54,7 @@ if ($_POST['value'] == "mycommunity") {
 </script>';
     echo $res;
 } else if ($_POST['value'] == "suggestion") {
+    
     $sug = "";
 
     $sugComm = getSugestedComm($_SESSION['auth']['id']);
@@ -52,10 +63,14 @@ if ($_POST['value'] == "mycommunity") {
         shuffle($sugComm['data']);
         $tabindex = 0;
         foreach ($sugComm['data'] as $value) {
-            $sug .= '<h3 class="community">' . $value['name'] . '<span class="home" id="hom' . $value['id'] . '"></span></h3><div style="padding:2px;font-size:.6em;cursor:pointer;" id="pan' . $value['id'] . '" class="panel"><p><span onclick="subscribe(' . $value['id'] . ')">Subscribe</span> | <span onclick="join(' . $value['id'] . ')">Join</span></p></div>';
+            if (in_array($value['name'], $joinExcept)) {
+                $sug .= '<h3 class="community">' . $value['name'] . '<span class="home" id="hom' . $value['id'] . '"></span></h3><div style="padding:2px;font-size:.6em;cursor:pointer;" id="pan' . $value['id'] . '" class="panel"><p><span onclick="subscribe(' . $value['id'] . ')">Subscribe</span> <!--| <span onclick="join(' . $value['id'] . ')">Join</span>--></p></div>';
+            } else {
+                $sug .= '<h3 class="community">' . $value['name'] . '<span class="home" id="hom' . $value['id'] . '"></span></h3><div style="padding:2px;font-size:.6em;cursor:pointer;" id="pan' . $value['id'] . '" class="panel"><p><span onclick="subscribe(' . $value['id'] . ')">Subscribe</span> | <span onclick="join(' . $value['id'] . ')">Join</span></p></div>';
+            }
             if ($tabindex > 3) {
                 break;
-            }else{
+            } else {
                 $tabindex++;
             }
         }

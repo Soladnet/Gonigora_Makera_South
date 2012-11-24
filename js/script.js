@@ -1343,8 +1343,7 @@ function sendToServer(data){
                         showFlashMessageDialoge("Your last command was not successfull","messenger","error")       
                     }
                 }
-            }
-            else if(data.action=="albumCover"){
+            }else if(data.action=="albumCover"){
                 if(output){
                     if(output.status=="success"){
                         showFlashMessageDialoge("Operation successfull!","messenger","success");
@@ -1367,6 +1366,9 @@ function makrAlbumCover(fileID,album){
         ola:fileID,
         album:album
     });
+}
+function useTheme(id){
+    alert(id)
 }
 var FTLPostState = 15;
 var TRPostState = 15;

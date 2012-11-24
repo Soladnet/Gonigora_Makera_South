@@ -56,11 +56,11 @@ if (isset($_POST['action'])) {
             echo json_encode($arr);
         } else if ($_POST['action'] == "morePost") {
             $userId = $_SESSION['auth']['id'];
-            if($_POST['tab']=="FTL"){
+            if ($_POST['tab'] == "FTL") {
                 echo showPostAndCommentFTL($userId, $_POST['posts']);
-            }else if($_POST['tab']=="TRD"){
+            } else if ($_POST['tab'] == "TRD") {
                 echo showPostAndCommentTR($userId, 80, $_POST['posts']);
-            }else if($_POST['tab']=="CF"){
+            } else if ($_POST['tab'] == "CF") {
                 echo showPostAndCommentCF($userId, 80, $_POST['posts']);
             }
         }
@@ -391,11 +391,11 @@ if (isset($_POST['action'])) {
             $arr['status'] = "failed";
         }
         echo json_encode($arr);
-    }else if(isset ($_POST['ola'])){
+    } else if (isset($_POST['ola'])) {
         $arr['status'] = "Success";
         echo json_encode($arr);
-    } 
-    
+    }
+
 //    else if ($_POST['action'] == "albumCover") {
 //        $fileId = $encrypt->safe_b64decode($_POST['fileID']);
 //        $albumId = $encrypt->safe_b64decode($_POST['album']);
@@ -416,6 +416,7 @@ if (isset($_POST['action'])) {
 //        echo json_encode($arr);
 //    }
 } else {
-    echo json_encode(array("status" => "failed"));
+    include '404.php';
+//    exit();
 }
 ?>
